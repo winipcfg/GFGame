@@ -23,11 +23,20 @@
 #define WARRIOR_TYPEDEF_H_
 
 #include "cocos2d.h"
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/point_xy.hpp>
+#include <boost/geometry/geometries/linestring.hpp>
+#include <boost/geometry/geometries/polygon.hpp>
 
 namespace Warrior 
 {
 
-typedef cocos2d::CCPoint                            Point;
+typedef cocos2d::CCPoint                                        Point;
+
+typedef boost::geometry::model::d2::point_xy<float>             BPoint;
+typedef boost::geometry::model::linestring<BPoint >             BLine;
+typedef boost::geometry::model::polygon<BPoint >                BPolygon;
+typedef boost::geometry::detail::overlay::turn_info<BPoint >    BTurnInfo;
 
 } // namespace
 

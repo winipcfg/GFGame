@@ -32,7 +32,7 @@
 #include "Units/ArcherBot.h"
 #include "Units/WarriorBot.h"
 #include "TypeDef.h"
-#include "SceneHelper.h"
+#include "Scene/SceneHelper.h"
 
 using namespace cocos2d;
 
@@ -483,21 +483,25 @@ void BattleLayer::UpdateNode(cocos2d::ccTime dt)
 void BattleLayer::UpdateCamera(const Point& position)
 {
     // INCORRECT! All box2d go to wrong location
-    //cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
-    //
-    //cocos2d::CCRect boundary(0, 0, 960, 320);
-    //float minX = 0;
-    //float maxX = boundary.size.width / 2;
+    cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
+    
+    cocos2d::CCRect boundary(0, 0, 960, 320);
+    float minX = 0;
+    float maxX = boundary.size.width / 2;
 
-    //Point cameraPosition;
-    //cameraPosition.x = -(position.x - (float)winSize.width * 0.5f);
-    //cameraPosition.y = 0;
-    //cameraPosition.x = max(min(cameraPosition.x, minX), -maxX);
+    Point cameraPosition;
+    cameraPosition.x = -(position.x - (float)winSize.width * 0.5f);
+    cameraPosition.y = 0;
+    cameraPosition.x = max(min(cameraPosition.x, minX), -maxX);
 
-    //CCLOG("[%s][%d] - Camera move to %0.2f x %02.f", __FUNCTION__, __LINE__, cameraPosition.x, cameraPosition.y);
+    CCLOG("[%s][%d] - Camera move to %0.2f x %02.f", __FUNCTION__, __LINE__, cameraPosition.x, cameraPosition.y);
 
     //cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::actionWithDuration(kCameraChasingDuration, cameraPosition);
     //this->runAction(moveAction);
+    //float cx,cy,cz;
+    //this->getCamera()->getCenterXYZ(&cx,&cy,&cz);
+    //this->getCamera()->setEyeXYZ(position.x - winSize.width/2, 0, 1.0);
+    //this->getCamera()->setCenterXYZ(position.x - winSize.width/2, 0, 0.0);
 }
 
 

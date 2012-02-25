@@ -21,11 +21,6 @@
 #ifndef WARRIOR_STRUCT_H_
 #define WARRIOR_STRUCT_H_
 
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/point_xy.hpp>
-#include <boost/geometry/geometries/linestring.hpp>
-#include <boost/geometry/geometries/polygon.hpp>
-
 namespace Warrior 
 {
     
@@ -83,11 +78,6 @@ enum UnitBehaviorType
     /// The unit do evade from a target.
     kUnitBehaviorTypeEvade,
 };
-
-typedef boost::geometry::model::d2::point_xy<float>             BPoint;
-typedef boost::geometry::model::linestring<BPoint >             BLine;
-typedef boost::geometry::model::polygon<BPoint >                BPolygon;
-typedef boost::geometry::detail::overlay::turn_info<BPoint >    BTurnInfo;
 
 } // namespace
 

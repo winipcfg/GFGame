@@ -116,8 +116,8 @@ void UnitNode::ResolveAttack()
             BattleLayer* battleLayer = static_cast<BattleLayer*>(this->getParent());
             //battleLayer->ResolveAttack(*this, *target);
             
-            b2Vec2 position(this->getPosition().x, this->getPosition().y + 60);
-            b2Vec2 targetPosition(target->getPosition().x, target->getPosition().y + 60);
+            b2Vec2 position(this->getPosition().x + this->getParent()->getPosition().x, this->getPosition().y + 60 + this->getParent()->getPosition().y);
+            b2Vec2 targetPosition(target->getPosition().x + this->getParent()->getPosition().x, target->getPosition().y + 60 + this->getParent()->getPosition().y);
             MissileNode* node = battleLayer->GetBattle()->ShootMissile(0, 0, position, targetPosition, 1.0f, true);
             battleLayer->addChild(node);
         }
@@ -248,8 +248,8 @@ void UnitNode::UpdateNode(cocos2d::ccTime dt)
         }
 
         cocos2d::CCPoint position = cocos2d::CCPoint(
-            state_->Body()->GetPosition().x * PTM_RATIO, 
-            state_->Body()->GetPosition().y * PTM_RATIO);
+            (state_->Body()->GetPosition().x * PTM_RATIO), 
+            (state_->Body()->GetPosition().y * PTM_RATIO));
         float rotation = CC_RADIANS_TO_DEGREES(-1 * state_->Body()->GetAngle());
         sprite_->setAnchorPoint(ccp(0.5, 0.5));
         this->setRotation(rotation);           
@@ -277,10 +277,18 @@ void UnitNode::UpdateNode(cocos2d::ccTime dt)
             this->setPosition(position);
         }
 
+        //if (state_->Body())
+        //{
+        //    state_->Body()->SetTransform(
+        //        b2Vec2((this->getParent()->getPosition().x + this->getPosition().x) * GFort::Core::Physics::kINV_PTM_RATIO, 
+        //               (this->getParent()->getPosition().y + this->getPosition().y + this->boundingBox().size.height / 2) * GFort::Core::Physics::kINV_PTM_RATIO), 
+        //        state_->Body()->GetAngle());
+        //    state_->Body()->SetAwake(true);
+        //}
         if (state_->Body())
         {
             state_->Body()->SetTransform(
-                b2Vec2(this->getPosition().x * GFort::Core::Physics::kINV_PTM_RATIO, 
+                b2Vec2((this->getPosition().x) * GFort::Core::Physics::kINV_PTM_RATIO, 
                        (this->getPosition().y + this->boundingBox().size.height / 2) * GFort::Core::Physics::kINV_PTM_RATIO), 
                 state_->Body()->GetAngle());
             state_->Body()->SetAwake(true);

@@ -37,7 +37,6 @@
 #include "EnemyNode.h"
 #include "MissileNode.h"
 #include "Landscape/Landscape.h"
-#include "../Viewer/Box2dDebugViewer.h"
 
 namespace Warrior 
 {

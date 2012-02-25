@@ -29,6 +29,7 @@
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <Cistron/Cistron.h>
 #include <Warrior/Model/Struct.h>
+#include <Warrior/TypeDef.h>
 
 namespace Warrior 
 {

@@ -19,6 +19,7 @@
 //THE SOFTWARE.
 
 #include "BattleHelper.h"
+#include <Warrior/TypeDef.h>
 
 namespace Warrior 
 {

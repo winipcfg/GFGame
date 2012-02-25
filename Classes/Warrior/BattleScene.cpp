@@ -37,8 +37,7 @@ BattleScene::BattleScene()
     : hud_layer_(NULL),
       physics_debug_viewer(NULL),
       battle_layer_(NULL),
-      pause_game_layer_(NULL),      
-      paused_(false)
+      pause_game_layer_(NULL)
 {
     hud_layer_ = Warrior::BattleHUD::node();
     addChild(hud_layer_, kTagHUD, kTagHUD);
@@ -58,57 +57,6 @@ BattleScene::~BattleScene()
 {
     this->unscheduleUpdate();
     this->unscheduleAllSelectors();
-}
-
-void PauseSchedulerAndActionsRecursive(cocos2d::CCNode* node)
-{
-    if (node)
-    {
-        node->pauseSchedulerAndActions();
-        
-        cocos2d::CCObject* child;
-        CCARRAY_FOREACH(node->getChildren(), child)
-        {
-            PauseSchedulerAndActionsRecursive((cocos2d::CCNode*) child);
-        }
-    }
-}
-
-void ResumeSchedulerAndActionsRecursive(cocos2d::CCNode* node)
-{
-    if (node)
-    {
-        node->resumeSchedulerAndActions();
-        
-        cocos2d::CCObject* child;
-        CCARRAY_FOREACH(node->getChildren(), child)
-        {
-            ResumeSchedulerAndActionsRecursive((cocos2d::CCNode*) child);
-        }
-    }
-}
-
-void BattleScene::PauseGame()
-{
-    if (!paused_)
-    {
-        CCLOG("[%s][%d] - The game changes to Paused state", __FUNCTION__, __LINE__);
-        PauseSchedulerAndActionsRecursive(this);
-
-        pause_game_layer_ = Warrior::PauseGameLayer::node();
-        addChild(pause_game_layer_, kTagPauseGame, kTagPauseGame);
-        paused_ = true;
-    }
-}
-
-void BattleScene::ResumeGame()
-{
-    if (paused_)
-    {
-        CCLOG("[%s][%d] - The game resumes to Normal state", __FUNCTION__, __LINE__);
-        ResumeSchedulerAndActionsRecursive(this);
-        paused_ = false;
-    }
 }
 
 void BattleScene::TogglePhysicsDebugViewer()

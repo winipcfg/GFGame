@@ -19,7 +19,7 @@
 //THE SOFTWARE.
 
 #include "SplashScene.h"
-#include "../SceneHelper.h"
+#include "SceneHelper.h"
 #include "CCExtensions/CCShake.h"
 
 const std::string   kFile_BG			= "Assets/UI/splash.png";

@@ -22,14 +22,16 @@
 #define WARRIOR_BATTLE_SCENE_H_
 
 #include "cocos2d.h"
+#include <Viewer/Box2dDebugViewer.h>
+#include <Scene/GameScene.h>
+#include <Scene/PauseGameLayer.h>
 #include "BattleHUD.h"
 #include "BattleLayer.h"
-#include "PauseGameLayer.h"
 
 namespace Warrior 
 {
 
-class BattleScene : public cocos2d::CCScene
+class BattleScene : public GFGame::Scene::GameScene
 {
 public:
     
@@ -39,16 +41,7 @@ public:
 
     /// Destructor.
     ~BattleScene();
-
-    /// Pause the game.
-    void PauseGame();
-
-    /// Resume the game.
-    void ResumeGame();
-
-    /// Return true if game is paused.
-    bool GamePaused()               { return paused_; }
-
+    
     /// Toggles whether the physics debug viewer is visible or not.
     void TogglePhysicsDebugViewer();
     
@@ -60,10 +53,7 @@ private:
     BattleHUD*                          hud_layer_;
     GFGame::Viewer::Box2dDebugViewer*   physics_debug_viewer;
     BattleLayer*                        battle_layer_;
-    PauseGameLayer*                     pause_game_layer_;
-
-    // Instances
-    bool                                paused_;
+    GFGame::Scene::PauseGameLayer*      pause_game_layer_;
 };
 
 } // namespace
