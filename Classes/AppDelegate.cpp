@@ -4,7 +4,8 @@
 #include "SimpleAudioEngine.h"
 using namespace CocosDenshion;
 
-#include "Warrior/SceneHelper.h"
+#include "Warrior/Scene/SceneHelper.h"
+#include "Shmup/ShmupSceneHelper.h"
 
 using namespace cocos2d;
 
@@ -85,7 +86,9 @@ bool AppDelegate::applicationDidFinishLaunching()
     //// run
     //pDirector->runWithScene(pScene);
 
-    Warrior::SceneHelper manager;
+    //Warrior::SceneHelper manager;
+    //manager.GoDefault();
+    GFort::Games::Shmup::ShmupSceneHelper manager;
     manager.GoDefault();
 
     return true;
