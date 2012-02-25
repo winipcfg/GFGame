@@ -5,7 +5,7 @@
 using namespace CocosDenshion;
 
 #include "Warrior/Scene/SceneHelper.h"
-#include "Shmup/ShmupSceneHelper.h"
+#include "Shmup/SceneHelper.h"
 
 using namespace cocos2d;
 
@@ -88,7 +88,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     //Warrior::SceneHelper manager;
     //manager.GoDefault();
-    GFort::Games::Shmup::ShmupSceneHelper manager;
+    GFort::Games::Shmup::SceneHelper manager;
     manager.GoDefault();
 
     return true;
