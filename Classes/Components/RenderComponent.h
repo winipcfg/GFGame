@@ -18,33 +18,35 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_RENDER_COMPONENT_H_
-#define WARRIOR_RENDER_COMPONENT_H_
+#ifndef GFGAME_COMPONENTS_RENDER_COMPONENT_H_
+#define GFGAME_COMPONENTS_RENDER_COMPONENT_H_
 
 #include <Cistron/Cistron.h>
 #include <cocos2d.h>
 
-namespace Warrior 
+namespace GFGame { namespace Components 
 {
 
-/// Bounding Box
 class RenderComponent : public Cistron::Component
 {
 public:
     /// Constructor.
-    RenderComponent();
+    RenderComponent(cocos2d::CCNode* node);
 
     /// Destructor.
     ~RenderComponent();
+
+    /// Return the node.
+    cocos2d::CCNode* Node() { return node_; }
                     
 private:    
     cocos2d::CCNode* node_;
 };  
 
     
-inline RenderComponent::RenderComponent()
+inline RenderComponent::RenderComponent(cocos2d::CCNode* node)
     : Cistron::Component("RenderComponent"),
-      node_(NULL)
+      node_(node)
 {
 }
 
@@ -52,6 +54,6 @@ inline RenderComponent::~RenderComponent()
 {
 }
     
-} // namespace
+} } // namespace
 
-#endif // WARRIOR_RENDER_COMPONENT_H_
+#endif // GFGAME_COMPONENTS_RENDER_COMPONENT_H_

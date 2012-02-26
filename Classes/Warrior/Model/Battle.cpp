@@ -177,7 +177,7 @@ MissileNode* Battle::ShootMissile(
     //this->addChild(node);
 
     // Create body
-    PhysicsComponent* physics = new PhysicsComponent();
+    GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
     b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
         phys_controller_.World(),
         b2Vec2(node->getPosition().x, node->getPosition().y),

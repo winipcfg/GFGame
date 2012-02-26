@@ -18,8 +18,8 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PHYSICS_COMPONENT_H_
-#define WARRIOR_PHYSICS_COMPONENT_H_
+#ifndef GFGAME_COMPONENTS_PHYSICS_COMPONENT_H_
+#define GFGAME_COMPONENTS_PHYSICS_COMPONENT_H_
 
 #include <string>
 #include <hash_map>
@@ -27,7 +27,7 @@
 #include <Box2D/Box2D.h>
 #include <Warrior/TypeDef.h>
 
-namespace Warrior 
+namespace GFGame { namespace Components 
 {
 
 /// Stores missile information
@@ -64,6 +64,6 @@ inline PhysicsComponent::~PhysicsComponent()
 {
 }
     
-} // namespace
+} } // namespace
 
-#endif // WARRIOR_PHYSICS_COMPONENT_H_
+#endif // GFGAME_COMPONENTS_PHYSICS_COMPONENT_H_

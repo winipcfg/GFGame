@@ -64,13 +64,13 @@ bool MissileNode::init()
     this->addChild(sprite_);
 
     ////---------------------------------------------------------------
-    //// Sprites Test
+    //// Sprites Test - Cannot use AdvanceSprite due to bounding box issue
     ////---------------------------------------------------------------
-    //sprite_ = new cocos2d::AdvanceSprite();
+    //sprite_ = new AdvanceSprite();
     //sprite_->init();
-    //sprite_->setPosition(ccp(20, 0));
-    //this->addChild(sprite_);
     //sprite_->addFrames(kUnitSpriteFrame.c_str(), kUnitSprite2.c_str());
+    //this->addChild(sprite_);
+    //    
     //sprite_->startAnimation(1, 14, -1, 0, this, 5, false, false);
         
     return true;

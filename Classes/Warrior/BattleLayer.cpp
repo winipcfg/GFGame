@@ -210,7 +210,7 @@ void BattleLayer::SpawnPlayer(const Point& position)
     this->addChild(player_node_);        
 
     // Create body
-    PhysicsComponent* physics = new PhysicsComponent();
+    GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
     b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
         battle_.World(),
         b2Vec2(player_node_->getPosition().x, player_node_->getPosition().y + player_node_->Size().height / 2),
@@ -291,7 +291,7 @@ void BattleLayer::SpawnEnemy(const Point& position)
     std::list<Cistron::Component*> bots = battle_.getComponentsByName("Bot");
 
     // Create body
-    PhysicsComponent* physics = new PhysicsComponent();
+    GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
     b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
         battle_.World(),
         b2Vec2(enemy->getPosition().x, enemy->getPosition().y + enemy->boundingBox().size.height / 2),
