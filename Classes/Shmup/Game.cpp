@@ -21,7 +21,11 @@
 #include "Game.h"
 #include <GFort/Core/Physics/Box2dSettings.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
+#include "../Components/RenderComponent.h"
+#include "../Components/PhysicsComponent.h"
 #include "Units/Ship.h"
+#include "Units/ShipNode.h"
+#include "Units/MissileNode.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
@@ -43,8 +47,8 @@ bool Game::Initialize()
 	float32 height = 320;
 		
     b2World* world = (b2World*) phys_controller_.World();
-    world->SetContinuousPhysics(true);                    
-	
+    world->SetContinuousPhysics(true);    
+
     short boundary = 20;
     GFort::Core::Physics::PhysicsHelper::CreateBoundedArea(
         world,
@@ -78,18 +82,20 @@ Cistron::ObjectId Game::SpawnPlayerShip(const b2Vec2& position, const short& sid
     Ship* unit = new Ship();
     this->addComponent(objId, unit);
 
-    //MissileNode* node = new MissileNode();    
-    //node->init();
-    //node->setPosition(ccp(position.x, position.y));      
-    //this->addComponent(objId, node);
+    // Render Component
+    ShipNode* ship = new ShipNode();    
+    ship->init();
+    ship->setPosition(ccp(position.x, position.y));      
+    GFGame::Components::RenderComponent* node = new GFGame::Components::RenderComponent(ship);
+    this->addComponent(objId, node);
 
- //   // Create body
- //   PhysicsComponent* physics = new PhysicsComponent();
- //   b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
- //       phys_controller_.World(),
- //       b2Vec2(node->getPosition().x, node->getPosition().y),
- //       node->boundingBox().size.width,
- //       node->boundingBox().size.height);
+    // Physics Component
+    GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
+    b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+        phys_controller_.World(),
+        b2Vec2(ship->getPosition().x, ship->getPosition().y),
+        ship->boundingBox().size.width,
+        ship->boundingBox().size.height);
 
  //   // Set the dynamic body fixture.
 	//b2Fixture* fixture = body->GetFixtureList();	
@@ -106,17 +112,37 @@ Cistron::ObjectId Game::SpawnPlayerShip(const b2Vec2& position, const short& sid
  //   physics->AddBody("root", body);
  //   node->SetBody(body);
  //   this->addComponent(objId, physics);
- //   
- //   // Apply force
- //   b2Vec2 impulse = GFort::Core::Physics::PhysicsHelper::GetTrajectoryVelocity(
- //       phys_controller_.World(),
- //       &this->phys_settings_,
- //       position,
- //       targetPosition,
- //       duration);
- //   body->ApplyLinearImpulse(impulse, body->GetWorldCenter());
 
     return objId;
+}
+
+Cistron::ObjectId Game::SpawnLaser(const b2Vec2& position, const short& side)
+{
+    Cistron::ObjectId objId = this->SpawnEntity();
+    Ship* unit = new Ship();
+    this->addComponent(objId, unit);
+
+    // Render Component
+    MissileNode* missile = new MissileNode();    
+    missile->init();
+    missile->setPosition(ccp(position.x, position.y));      
+    GFGame::Components::RenderComponent* node = new GFGame::Components::RenderComponent(missile);
+    this->addComponent(objId, node);
+
+    // Physics Component
+    GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
+    b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+        phys_controller_.World(),
+        b2Vec2(missile->getPosition().x, missile->getPosition().y),
+        missile->boundingBox().size.width,
+        missile->boundingBox().size.height);
+
+    return objId;
+}
+
+void Game::Update(const float& dt)
+{
+    phys_controller_.Step(&phys_settings_, dt);
 }
 
 } } } // namespace

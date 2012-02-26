@@ -18,7 +18,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#include "ShmupSceneHelper.h"
+#include "SceneHelper.h"
 #include "Shmup/ShmupScene.h"
 
 namespace GFort { namespace Games { namespace Shmup 

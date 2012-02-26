@@ -24,7 +24,10 @@
 #include <vector>
 #include <Cistron/Cistron.h>
 #include "cocos2d.h"
+#include <CCExtensions/HSJoystick.h>
+#include <CCExtensions/AdvanceSprite.h>
 #include "Game.h"
+#include "Units/ShipNode.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
@@ -44,14 +47,19 @@ public:
     /// Destructor.
     ~ShmupLayer();
             
-    virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
+    virtual void ccTouchesBegan(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+	virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+	virtual void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+    //virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
+    //virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
+    //virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
         
     //LAYER_NODE_FUNC(ShmupLayer)
     
 protected:
     void DoFire();
+    void SpawnAsteroid();
+    void CreateBullet(b2Vec2 start);
 
 private:
     void SetupGame();
@@ -60,11 +68,12 @@ private:
     
 private:
     // Stores time information
-    double          duration_;
-    Point           touch_start_position_;
-    Point           touch_end_position_;
+    double                      duration_;
+    Point                       touch_start_position_;
+    Point                       touch_end_position_;
 
-    cocos2d::CCRenderTexture*          render_texture_;
+    cocos2d::CCRenderTexture*   render_texture_;
+    HSJoystick*                 joystick_;
 
     // Reference
     GFort::Games::Shmup::Game*                  game_;
@@ -73,8 +82,10 @@ private:
     bool                                        is_shooting_;
     double                                      last_shoot_time_;
 
+    ShipNode*                               ship_node_;
+
     cocos2d::CCSpriteBatchNode*              batchNode_;
-    cocos2d::CCSprite*                       shipSprite_;
+    
     
     cocos2d::CCParallaxNode*                 _backgroundNode;
     cocos2d::CCSprite*                       _spacedust1;
@@ -84,14 +95,14 @@ private:
     cocos2d::CCSprite*                       _spacialanomaly;
     cocos2d::CCSprite*                       _spacialanomaly2;
 
-    float                           _shipPointsPerSecY;
+    float                                    _shipPointsPerSecY;
     
-    cocos2d::CCArray*                        _asteroids;
-    int                             _nextAsteroid;
-    double                          _nextAsteroidSpawn;
+    std::vector<cocos2d::CCSprite*>          _asteroids;
+    int                                      _nextAsteroid;
+    double                                   _nextAsteroidSpawn;
     
-    std::vector<cocos2d::CCSprite*>                        _shipLasers;
-    int                             _nextShipLaser;   
+    std::vector<cocos2d::CCSprite*>          _shipLasers;
+    int                                      _nextShipLaser;   
 };
 
 } } } // namespace

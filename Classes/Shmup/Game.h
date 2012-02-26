@@ -87,13 +87,12 @@ public:
     /// Gets the physics world.
     b2World* World()                                { return phys_controller_.World(); }
 
+    /// Gets the physics settings.
+    GFort::Core::Physics::Box2dSettings& PhysicsSettings()  { return phys_settings_; }
+
+public:
     /// Spawn an entity.
     Cistron::ObjectId SpawnEntity()                 { return this->createObject(); }
-
-protected:
-    /// Fire some bullets, laser, etc
-    /// @param ship The ship to shoot
-    void DoAttack(Ship* ship);
 
     /// Spawn player ship at specified location.
     /// @param position
@@ -104,11 +103,21 @@ protected:
     /// @param position
     /// @param side    
     Cistron::ObjectId SpawnPlayerShip(const b2Vec2& position, const short& side);
+
+    /// Spawn player ship at specified location.
+    /// @param position
+    /// @param side    
+    Cistron::ObjectId SpawnLaser(const b2Vec2& position, const short& side);
+
+    /// Update the battle.
+    void Update(const float& dt);
+
+protected:
+    /// Fire some bullets, laser, etc
+    /// @param ship The ship to shoot
+    void DoAttack(Ship* ship);
     
 private:
-    //// Stores all entities inside the game
-    //std::vector<Entity>         entities_;
-
     // Ships controlled by players
     Ship                                        ships_[1];
 

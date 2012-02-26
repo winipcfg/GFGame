@@ -24,7 +24,7 @@
 #include "cocos2d.h"
 #include <Viewer/Box2dDebugViewer.h>
 #include <Scene/GameScene.h>
-//#include "ShmupHUD.h"
+#include "Shmup/Viewer/ShmupHUD.h"
 #include "ShmupLayer.h"
 #include "Game.h"
 
@@ -53,7 +53,7 @@ private:
     Game            game_;
 
     // Stores layer reference
-    cocos2d::CCLayer*                    hud_layer_;
+    ShmupHUD*                           hud_layer_;
     GFGame::Viewer::Box2dDebugViewer*   physics_debug_viewer;
     ShmupLayer*                         shmup_layer_;
 };

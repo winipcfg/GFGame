@@ -29,6 +29,7 @@ enum
 {
     kTagBattleLayer = 0,
     kTagHUD         = 20,
+    kTagBox2dDebug  = 30,
 };
 
 ShmupScene::ShmupScene()
@@ -36,18 +37,20 @@ ShmupScene::ShmupScene()
     , physics_debug_viewer(NULL)
     , shmup_layer_(NULL)
 {
-    //hud_layer_ = Warrior::BattleHUD::node();
-    //addChild(hud_layer_, kTagHUD, kTagHUD);
+    hud_layer_ = Shmup::ShmupHUD::node();
+    addChild(hud_layer_, kTagHUD, kTagHUD);
 
+    game_.Initialize();
     game_.SetNumLives(1);
+
     shmup_layer_ = new ShmupLayer(&game_);
     //shmup_layer_->SetViewer(hud_layer_);
     addChild(shmup_layer_, kTagBattleLayer, kTagBattleLayer);
 
-    //physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
-    //physics_debug_viewer->SetWorld(shmup_layer_->GetBattle()->World(), &battle_layer_->GetBattle()->PhysicsSettings());
-    //physics_debug_viewer->setIsVisible(false);
-    //addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
+    physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
+    physics_debug_viewer->SetWorld(game_.World(), &game_.PhysicsSettings());
+    physics_debug_viewer->setIsVisible(false);
+    addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
 }
 
 ShmupScene::~ShmupScene()
@@ -58,6 +61,7 @@ ShmupScene::~ShmupScene()
 
 void ShmupScene::TogglePhysicsDebugViewer()
 {
+    CCLOG("[%s][%d] - Toggle Physics debug viewer", __FUNCTION__, __LINE__);
     physics_debug_viewer->setIsVisible(!physics_debug_viewer->getIsVisible());
 }
 
