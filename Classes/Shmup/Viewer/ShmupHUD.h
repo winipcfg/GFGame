@@ -18,52 +18,54 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#include "ShmupScene.h"
+#ifndef WARRIOR_SHMUP_HUD_H_
+#define WARRIOR_SHMUP_HUD_H_
 
-using namespace cocos2d;
+#include <Cistron/Cistron.h>
+#include "cocos2d.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-enum 
+/// Class for HUD in Battle. It involves display contents such as pause menu
+class ShmupHUD 
+    : public cocos2d::CCLayer
+    , public Cistron::Component
 {
-    kTagBattleLayer = 0,
-    kTagHUD         = 20,
-    kTagBox2dDebug  = 30,
+public:
+    typedef cocos2d::CCPoint     Point;
+    
+public:
+    /// Constructor.
+    ShmupHUD();
+
+    /// Destructor.
+    ~ShmupHUD();
+
+    /// Sets the health.
+    /// @param value
+    void SetHealth(const float& value);
+        
+    LAYER_NODE_FUNC(ShmupHUD)
+   
+protected:
+private:
+    void SetupViewer();
+
+    void ButtonPauseCallback(CCObject* pSender);
+    void ButtonToggleDebugCallback(CCObject* pSender);
+        
+private:
+    // Stores data for display
+    short                           health_;
+
+    // Stores CCNode objects
+    cocos2d::CCSprite*              health_bar_background_;
+    cocos2d::CCProgressTimer*       health_bar_;
+    cocos2d::CCMenuItemImage*       button_pause_;
+    cocos2d::CCMenuItemImage*       button_debug_;
 };
 
-ShmupScene::ShmupScene()
-    : hud_layer_(NULL)
-    , physics_debug_viewer(NULL)
-    , shmup_layer_(NULL)
-{
-    hud_layer_ = Shmup::ShmupHUD::node();
-    addChild(hud_layer_, kTagHUD, kTagHUD);
-
-    game_.Initialize();
-    game_.SetNumLives(100);
-
-    shmup_layer_ = new ShmupLayer(&game_);
-    //shmup_layer_->SetViewer(hud_layer_);
-    addChild(shmup_layer_, kTagBattleLayer, kTagBattleLayer);
-
-    physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
-    physics_debug_viewer->SetWorld(game_.World(), &game_.PhysicsSettings());
-    physics_debug_viewer->setIsVisible(false);
-    addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
-}
-
-ShmupScene::~ShmupScene()
-{
-    this->unscheduleUpdate();
-    this->unscheduleAllSelectors();
-}
-
-void ShmupScene::TogglePhysicsDebugViewer()
-{
-    CCLOG("[%s][%d] - Toggle Physics debug viewer", __FUNCTION__, __LINE__);
-    physics_debug_viewer->setIsVisible(!physics_debug_viewer->getIsVisible());
-}
-
-
 } } } // namespace
+
+#endif // WARRIOR_SHMUP_HUD_H_

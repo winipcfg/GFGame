@@ -25,6 +25,8 @@
 #include <Cistron/Cistron.h>
 #include <GFort/Core/Game/IEntity.h>
 #include <GFort/Core/Game/IWeapon.h>
+#include "Components/PhysicsComponent.h"
+#include "Components/RenderComponent.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
@@ -36,9 +38,11 @@ class Ship
     , public GFort::Core::Game::IEntity
 {
 public:
-    typedef GFort::Core::Game::IWeapon& WeaponReference;
-    typedef GFort::Core::Game::IWeapon* WeaponPtr;
-    typedef std::vector<WeaponPtr >     WeaponList;
+    typedef GFort::Core::Game::IWeapon&             WeaponReference;
+    typedef GFort::Core::Game::IWeapon*             WeaponPtr;
+    typedef std::vector<WeaponPtr >                 WeaponList;
+    typedef GFGame::Components::PhysicsComponent    PhysicsComponent;
+    typedef GFGame::Components::RenderComponent     RenderComponent;
 
 public:
     /// Constructor
@@ -71,11 +75,20 @@ public:
     /// Kill the object.
     void Die();
 
+    void Move(const float& dx, const float& dy);
+    void StopMove();
+
 private:
     // Stores weapons and the weapon currently used
     WeaponList          weapons_;
     short               current_weapon_index_; 
     WeaponPtr           current_weapon_;
+
+    // Components
+    PhysicsComponent*   physics_component_;
+    RenderComponent*    render_component_;
+
+    friend class Game;
 };
 
 inline Ship::Ship()

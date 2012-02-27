@@ -86,8 +86,9 @@ Cistron::ObjectId Game::SpawnPlayerShip(const b2Vec2& position, const short& sid
     ShipNode* ship = new ShipNode();    
     ship->init();
     ship->setPosition(ccp(position.x, position.y));      
-    GFGame::Components::RenderComponent* node = new GFGame::Components::RenderComponent(ship);
-    this->addComponent(objId, node);
+    GFGame::Components::RenderComponent* render = new GFGame::Components::RenderComponent(ship);
+    this->addComponent(objId, render);
+    unit->render_component_ = render;
 
     // Physics Component
     GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
@@ -96,22 +97,24 @@ Cistron::ObjectId Game::SpawnPlayerShip(const b2Vec2& position, const short& sid
         b2Vec2(ship->getPosition().x, ship->getPosition().y),
         ship->boundingBox().size.width,
         ship->boundingBox().size.height);
+    body->SetFixedRotation(true);
 
- //   // Set the dynamic body fixture.
-	//b2Fixture* fixture = body->GetFixtureList();	
-	//fixture[0].SetDensity(1.0f);
-	//fixture[0].SetFriction(1.0f);
-	//fixture[0].SetRestitution(0.0f);	
-	//body->ResetMassData();
+    // Set the dynamic body fixture.
+    b2Fixture* fixture = body->GetFixtureList();	
+    fixture[0].SetDensity(1.0f);
+    fixture[0].SetFriction(1.0f);
+    fixture[0].SetRestitution(0.0f);	
+    body->ResetMassData();
 
- //   b2Filter filter = fixture[0].GetFilterData();
- //   filter.categoryBits = 0x0002;
- //   filter.maskBits = 0x0001;
- //   fixture[0].SetFilterData(filter);
+    b2Filter filter = fixture[0].GetFilterData();
+    filter.categoryBits = 0x0002;
+    filter.maskBits = 0x0001;
+    fixture[0].SetFilterData(filter);
 
- //   physics->AddBody("root", body);
- //   node->SetBody(body);
- //   this->addComponent(objId, physics);
+    physics->AddBody("root", body);
+    ship->SetBody(body);
+    this->addComponent(objId, physics);
+    unit->physics_component_ = physics;
 
     return objId;
 }

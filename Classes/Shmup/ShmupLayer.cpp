@@ -30,7 +30,7 @@ namespace GFort { namespace Games { namespace Shmup
 {
 
 #define PLAY_BG_MUSIC           0//1
-#define kNumAsteroids           15
+#define kNumAsteroids           20
 #define kNumLasers              5
 #define kNumLives               3
 #define kNumShootsPerSecond     0.2
@@ -74,6 +74,7 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     , joystick_(NULL)
     , _nextAsteroid(0)
     , _nextAsteroidSpawn(0)
+    , ship_(NULL)
 {
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
         
@@ -87,6 +88,13 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
         ship_node_ = (ShipNode*)node->Node();
         this->addChild(node->Node());
     }
+    list = game_->getComponents(objId, "Ship");
+    for (it = list.begin(); it != list.end(); ++it)
+    {
+        ship_ = (Ship*)(*it);
+        break;
+    }
+    
 
     // Create the CCParallaxNode
     _backgroundNode = CCParallaxNode::node();
@@ -188,41 +196,6 @@ void ShmupLayer::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent)
     touch_start_position_ = touch_end_position_ = cocos2d::CCPointZero; 
 }
 
-//bool ShmupLayer::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent)
-//{
-//    Point touchLocation = convertTouchToNodeSpace(pTouch);
-//    touch_start_position_ = touch_end_position_ = touchLocation;
-//    //battle_.MouseDown(b2Vec2(touchLocation.x, touchLocation.y));    
-//
-//    joystick_->setPosition(touch_start_position_);
-//
-//    is_shooting_ = true;
-//    last_shoot_time_ = duration_;
-//
-//    return true;
-//}
-//
-//void ShmupLayer::ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent)
-//{
-//    cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
-//    Point touchLocation = convertTouchToNodeSpace(pTouch);
-//    Point oldTouchLocation = pTouch->previousLocationInView(pTouch->view());
-//    oldTouchLocation = director->convertToGL(oldTouchLocation);
-//    oldTouchLocation = convertToNodeSpace(oldTouchLocation);
-//
-//    //battle_.MouseMove(b2Vec2(touchLocation.x, touchLocation.y));
-//    touch_end_position_ = touchLocation;    
-//}
-//
-//void ShmupLayer::ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent)
-//{
-//    Point touchLocation = convertTouchToNodeSpace(pTouch);
-//    is_shooting_ = false;
-//    last_shoot_time_ = duration_;
-//    touch_start_position_ = touch_end_position_ = cocos2d::CCPointZero;    
-//}
-
-
 void ShmupLayer::CreateBullet(b2Vec2 start)
 {	
 	float32 radius = 10.0;
@@ -244,9 +217,6 @@ void ShmupLayer::DoFire()
 {
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
-    //    GFort::Games::Shmup::Ship& ship = game_.GetShip(0);
-    //ship.DoAttack();
-    //
     CCSprite *shipLaser = static_cast<CCSprite*>(_shipLasers[_nextShipLaser]);
     _nextShipLaser = (_nextShipLaser + 1) % _shipLasers.size();
 
@@ -262,6 +232,16 @@ void ShmupLayer::DoFire()
 
     //b2Vec2 pos = b2Vec2(position.x, position.y);
     //this->CreateBullet(pos);
+
+    //// Laser
+    //Cistron::ObjectId objId = game_->SpawnLaser(b2Vec2(position.x, position.y), 0);
+    //std::list<Cistron::Component*> list = game_->getComponents(objId, "RenderComponent");
+    //std::list<Cistron::Component*>::iterator it;
+    //for (it = list.begin(); it != list.end(); ++it)
+    //{
+    //    GFGame::Components::RenderComponent* node = (GFGame::Components::RenderComponent*)(*it);
+    //    this->addChild(node->Node());
+    //}
 }
 
 void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
@@ -310,47 +290,53 @@ void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
                 }        
             }
 
-            if (joystick_ && !cocos2d::CCPoint::CCPointEqualToPoint(joystick_->getVelocity(), cocos2d::CCPointZero))
+            if (ship_ && joystick_ && !cocos2d::CCPoint::CCPointEqualToPoint(joystick_->getVelocity(), cocos2d::CCPointZero))
             {
-                ship_node_->setPosition(
-                    ccp(ship_node_->getPosition().x + joystick_->getVelocity().x, 
-                        ship_node_->getPosition().y + joystick_->getVelocity().y));
+                float speed = 3.0f;
+                ship_->Move(joystick_->getVelocity().x * speed, joystick_->getVelocity().y * speed);
+            }
+            else
+            {
+                ship_->StopMove();
             }
 
             // Asteroids
             if (duration_ > _nextAsteroidSpawn) 
             {
                 this->SpawnAsteroid();
-                float randSecs = GFort::Core::MathHelper::RandomBetween(0.2f, 1.0f);
+                float randSecs = GFort::Core::MathHelper::RandomBetween(0.1f, 0.8f);
                 _nextAsteroidSpawn = randSecs + duration_;        
             }
 
-            //for (CCSprite *asteroid in _asteroids) 
-            //{
-            //    if (!asteroid.visible) 
-            //        continue;
+            std::vector<cocos2d::CCSprite*>::iterator it;
+            std::vector<cocos2d::CCSprite*>::iterator lit;
+            for (it = _asteroids.begin(); it != _asteroids.end(); ++it)
+            {
+                if (!(*it)->getIsVisible()) 
+                    continue;
 
-            //    for (CCSprite *shipLaser in _shipLasers) 
-            //    {
-            //        if (!shipLaser.visible) continue;
+                // If laser hits asteroid, destroy both of them
+                for (lit = _shipLasers.begin(); lit != _shipLasers.end(); ++lit)
+                {
+                    if (!(*lit)->getIsVisible()) 
+                        continue;
 
-            //        if (CGRectIntersectsRect(shipLaser.boundingBox, asteroid.boundingBox)) 
-            //        {
-            //            [[SimpleAudioEngine sharedEngine] playEffect:@"explosion_large.caf"];
-            //            shipLaser.visible = NO;
-            //            asteroid.visible = NO;                
-            //            continue;
-            //        }
-            //    }
+                    if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), (*lit)->boundingBox())) 
+                    {
+                        (*it)->setIsVisible(false);
+                        (*lit)->setIsVisible(false);
+                        continue;
+                    }
+                }
 
-            //    if (CGRectIntersectsRect(shipSprite_.boundingBox, asteroid.boundingBox)) 
-            //    {
-            //        [[SimpleAudioEngine sharedEngine] playEffect:@"explosion_large.caf"];
-            //        asteroid.visible = NO;
-            //        [shipSprite_ runAction:[CCBlink actionWithDuration:1.0 blinks:9]];            
-            //        _lives--;
-            //    }
-            //}
+                if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), ship_node_->boundingBox())) 
+                {
+                    (*it)->setIsVisible(false);
+                    ship_node_->runAction(CCBlink::actionWithDuration(1.0, 9));
+                    game_->SetNumLives(game_->NumLives() - 1);
+                    continue;
+                }
+            }
         }
 
         // If number of lives if less than 0, do game over
@@ -382,60 +368,30 @@ void ShmupLayer::SpawnAsteroid()
     
     CCSprite *asteroid = _asteroids[_nextAsteroid];
     _nextAsteroid = (_nextAsteroid + 1) % _asteroids.size();
-
-    asteroid->stopAllActions();
-    asteroid->setPosition(ccp(winSize.width+asteroid->getContentSize().width/2, randY));
+    
+    float scale = GFort::Core::MathHelper::RandomBetween(0.4f, 0.5f);
+    asteroid->setScale(scale);
     asteroid->setIsVisible(true);
-    asteroid->setScale(GFort::Core::MathHelper::RandomBetween(0.2f, 1.0f));
+
+    float x, y, dx, dy;
+    dx = 0;
+    if (GFort::Core::MathHelper::RandomDouble<float>() > 0.5f)
+    {
+        x = winSize.width * 0.5f - asteroid->getContentSize().width * scale * 0.5;
+        y = 0 - asteroid->getContentSize().height;
+        dy = winSize.height + asteroid->getContentSize().height * 2;
+    }
+    else
+    {        
+        x = winSize.width * 0.5f + asteroid->getContentSize().width * scale * 0.5;
+        y = winSize.height + asteroid->getContentSize().height;
+        dy = -(winSize.height + asteroid->getContentSize().height * 2);
+    }
+    asteroid->setPosition(ccp(x, y));
+    asteroid->stopAllActions();
     asteroid->runAction(CCSequence::actions(
-                         CCMoveBy::actionWithDuration(randDuration, ccp(-winSize.width-asteroid->getContentSize().width, 0)),
-                         //(CCCallFuncN actionWithTarget:self selector:@selector(setInvisible:)),
-                         NULL));
+        CCMoveBy::actionWithDuration(randDuration, ccp(dx, dy)),
+        NULL));
 }
 
 } } } // namespace
-
-/*
-// Import the interfaces
-#import "ShmupLayer.h"
-#import "CCParallaxNode-Extras.h"
-#import "SimpleAudioEngine.h"
-#import "AccelerometerSimulation.h"
-
-#include <GFort/Core/Physics/PhysicsHelper.h>
-#include <GFort/Games/Shmup/Weapon.h>
-
-// HelloWorldLayer implementation
-@implementation ShmupLayer
-
-GFort::Games::Shmup::WeaponA myWeapon_;
-
-
-- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
-    
-#define kFilteringFactor 0.1
-#define kRestAccelX -0.6
-#define kShipMaxPointsPerSec (winSize.height*0.5)        
-#define kMaxDiffX 0.2
-    
-    UIAccelerationValue rollingX, rollingY, rollingZ;
-    
-    rollingX = (acceleration.x * kFilteringFactor) + (rollingX * (1.0 - kFilteringFactor));    
-    rollingY = (acceleration.y * kFilteringFactor) + (rollingY * (1.0 - kFilteringFactor));    
-    rollingZ = (acceleration.z * kFilteringFactor) + (rollingZ * (1.0 - kFilteringFactor));
-    
-    float accelX = acceleration.x - rollingX;
-    //float accelY = acceleration.y - rollingY;
-    //float accelZ = acceleration.z - rollingZ;
-    
-    CGSize winSize = [CCDirector sharedDirector].winSize;
-    
-    float accelDiff = accelX - kRestAccelX;
-    float accelFraction = accelDiff / kMaxDiffX;
-    float pointsPerSec = kShipMaxPointsPerSec * accelFraction;
-    
-    _shipPointsPerSecY = pointsPerSec;
-    
-}
-
-*/

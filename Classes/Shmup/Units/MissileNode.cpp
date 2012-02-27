@@ -28,7 +28,7 @@ using namespace cocos2d;
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-const std::string   kUnitSprite         = "Assets/Test/spell.png";
+const std::string   kUnitSprite         = "Assets/Shmup/laserbeam.png";
 
 MissileNode::MissileNode()
     : Cistron::Component("MissileNode"),

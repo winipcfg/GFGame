@@ -41,7 +41,7 @@ public:
     Game();
 
     /// Destructor
-    ~Game()                                     {};
+    ~Game()                                                         {};
 
     /// Initialize the game.
     virtual bool Initialize();
@@ -60,44 +60,44 @@ public:
     bool DoGameLoop() const;
 
     /// Returns true if the game is over.
-    bool GameOver() const                           { return game_over_; }
+    bool GameOver() const                                           { return game_over_; }
 
     /// Sets whether the game is over.
     /// @param gameOver
-    void SetGameOver(const bool& gameOver)          { game_over_ = gameOver; }
+    void SetGameOver(const bool& gameOver)                          { game_over_ = gameOver; }
 
     /// Gets ship.
     /// @param index
-    Ship& GetShip(const short& index)               { return ships_[index]; }
+    Ship& GetShip(const short& index)                               { return ships_[index]; }
 
     /// Gets current number of lives.
-    const short& NumLives() const                   { return num_lives_; }        
+    const short& NumLives() const                                   { return num_lives_; }        
 
     /// Set current number of lives.
     /// @param numLives
-    void SetNumLives(const short& numLives)         { num_lives_ = numLives; }
+    void SetNumLives(const short& numLives)                         { num_lives_ = numLives; }
 
     /// Gets maximum number of lives.
-    const short& MaxNumLives() const                { return max_num_lives_; }        
+    const short& MaxNumLives() const                                { return max_num_lives_; }        
 
     /// Set maximum number of lives.
     /// @param maxNumLives
-    void SetMaxNumLives(const short& maxNumLives)   { max_num_lives_ = maxNumLives; }
+    void SetMaxNumLives(const short& maxNumLives)                   { max_num_lives_ = maxNumLives; }
 
     /// Gets the physics world.
-    b2World* World()                                { return phys_controller_.World(); }
+    b2World* World()                                                { return phys_controller_.World(); }
 
     /// Gets the physics settings.
-    GFort::Core::Physics::Box2dSettings& PhysicsSettings()  { return phys_settings_; }
+    GFort::Core::Physics::Box2dSettings& PhysicsSettings()          { return phys_settings_; }
 
 public:
     /// Spawn an entity.
-    Cistron::ObjectId SpawnEntity()                 { return this->createObject(); }
+    Cistron::ObjectId SpawnEntity()                                 { return this->createObject(); }
 
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
-    Cistron::ObjectId SpawnPlayerShip(const b2Vec2& position)    { return SpawnPlayerShip(position, 0); }
+    Cistron::ObjectId SpawnPlayerShip(const b2Vec2& position)       { return SpawnPlayerShip(position, 0); }
 
     /// Spawn player ship at specified location.
     /// @param position
