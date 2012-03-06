@@ -30,10 +30,10 @@ namespace GFort { namespace Games { namespace Shmup
 {
 
 #define PLAY_BG_MUSIC           0//1
-#define kNumAsteroids           20
+#define kNumAsteroids           40
 #define kNumLasers              5
 #define kNumLives               3
-#define kNumShootsPerSecond     0.2
+#define kNumShootsPerSecond     0.1
 
 #define kSpriteBatchNode        "Assets/Shmup/Sprites.pvr.ccz"
 #define kSpriteFrames           "Assets/Shmup/Sprites.plist"
@@ -79,7 +79,7 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
         
     // Ship
-    Cistron::ObjectId objId = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.5, winSize.height * 0.5));
+    Cistron::ObjectId objId = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.25, winSize.height * 0.5));
     std::list<Cistron::Component*> list = game_->getComponents(objId, "RenderComponent");
     std::list<Cistron::Component*>::iterator it;
     for (it = list.begin(); it != list.end(); ++it)
@@ -129,6 +129,8 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
 
     // Asteroids
     batchNode_ = cocos2d::CCSpriteBatchNode::batchNodeWithFile(kSpriteBatchNode); 
+    cocos2d::CCSpriteFrameCache* cache = cocos2d::CCSpriteFrameCache::sharedSpriteFrameCache();
+    cache->addSpriteFramesWithFile("Assets/Shmup/Sprites.plist");
     this->addChild(batchNode_);
     for(int i = 0; i < kNumAsteroids; ++i) 
     {
@@ -366,32 +368,50 @@ void ShmupLayer::SpawnAsteroid()
     float randY = GFort::Core::MathHelper::RandomBetween(0.0f, winSize.height);
     float randDuration = GFort::Core::MathHelper::RandomBetween(2.0f, 10.0f);
     
-    CCSprite *asteroid = _asteroids[_nextAsteroid];
-    _nextAsteroid = (_nextAsteroid + 1) % _asteroids.size();
+    CCSprite *asteroid;
     
-    float scale = GFort::Core::MathHelper::RandomBetween(0.4f, 0.5f);
-    asteroid->setScale(scale);
-    asteroid->setIsVisible(true);
 
     float x, y, dx, dy;
     dx = 0;
-    if (GFort::Core::MathHelper::RandomDouble<float>() > 0.5f)
+    if (true)
     {
+        asteroid = _asteroids[_nextAsteroid];
+        _nextAsteroid = (_nextAsteroid + 1) % _asteroids.size();
+    
+        float scale = GFort::Core::MathHelper::RandomBetween(0.4f, 0.5f);
+        asteroid->setScale(scale);
+        asteroid->setIsVisible(true);
+
         x = winSize.width * 0.5f - asteroid->getContentSize().width * scale * 0.5;
         y = 0 - asteroid->getContentSize().height;
         dy = winSize.height + asteroid->getContentSize().height * 2;
+
+        asteroid->setPosition(ccp(x, y));
+        asteroid->stopAllActions();
+        asteroid->runAction(CCSequence::actions(
+            CCMoveBy::actionWithDuration(randDuration, ccp(dx, dy)),
+            NULL));
     }
-    else
-    {        
+
+    {   
+        asteroid = _asteroids[_nextAsteroid];
+        _nextAsteroid = (_nextAsteroid + 1) % _asteroids.size();
+    
+        float scale = GFort::Core::MathHelper::RandomBetween(0.4f, 0.5f);
+        asteroid->setScale(scale);
+        asteroid->setIsVisible(true);
+
         x = winSize.width * 0.5f + asteroid->getContentSize().width * scale * 0.5;
         y = winSize.height + asteroid->getContentSize().height;
         dy = -(winSize.height + asteroid->getContentSize().height * 2);
+
+        asteroid->setPosition(ccp(x, y));
+        asteroid->stopAllActions();
+        asteroid->runAction(CCSequence::actions(
+            CCMoveBy::actionWithDuration(randDuration, ccp(dx, dy)),
+            NULL));
     }
-    asteroid->setPosition(ccp(x, y));
-    asteroid->stopAllActions();
-    asteroid->runAction(CCSequence::actions(
-        CCMoveBy::actionWithDuration(randDuration, ccp(dx, dy)),
-        NULL));
+    
 }
 
 } } } // namespace

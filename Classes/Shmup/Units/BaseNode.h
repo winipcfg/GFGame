@@ -18,8 +18,8 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_MISSILE_NODE_H_
-#define GFORT_GAMES_SHMUP_MISSILE_NODE_H_
+#ifndef GFORT_GAMES_SHMUP_BASE_NODE_H_
+#define GFORT_GAMES_SHMUP_BASE_NODE_H_
 
 #include <Box2D/Box2D.h>
 #include <Cistron/Cistron.h>
@@ -27,21 +27,20 @@
 #include "Components/PhysicsComponent.h"
 #include "Components/RenderComponent.h"
 #include <CCExtensions/AdvanceSprite.h>
-#include "BaseNode.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-class MissileNode 
+class BaseNode 
     : public cocos2d::CCNode,
       public Cistron::Component
 {    
 public:
     /// Constructor.
-    MissileNode();
+    BaseNode();
 
     /// Destructor.
-    ~MissileNode();
+    ~BaseNode();
 
     /// Initialize.
     virtual bool init();
@@ -57,13 +56,12 @@ public:
     void SetBody(b2Body* body)                              { body_ = body; }
        
 protected:
-private:    
     /// Update the node.
     /// @param dt
-    void UpdateNode(cocos2d::ccTime dt);
+    virtual void UpdateNode(cocos2d::ccTime dt);
 
     /// Destroy itself.
-    void Destroy();
+    virtual void Destroy();
 
 private:
     // Main node and sprite for actions and animations
@@ -77,4 +75,4 @@ public:
 
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_MISSILE_NODE_H_
+#endif // GFORT_GAMES_SHMUP_BASE_NODE_H_

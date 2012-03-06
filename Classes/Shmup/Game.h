@@ -103,11 +103,16 @@ public:
     /// @param position
     /// @param side    
     Cistron::ObjectId SpawnPlayerShip(const b2Vec2& position, const short& side);
-
+    
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
     Cistron::ObjectId SpawnLaser(const b2Vec2& position, const short& side);
+
+    /// Spawn asteroid at specified location.
+    /// @param position
+    /// @param side    
+    Cistron::ObjectId SpawnAsteroid(const b2Vec2& position, const short& side);
 
     /// Update the battle.
     void Update(const float& dt);

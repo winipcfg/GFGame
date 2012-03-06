@@ -18,8 +18,8 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_SHIP_H_
-#define GFORT_GAMES_SHMUP_SHIP_H_
+#ifndef GFORT_GAMES_SHMUP_ASTEROID_H_
+#define GFORT_GAMES_SHMUP_ASTEROID_H_
 
 #include <vector>
 #include <Cistron/Cistron.h>
@@ -31,9 +31,7 @@
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-/// The entities that are controlled by Players
-/// The term "Ship" is a generic term
-class Ship 
+class Asteroid 
     : public Cistron::Component
     , public GFort::Core::Game::IEntity
 {
@@ -46,31 +44,10 @@ public:
 
 public:
     /// Constructor
-    Ship();
+    Asteroid();
 
     /// Destructor
-    ~Ship()                             {}
-
-    /// Add new weapon to the object.
-    /// @param weapon
-    void AddWeapon(WeaponReference weapon);
-
-    /// Remove a weapon from the object
-    /// @param index
-    void RemoveWeapon(const short& index);
-
-    /// Set weapon.
-    /// @param index The index of the weapon
-    void SetWeapon(const short& index);
-
-    /// Remove all weapons.
-    void RemoveAllWeapons();
-
-    /// Do a single attack.
-    void DoAttack();
-
-    /// Gets current weapon.
-    WeaponPtr CurrentWeapon() const     { return current_weapon_; }
+    ~Asteroid()                             {}
 
     /// Kill the object.
     void Die();
@@ -87,11 +64,6 @@ public:
     BPolygon GetBoundingRegion();
 
 private:
-    // Stores weapons and the weapon currently used
-    WeaponList          weapons_;
-    short               current_weapon_index_; 
-    WeaponPtr           current_weapon_;
-
     // Components
     PhysicsComponent*   physics_component_;
     RenderComponent*    render_component_;
@@ -99,64 +71,15 @@ private:
     friend class Game;
 };
 
-inline Ship::Ship()
+inline Asteroid::Asteroid()
     : Cistron::Component("Ship")
 {
-    SetWeapon(-1);
 }
 
-inline void Ship::AddWeapon(WeaponReference weapon)
+inline void Asteroid::Die()
 {
-    weapons_.push_back(&weapon);
-    if (current_weapon_index_ == -1)
-        current_weapon_index_ = 0;
-}
-
-inline void Ship::RemoveWeapon(const short& index)
-{
-    if (!weapons_.empty() && 
-        index >= 0 &&
-        static_cast<WeaponList::size_type>(index) < weapons_.size())
-    {
-        weapons_.erase(weapons_.begin() + index);
-        if (current_weapon_index_ >= index)
-            SetWeapon(current_weapon_index_ - 1);
-    }
-}
-
-inline void Ship::SetWeapon(const short& index)
-{
-    if (!weapons_.empty() && 
-        index >= 0 &&
-        static_cast<WeaponList::size_type>(index) < weapons_.size())
-    {
-        current_weapon_index_ = index;
-        current_weapon_ = weapons_[current_weapon_index_];
-    }
-    else
-    {
-        current_weapon_index_ = -1;
-        current_weapon_ = NULL;
-    }
-}
-
-inline void Ship::RemoveAllWeapons()
-{
-    weapons_.clear();
-    SetWeapon(-1);
-}
-
-inline void Ship::DoAttack()
-{
-    if (current_weapon_)
-        current_weapon_->DoAttack();
-}
-
-inline void Ship::Die()
-{
-    RemoveAllWeapons();
 }
 
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_SHIP_H_
+#endif // GFORT_GAMES_SHMUP_ASTEROID_H_

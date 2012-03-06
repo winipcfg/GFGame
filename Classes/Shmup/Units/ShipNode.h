@@ -18,8 +18,8 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_MISSILE_NODE_H_
-#define GFORT_GAMES_SHMUP_MISSILE_NODE_H_
+#ifndef GFORT_GAMES_SHMUP_SHIP_NODE_H_
+#define GFORT_GAMES_SHMUP_SHIP_NODE_H_
 
 #include <Box2D/Box2D.h>
 #include <Cistron/Cistron.h>
@@ -27,21 +27,18 @@
 #include "Components/PhysicsComponent.h"
 #include "Components/RenderComponent.h"
 #include <CCExtensions/AdvanceSprite.h>
-#include "BaseNode.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-class MissileNode 
-    : public cocos2d::CCNode,
-      public Cistron::Component
+class ShipNode : public cocos2d::CCNode
 {    
 public:
     /// Constructor.
-    MissileNode();
+    ShipNode();
 
     /// Destructor.
-    ~MissileNode();
+    ~ShipNode();
 
     /// Initialize.
     virtual bool init();
@@ -67,14 +64,16 @@ private:
 
 private:
     // Main node and sprite for actions and animations
-    cocos2d::CCSprite*                  sprite_;
+    cocos2d::AdvanceSprite*                  sprite_;
 
 public:
     // Physics body
-    b2Body*                             body_;
-    //PhysicsComponent*                   physics_component_;
+    b2Body*                                 body_;
+    GFGame::Components::PhysicsComponent*   physics_component_;
+
+    friend class Ship;
 };
 
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_MISSILE_NODE_H_
+#endif // GFORT_GAMES_SHMUP_SHIP_NODE_H_

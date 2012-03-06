@@ -24,6 +24,8 @@
 #include "../Components/RenderComponent.h"
 #include "../Components/PhysicsComponent.h"
 #include "Units/Ship.h"
+#include "Units/Asteroid.h"
+#include "Units/BaseNode.h"
 #include "Units/ShipNode.h"
 #include "Units/MissileNode.h"
 
@@ -85,7 +87,8 @@ Cistron::ObjectId Game::SpawnPlayerShip(const b2Vec2& position, const short& sid
     // Render Component
     ShipNode* ship = new ShipNode();    
     ship->init();
-    ship->setPosition(ccp(position.x, position.y));      
+    //ship->setScale(0.5f);
+    ship->setPosition(ccp(position.x, position.y));          
     GFGame::Components::RenderComponent* render = new GFGame::Components::RenderComponent(ship);
     this->addComponent(objId, render);
     unit->render_component_ = render;
@@ -95,8 +98,8 @@ Cistron::ObjectId Game::SpawnPlayerShip(const b2Vec2& position, const short& sid
     b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
         phys_controller_.World(),
         b2Vec2(ship->getPosition().x, ship->getPosition().y),
-        ship->boundingBox().size.width,
-        ship->boundingBox().size.height);
+        ship->boundingBox().size.width * ship->getScaleX(),
+        ship->boundingBox().size.height * ship->getScaleY());
     body->SetFixedRotation(true);
 
     // Set the dynamic body fixture.
@@ -127,6 +130,36 @@ Cistron::ObjectId Game::SpawnLaser(const b2Vec2& position, const short& side)
 
     // Render Component
     MissileNode* missile = new MissileNode();    
+    missile->init();
+    missile->setPosition(ccp(position.x, position.y));      
+    GFGame::Components::RenderComponent* node = new GFGame::Components::RenderComponent(missile);
+    this->addComponent(objId, node);
+
+    // Physics Component
+    GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
+    b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+        phys_controller_.World(),
+        b2Vec2(missile->getPosition().x, missile->getPosition().y),
+        missile->boundingBox().size.width,
+        missile->boundingBox().size.height);
+    body->SetFixedRotation(true);
+
+    physics->AddBody("root", body);
+    missile->SetBody(body);
+    this->addComponent(objId, physics);
+    unit->physics_component_ = physics;
+
+    return objId;
+}
+
+Cistron::ObjectId Game::SpawnAsteroid(const b2Vec2& position, const short& side)
+{
+    Cistron::ObjectId objId = this->SpawnEntity();
+    Asteroid* unit = new Asteroid();
+    this->addComponent(objId, unit);
+
+    // Render Component
+    BaseNode* missile = new BaseNode();    
     missile->init();
     missile->setPosition(ccp(position.x, position.y));      
     GFGame::Components::RenderComponent* node = new GFGame::Components::RenderComponent(missile);
