@@ -66,8 +66,8 @@ private:
 
 private:
     // Main node and sprite for actions and animations
-    cocos2d::CCSprite*                  sprite_;
-    //cocos2d::AdvanceSprite*             sprite_;
+    //cocos2d::CCSprite*                  sprite_;
+    cocos2d::AdvanceSprite*             sprite_;
 
 public:
     // Physics body

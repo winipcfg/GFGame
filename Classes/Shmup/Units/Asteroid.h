@@ -18,8 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_ASTEROID_H_
-#define GFORT_GAMES_SHMUP_ASTEROID_H_
+#pragma once
+#ifndef GFGAME_SHMUP_ASTEROID_H_
+#define GFGAME_SHMUP_ASTEROID_H_
 
 #include <vector>
 #include <Cistron/Cistron.h>
@@ -27,13 +28,12 @@
 #include <GFort/Core/Game/IWeapon.h>
 #include "Components/PhysicsComponent.h"
 #include "Components/RenderComponent.h"
+#include "Unit.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-class Asteroid 
-    : public Cistron::Component
-    , public GFort::Core::Game::IEntity
+class Asteroid : public Unit
 {
 public:
     typedef GFort::Core::Game::IWeapon&             WeaponReference;
@@ -44,13 +44,16 @@ public:
 
 public:
     /// Constructor
-    Asteroid();
+    Asteroid(Game* game, const PlayerSide& side);
 
     /// Destructor
     ~Asteroid()                             {}
 
     /// Kill the object.
-    void Die();
+    virtual void Die();
+
+    /// Remove the object from Game.
+    virtual void Destroy();
 
     /// Do movement.
     /// @param dx
@@ -71,8 +74,8 @@ private:
     friend class Game;
 };
 
-inline Asteroid::Asteroid()
-    : Cistron::Component("Ship")
+inline Asteroid::Asteroid(Game* game, const PlayerSide& side)
+    : Unit("Obstacle", game, side)
 {
 }
 
@@ -80,6 +83,10 @@ inline void Asteroid::Die()
 {
 }
 
+inline void Asteroid::Destroy()
+{
+}
+
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_ASTEROID_H_
+#endif // GFGAME_SHMUP_ASTEROID_H_

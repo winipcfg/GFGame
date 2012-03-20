@@ -28,31 +28,23 @@ using namespace cocos2d;
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-const std::string   kUnitSprite         = "Assets/Shmup/laserbeam.png";
-
-BaseNode::BaseNode()
+BaseNode::BaseNode(const std::string& spriteFile)
     : Cistron::Component("Node"),
       sprite_(NULL),
       body_(NULL)
 {
     this->scheduleUpdate();
     this->schedule(schedule_selector(BaseNode::UpdateNode)); 
+
+    //---------------------------------------------------------------
+    // Sprites
+    //---------------------------------------------------------------    
+    sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(spriteFile.c_str());
+    this->addChild(sprite_);
 }
 
 BaseNode::~BaseNode()
 {
-}
-
-bool BaseNode::init()
-{
-    //---------------------------------------------------------------
-    // Sprites
-    //---------------------------------------------------------------
-    char frameName[100] = {0};
-    sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kUnitSprite.c_str());
-    this->addChild(sprite_);
-        
-    return true;
 }
 
 cocos2d::CCRect BaseNode::boundingBox(void) 
@@ -72,6 +64,11 @@ cocos2d::CCRect BaseNode::boundingBox(void)
     }
 } 
 
+const cocos2d::CCSize& BaseNode::getContentSize(void) 
+{
+    return (sprite_) ? sprite_->getContentSize() : cocos2d::CCSizeZero; 
+}
+
 void BaseNode::UpdateNode(cocos2d::ccTime dt)
 {    
     if (body_ && sprite_)
@@ -82,15 +79,6 @@ void BaseNode::UpdateNode(cocos2d::ccTime dt)
         float rotation = CC_RADIANS_TO_DEGREES(-1 * body_->GetAngle());
         this->setRotation(rotation);        
         this->setPosition(position);
-
-        //std::list<Cistron::Component*> missiles = this->getComponents("Missxzcile", this->getOwnerId());
-        //Missile* missile = static_cast<Missile*>(missiles.front());
-        //int i = missile->GetDamage();
-    }
-
-    if (body_ && !body_->IsAwake())
-    {
-        Destroy();
     }
 }
 

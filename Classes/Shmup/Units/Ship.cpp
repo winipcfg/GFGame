@@ -20,15 +20,31 @@
 
 #include "Ship.h"
 #include <GFort/Core/Physics/PhysicsHelper.h>
+//#include "../Constants.h"
+#include "../Game.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
 
+Ship::Ship(Game* game, const PlayerSide& side)
+    : Unit("Unit", game, side)
+    , current_weapon_(NULL)
+    , physics_component_(NULL)
+    , render_component_(NULL)
+{
+    //SetWeapon(-1);
+}
+
+Ship::~Ship()
+{
+}
+
 void Ship::Move(const float& dx, const float& dy)
 {
-    if (physics_component_)
+    // Gets the first physics component and do action
+    if (physics_component_.size() > 0)
     {
-        b2Body* body = physics_component_->Body();
+        b2Body* body = physics_component_[0]->Body();
         b2Vec2 velocity = body->GetLinearVelocity();
         b2Vec2 impulse(dx - velocity.x, dy - velocity.y);
         impulse *= body->GetMass();
@@ -38,11 +54,12 @@ void Ship::Move(const float& dx, const float& dy)
 
 void Ship::StopMove()
 {
-    if (physics_component_)
+    // Gets the first physics component and do action
+    if (physics_component_.size() > 0)
     {
-        b2Body* body = physics_component_->Body();
+        b2Body* body = physics_component_[0]->Body();
         b2Vec2 velocity = body->GetLinearVelocity();
-        b2Vec2 impulse = 0.05f * velocity;
+        b2Vec2 impulse = 0.2f * velocity;
         impulse *= body->GetMass();
         body->ApplyLinearImpulse(-impulse, body->GetWorldCenter());
     }
@@ -50,17 +67,51 @@ void Ship::StopMove()
 
 BPolygon Ship::GetBoundingRegion()
 {
-    if (physics_component_)
+    if (physics_component_.size() > 0)
     {
-        
+        return BPolygon();
     }
-    else if (render_component_)
+    else if (render_component_.size() > 0)
     {
+        return BPolygon();
     }
     else
     {
         return BPolygon();
     }
+}
+
+//void Ship::AddWeapon(WeaponReference weapon)
+//{
+//    weapons_.push_back(&weapon);
+//    if (current_weapon_index_ == -1)
+//        current_weapon_index_ = 0;
+//}
+//
+//void Ship::RemoveWeapon(const short& index)
+//{
+//    if (!weapons_.empty() && 
+//        index >= 0 &&
+//        static_cast<WeaponList::size_type>(index) < weapons_.size())
+//    {
+//        weapons_.erase(weapons_.begin() + index);
+//        if (current_weapon_index_ >= index)
+//            SetWeapon(current_weapon_index_ - 1);
+//    }
+//}
+//
+//
+//void Ship::RemoveAllWeapons()
+//{
+//    weapons_.clear();
+//    SetWeapon(-1);
+//}
+void Ship::Die()
+{
+}
+
+void Ship::Destroy()
+{
 }
     
 } } } // namespace

@@ -18,6 +18,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
+#pragma once
 #ifndef SHMUP_GAME_H_
 #define SHMUP_GAME_H_
 
@@ -28,7 +29,8 @@
 #include <Cistron/Cistron.h>
 #include <GFort/Core/Game/Game.h>
 #include <GFort/Core/Physics/PhysicsController.h>
-#include "Units/Ship.h"
+//#include "Units/Ship.h"
+#include "Constants.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
@@ -41,7 +43,7 @@ public:
     Game();
 
     /// Destructor
-    ~Game()                                                         {};
+    ~Game();
 
     /// Initialize the game.
     virtual bool Initialize();
@@ -65,11 +67,7 @@ public:
     /// Sets whether the game is over.
     /// @param gameOver
     void SetGameOver(const bool& gameOver)                          { game_over_ = gameOver; }
-
-    /// Gets ship.
-    /// @param index
-    Ship& GetShip(const short& index)                               { return ships_[index]; }
-
+    
     /// Gets current number of lives.
     const short& NumLives() const                                   { return num_lives_; }        
 
@@ -77,12 +75,12 @@ public:
     /// @param numLives
     void SetNumLives(const short& numLives)                         { num_lives_ = numLives; }
 
-    /// Gets maximum number of lives.
-    const short& MaxNumLives() const                                { return max_num_lives_; }        
+    ///// Gets maximum number of lives.
+    //const short& MaxNumLives() const                                { return max_num_lives_; }        
 
-    /// Set maximum number of lives.
-    /// @param maxNumLives
-    void SetMaxNumLives(const short& maxNumLives)                   { max_num_lives_ = maxNumLives; }
+    ///// Set maximum number of lives.
+    ///// @param maxNumLives
+    //void SetMaxNumLives(const short& maxNumLives)                   { max_num_lives_ = maxNumLives; }
 
     /// Gets the physics world.
     b2World* World()                                                { return phys_controller_.World(); }
@@ -92,39 +90,35 @@ public:
 
 public:
     /// Spawn an entity.
-    Cistron::ObjectId SpawnEntity()                                 { return this->createObject(); }
+    ObjectId SpawnEntity()                                          { return this->createObject(); }
 
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
-    Cistron::ObjectId SpawnPlayerShip(const b2Vec2& position)       { return SpawnPlayerShip(position, 0); }
+    ObjectId SpawnPlayerShip(const Vector2& position)               { return SpawnPlayerShip(position, 0); }
 
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
-    Cistron::ObjectId SpawnPlayerShip(const b2Vec2& position, const short& side);
+    ObjectId SpawnPlayerShip(const Vector2& position, const PlayerSide& side);
     
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
-    Cistron::ObjectId SpawnLaser(const b2Vec2& position, const short& side);
+    ObjectId SpawnLaser(const Vector2& position, const PlayerSide& side);
 
     /// Spawn asteroid at specified location.
     /// @param position
     /// @param side    
-    Cistron::ObjectId SpawnAsteroid(const b2Vec2& position, const short& side);
+    ObjectId SpawnAsteroid(const Vector2& position, const PlayerSide& side);
 
     /// Update the battle.
     void Update(const float& dt);
-
-protected:
-    /// Fire some bullets, laser, etc
-    /// @param ship The ship to shoot
-    void DoAttack(Ship* ship);
     
 private:
-    // Ships controlled by players
-    Ship                                        ships_[1];
+    //// Ships controlled by players
+    //Ship                                        player_one_;
+    //Ship                                        player_two_;
 
     short                                       num_lives_;
     short                                       max_num_lives_;

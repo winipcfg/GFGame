@@ -27,11 +27,14 @@ using namespace cocos2d;
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-//const std::string   kSprite             = "Assets/Shmup/Sprites.pvr.ccz";
-//const std::string   kSpriteShipFrame    = "Assets/Shmup/Sprites.plist";
+const std::string   kSprite                     = "Assets/Shmup/Sprites.pvr.ccz";
+const std::string   kSpriteShipFrame            = "Assets/Shmup/Sprites.plist";
+const short         kAnimationStart             = 1;
+const short         kAnimationEnd               = 3;
+const short         kNumberOfFramePerSecond     = 10;
 
-const std::string   kSprite             = "Assets/Test/Dummy/M/dummy.png";
-const std::string   kSpriteShipFrame    = "Assets/Test/Dummy/M/dummy.plist";
+//const std::string   kSprite             = "Assets/Test/Dummy/M/dummy.png";
+//const std::string   kSpriteShipFrame    = "Assets/Test/Dummy/M/dummy.plist";
 
 ShipNode::ShipNode()
     : sprite_(NULL)
@@ -55,7 +58,7 @@ bool ShipNode::init()
     sprite_ = new AdvanceSprite();
     sprite_->init();
     sprite_->addFrames(kSpriteShipFrame.c_str(), kSprite.c_str());
-    sprite_->startAnimation(1, 6, -1, 0, this, 10, false, false);
+    sprite_->startAnimation(kAnimationStart, kAnimationEnd, -1, 0, this, kNumberOfFramePerSecond, false, false);
     sprite_->setIsVisible(true);
     this->addChild(sprite_);
 
@@ -111,7 +114,6 @@ void ShipNode::Destroy()
     
     // CANNOT destroy object here
     //this->getObjectManager()->destroyObject(this->getOwnerId());
-    
 }
 
 

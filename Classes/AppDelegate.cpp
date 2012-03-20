@@ -73,6 +73,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     // sets landscape mode
     pDirector->setDeviceOrientation(kCCDeviceOrientationLandscapeLeft);
+    //pDirector->setDeviceOrientation(kCCDeviceOrientationPortrait);
 
     // turn on display FPS
     pDirector->setDisplayFPS(true);

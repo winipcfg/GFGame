@@ -30,8 +30,10 @@ namespace Warrior
 
 const std::string   kUnitSprite         = "Assets/Test/spell.png";
 
-const std::string   kUnitSprite2                        = "Assets/Test/grossini-aliases.png";
-const std::string   kUnitSpriteFrame                    = "Assets/Test/grossini-aliases.plist";
+//const std::string   kSprite             = "Assets/Test/Dummy/M/dummy.png";
+//const std::string   kSpriteShipFrame    = "Assets/Test/Dummy/M/dummy.plist";
+const std::string   kSprite             = "Assets/Shmup/Sprites.pvr.ccz";
+const std::string   kSpriteShipFrame    = "Assets/Shmup/Sprites.plist";
 
 MissileNode::MissileNode()
     : Cistron::Component("MissileNode"),
@@ -59,19 +61,19 @@ bool MissileNode::init()
     //---------------------------------------------------------------
     // Sprites
     //---------------------------------------------------------------
-    char frameName[100] = {0};
-    sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kUnitSprite.c_str());
-    this->addChild(sprite_);
+    //char frameName[100] = {0};
+    //sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kUnitSprite.c_str());
+    //this->addChild(sprite_);
 
     ////---------------------------------------------------------------
     //// Sprites Test - Cannot use AdvanceSprite due to bounding box issue
     ////---------------------------------------------------------------
-    //sprite_ = new AdvanceSprite();
-    //sprite_->init();
-    //sprite_->addFrames(kUnitSpriteFrame.c_str(), kUnitSprite2.c_str());
-    //this->addChild(sprite_);
-    //    
-    //sprite_->startAnimation(1, 14, -1, 0, this, 5, false, false);
+    sprite_ = new AdvanceSprite();
+    sprite_->init();
+    sprite_->addFrames(kSpriteShipFrame.c_str(), kSprite.c_str());
+    sprite_->startAnimation(1, 3, -1, 0, this, 10, false, false);
+    sprite_->setIsVisible(true);
+    this->addChild(sprite_);
         
     return true;
 }

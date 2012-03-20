@@ -18,8 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFGAME_SHMUP_SCENE_HELPER_H_
-#define GFGAME_SHMUP_SCENE_HELPER_H_
+#pragma once
+#ifndef GFGAME_SHMUP_SCENEHELPER_H_
+#define GFGAME_SHMUP_SCENEHELPER_H_
 
 #include "cocos2d.h"
 #include <Scene/SceneManager.h>
@@ -36,4 +37,4 @@ public:
 
 } } } // namespace
 
-#endif // GFGAME_SHMUP_SCENE_HELPER_H_
+#endif // GFGAME_SHMUP_SCENEHELPER_H_

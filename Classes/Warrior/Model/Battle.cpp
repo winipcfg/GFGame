@@ -207,7 +207,7 @@ MissileNode* Battle::ShootMissile(
         position,
         targetPosition,
         duration);
-    body->ApplyLinearImpulse(impulse, body->GetWorldCenter());
+    body->ApplyLinearImpulse(body->GetMass() * impulse, body->GetWorldCenter());
     
     return node;
 }

@@ -41,7 +41,7 @@ public:
     ~PhysicsComponent();
 
     /// Gets the physics body.
-    b2Body* Body()                                          { return bodies_[0]; }
+    b2Body* Body()                                          { return bodies_["root"]; }
 
     /// Assign physics body to the unit.
     /// @param body

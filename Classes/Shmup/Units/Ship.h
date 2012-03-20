@@ -18,8 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_SHIP_H_
-#define GFORT_GAMES_SHMUP_SHIP_H_
+#pragma once
+#ifndef GFGAME_SHMUP_SHIP_H_
+#define GFGAME_SHMUP_SHIP_H_
 
 #include <vector>
 #include <Cistron/Cistron.h>
@@ -27,15 +28,17 @@
 #include <GFort/Core/Game/IWeapon.h>
 #include "Components/PhysicsComponent.h"
 #include "Components/RenderComponent.h"
+//#include "../Constants.h"
+#include "../Game.h"
+#include "Unit.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
 
+//extern class Game;
+
 /// The entities that are controlled by Players
-/// The term "Ship" is a generic term
-class Ship 
-    : public Cistron::Component
-    , public GFort::Core::Game::IEntity
+class Ship : public Unit
 {
 public:
     typedef GFort::Core::Game::IWeapon&             WeaponReference;
@@ -43,37 +46,37 @@ public:
     typedef std::vector<WeaponPtr >                 WeaponList;
     typedef GFGame::Components::PhysicsComponent    PhysicsComponent;
     typedef GFGame::Components::RenderComponent     RenderComponent;
+    typedef PhysicsComponent*                       PhysicsComponentPtr;
+    typedef RenderComponent*                        RenderComponentPtr;
+    typedef std::vector<PhysicsComponent* >         PhysicsComponentPtrList;
+    typedef std::vector<RenderComponent* >          RenderComponentPtrList;
 
 public:
-    /// Constructor
-    Ship();
+    /// Constructor.
+    Ship(Game* game, const PlayerSide& side);
 
-    /// Destructor
-    ~Ship()                             {}
+    /// Destructor.
+    ~Ship();
 
-    /// Add new weapon to the object.
-    /// @param weapon
-    void AddWeapon(WeaponReference weapon);
+    ///// Add new weapon to the object.
+    ///// @param weapon
+    //void AddWeapon(WeaponReference weapon);
 
-    /// Remove a weapon from the object
-    /// @param index
-    void RemoveWeapon(const short& index);
-
-    /// Set weapon.
-    /// @param index The index of the weapon
-    void SetWeapon(const short& index);
-
-    /// Remove all weapons.
-    void RemoveAllWeapons();
-
-    /// Do a single attack.
-    void DoAttack();
-
+    ///// Remove a weapon from the object
+    ///// @param index
+    //void RemoveWeapon(const short& index);
+    
+    ///// Remove all weapons.
+    //void RemoveAllWeapons();
+    
     /// Gets current weapon.
-    WeaponPtr CurrentWeapon() const     { return current_weapon_; }
+    WeaponPtr CurrentWeapon() const         { return current_weapon_; }
 
     /// Kill the object.
-    void Die();
+    virtual void Die();
+
+    /// Remove the object from Game.
+    virtual void Destroy();
 
     /// Do movement.
     /// @param dx
@@ -86,77 +89,20 @@ public:
     /// Gets the bounding region.
     BPolygon GetBoundingRegion();
 
+
 private:
     // Stores weapons and the weapon currently used
-    WeaponList          weapons_;
-    short               current_weapon_index_; 
-    WeaponPtr           current_weapon_;
+    WeaponList              weapons_;
+    short                   current_weapon_index_; 
+    WeaponPtr               current_weapon_;
 
     // Components
-    PhysicsComponent*   physics_component_;
-    RenderComponent*    render_component_;
+    PhysicsComponentPtrList physics_component_;
+    RenderComponentPtrList  render_component_;
 
     friend class Game;
 };
 
-inline Ship::Ship()
-    : Cistron::Component("Ship")
-{
-    SetWeapon(-1);
-}
-
-inline void Ship::AddWeapon(WeaponReference weapon)
-{
-    weapons_.push_back(&weapon);
-    if (current_weapon_index_ == -1)
-        current_weapon_index_ = 0;
-}
-
-inline void Ship::RemoveWeapon(const short& index)
-{
-    if (!weapons_.empty() && 
-        index >= 0 &&
-        static_cast<WeaponList::size_type>(index) < weapons_.size())
-    {
-        weapons_.erase(weapons_.begin() + index);
-        if (current_weapon_index_ >= index)
-            SetWeapon(current_weapon_index_ - 1);
-    }
-}
-
-inline void Ship::SetWeapon(const short& index)
-{
-    if (!weapons_.empty() && 
-        index >= 0 &&
-        static_cast<WeaponList::size_type>(index) < weapons_.size())
-    {
-        current_weapon_index_ = index;
-        current_weapon_ = weapons_[current_weapon_index_];
-    }
-    else
-    {
-        current_weapon_index_ = -1;
-        current_weapon_ = NULL;
-    }
-}
-
-inline void Ship::RemoveAllWeapons()
-{
-    weapons_.clear();
-    SetWeapon(-1);
-}
-
-inline void Ship::DoAttack()
-{
-    if (current_weapon_)
-        current_weapon_->DoAttack();
-}
-
-inline void Ship::Die()
-{
-    RemoveAllWeapons();
-}
-
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_SHIP_H_
+#endif // GFGAME_SHMUP_SHIP_H_

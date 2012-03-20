@@ -18,8 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_SHMUPLAYER_H_
-#define GFORT_GAMES_SHMUP_SHMUPLAYER_H_
+#pragma once
+#ifndef GFGAME_SHMUP_SHMUPLAYER_H_
+#define GFGAME_SHMUP_SHMUPLAYER_H_
 
 #include <vector>
 #include <Cistron/Cistron.h>
@@ -56,12 +57,15 @@ public:
 protected:
     void DoFire();
     void SpawnAsteroid();
-    void CreateBullet(b2Vec2 start);
 
 private:
     void SetupGame();
 
     void UpdateNode(cocos2d::ccTime dt);
+    
+    /// Attach render components of an object.
+    /// @param objId
+    void AttachRenderComponents(const Cistron::ObjectId& objId);
     
 private:
     // Stores time information
@@ -95,14 +99,10 @@ private:
 
     float                                    _shipPointsPerSecY;
     
-    std::vector<cocos2d::CCSprite*>          _asteroids;
     int                                      _nextAsteroid;
     double                                   _nextAsteroidSpawn;
-    
-    std::vector<cocos2d::CCSprite*>          _shipLasers;
-    int                                      _nextShipLaser;   
 };
 
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_SHMUPLAYER_H_
+#endif // GFGAME_SHMUP_SHMUPLAYER_H_

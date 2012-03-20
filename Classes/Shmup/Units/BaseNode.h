@@ -18,8 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_BASE_NODE_H_
-#define GFORT_GAMES_SHMUP_BASE_NODE_H_
+#pragma once
+#ifndef GFGAME_SHMUP_BASE_NODE_H_
+#define GFGAME_SHMUP_BASE_NODE_H_
 
 #include <Box2D/Box2D.h>
 #include <Cistron/Cistron.h>
@@ -37,19 +38,17 @@ class BaseNode
 {    
 public:
     /// Constructor.
-    BaseNode();
+    /// @param spriteFile
+    BaseNode(const std::string& spriteFile);
 
     /// Destructor.
     ~BaseNode();
-
-    /// Initialize.
-    virtual bool init();
-
+    
     /// Gets the bounding box.
     cocos2d::CCRect boundingBox(void);
 
-    /// Gets the physics body.
-    b2Body* Body()                                          { return body_; }
+    /// Gets the content size.
+    const cocos2d::CCSize& getContentSize(void) ;
 
     /// Assign physics body to the unit.
     /// @param body
@@ -65,14 +64,14 @@ protected:
 
 private:
     // Main node and sprite for actions and animations
-    cocos2d::CCSprite*                  sprite_;
+    cocos2d::CCSprite*                      sprite_;
 
 public:
     // Physics body
-    b2Body*                             body_;
-    //PhysicsComponent*                   physics_component_;
+    b2Body*                                 body_;
+    GFGame::Components::PhysicsComponent*   physics_component_;
 };
 
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_BASE_NODE_H_
+#endif // GFGAME_SHMUP_BASE_NODE_H_

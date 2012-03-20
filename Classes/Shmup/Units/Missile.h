@@ -18,10 +18,12 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
+#pragma once
 #ifndef SHMUP_MISSILE_H_
 #define SHMUP_MISSILE_H_
 
 #include <Cistron/Cistron.h>
+//#include "../Constants.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {

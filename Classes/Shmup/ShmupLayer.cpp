@@ -23,6 +23,8 @@
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <GFort/Core/MathHelper.h>
 #include "Units/ShipNode.h"
+#include "Units/Asteroid.h"
+#include "Units/Ship.h"
 
 using namespace cocos2d;
 
@@ -33,12 +35,11 @@ namespace GFort { namespace Games { namespace Shmup
 #define kNumAsteroids           40
 #define kNumLasers              5
 #define kNumLives               3
-#define kNumShootsPerSecond     0.1
+#define kNumShootsPerSecond     1
 
 #define kSpriteBatchNode        "Assets/Shmup/Sprites.pvr.ccz"
 #define kSpriteFrames           "Assets/Shmup/Sprites.plist"
 #define kSpriteShip             "SpaceFlier_sm_1.png"
-#define kSpriteLaser            "laserbeam_blue.png"
 #define kSpriteDust1            "Assets/Shmup/bg_front_spacedust.png"
 #define kSpriteDust2            "Assets/Shmup/bg_front_spacedust.png"
 #define kSpriteSunrise          "Assets/Shmup/bg_planetsunrise.png"
@@ -67,10 +68,8 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     , touch_start_position_(cocos2d::CCPointZero)
     , touch_end_position_(cocos2d::CCPointZero)
     , game_(game)
-    , is_shooting_(true)
+    , is_shooting_(false)
     , last_shoot_time_(0)
-    , _nextShipLaser(0)
-    , _shipLasers(NULL)
     , joystick_(NULL)
     , _nextAsteroid(0)
     , _nextAsteroidSpawn(0)
@@ -79,23 +78,22 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
         
     // Ship
-    Cistron::ObjectId objId = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.25, winSize.height * 0.5));
-    std::list<Cistron::Component*> list = game_->getComponents(objId, "RenderComponent");
+    std::list<Cistron::Component*> list;
     std::list<Cistron::Component*>::iterator it;
-    for (it = list.begin(); it != list.end(); ++it)
-    {
-        GFGame::Components::RenderComponent* node = (GFGame::Components::RenderComponent*)(*it);
-        ship_node_ = (ShipNode*)node->Node();
-        this->addChild(node->Node());
-    }
-    list = game_->getComponents(objId, "Ship");
-    for (it = list.begin(); it != list.end(); ++it)
-    {
-        ship_ = (Ship*)(*it);
-        break;
-    }
-    
+    Cistron::ObjectId objId;
+    objId = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.25, winSize.height * 0.5));
+    AttachRenderComponents(objId);
+    list = game_->getComponents(objId, "RenderComponent");  
+    GFGame::Components::RenderComponent* node = (GFGame::Components::RenderComponent*)(*list.begin());
+    ship_node_ = (ShipNode*)node->Node();
 
+    list = game_->getComponents(objId, "Unit");
+    ship_ = (Ship*)(*list.begin());
+
+    // Another Ship
+    objId = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.75, winSize.height * 0.5), 1);
+    AttachRenderComponents(objId);
+    
     // Create the CCParallaxNode
     _backgroundNode = CCParallaxNode::node();
     this->addChild(_backgroundNode, -1);
@@ -126,28 +124,7 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     this->addChild(starsEffect, 1);
     starsEffect = CCParticleSystemQuad::particleWithFile("Assets/Shmup/Stars3.plist");
     this->addChild(starsEffect, 1);
-
-    // Asteroids
-    batchNode_ = cocos2d::CCSpriteBatchNode::batchNodeWithFile(kSpriteBatchNode); 
-    cocos2d::CCSpriteFrameCache* cache = cocos2d::CCSpriteFrameCache::sharedSpriteFrameCache();
-    cache->addSpriteFramesWithFile("Assets/Shmup/Sprites.plist");
-    this->addChild(batchNode_);
-    for(int i = 0; i < kNumAsteroids; ++i) 
-    {
-        CCSprite *asteroid = CCSprite::spriteWithSpriteFrameName("asteroid.png");
-        asteroid->setIsVisible(false);
-        batchNode_->addChild(asteroid);
-        _asteroids.push_back(asteroid);
-    }
-
-    for(int i = 0; i < kNumLasers; ++i) 
-    {
-        CCSprite *shipLaser = cocos2d::CCSprite::spriteWithSpriteFrameName(kSpriteLaser);
-        shipLaser->setIsVisible(false);
-        batchNode_->addChild(shipLaser);
-        _shipLasers.push_back(shipLaser);
-    }
-
+    
     // Render Texture
     render_texture_ = cocos2d::CCRenderTexture::renderTextureWithWidthAndHeight(winSize.width, winSize.height);
     render_texture_->retain();
@@ -198,52 +175,19 @@ void ShmupLayer::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent)
     touch_start_position_ = touch_end_position_ = cocos2d::CCPointZero; 
 }
 
-void ShmupLayer::CreateBullet(b2Vec2 start)
-{	
-	float32 radius = 10.0;
-	
-    b2World* world = (b2World*) game_->World();
-	b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateCircle(world, b2_dynamicBody, start, radius);	
-    body->SetLinearVelocity(b2Vec2(10.0, 0));
-    
-    // Set the dynamic body fixture.
-	b2Fixture* fixture = body->GetFixtureList();	
-	fixture[0].SetDensity(1.0f);
-	fixture[0].SetFriction(0.3f);
-	fixture[0].SetRestitution(0.4f);	
-	body->ResetMassData();
-}
-
-
 void ShmupLayer::DoFire()
 {
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
-    CCSprite *shipLaser = static_cast<CCSprite*>(_shipLasers[_nextShipLaser]);
-    _nextShipLaser = (_nextShipLaser + 1) % _shipLasers.size();
+    CCPoint position = ship_node_->getPosition();
+    b2Vec2 pos = b2Vec2(position.x, position.y);
 
-    
-    CCPoint position = ccpAdd(ship_node_->getPosition(), ccp(shipLaser->getContentSize().width/2, 0));
-    shipLaser->setPosition(position);
-    shipLaser->setIsVisible(true);
-    shipLaser->stopAllActions();
-    shipLaser->runAction(cocos2d::CCSequence::actions(
-        CCMoveBy::actionWithDuration(0.5, ccp(winSize.width, 0)),
-        //CCCallFuncN::actionWithTarget(this, ShmupLayer::setInvisible))
-        NULL));
+    ObjectId objId = game_->SpawnLaser(pos, 0);
+    AttachRenderComponents(objId);
 
-    //b2Vec2 pos = b2Vec2(position.x, position.y);
-    //this->CreateBullet(pos);
-
-    //// Laser
-    //Cistron::ObjectId objId = game_->SpawnLaser(b2Vec2(position.x, position.y), 0);
-    //std::list<Cistron::Component*> list = game_->getComponents(objId, "RenderComponent");
-    //std::list<Cistron::Component*>::iterator it;
-    //for (it = list.begin(); it != list.end(); ++it)
-    //{
-    //    GFGame::Components::RenderComponent* node = (GFGame::Components::RenderComponent*)(*it);
-    //    this->addChild(node->Node());
-    //}
+    std::list<Cistron::Component*> list = game_->getComponents(objId, "Ship");
+    Ship* obj = ((Ship*)(*list.begin()));
+    obj->Move(20, 0);
 }
 
 void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
@@ -306,44 +250,45 @@ void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
             if (duration_ > _nextAsteroidSpawn) 
             {
                 this->SpawnAsteroid();
-                float randSecs = GFort::Core::MathHelper::RandomBetween(0.1f, 0.8f);
+                float randSecs = GFort::Core::MathHelper::RandomBetween(1.5f, 2.2f);
                 _nextAsteroidSpawn = randSecs + duration_;        
             }
 
-            std::vector<cocos2d::CCSprite*>::iterator it;
-            std::vector<cocos2d::CCSprite*>::iterator lit;
-            for (it = _asteroids.begin(); it != _asteroids.end(); ++it)
-            {
-                if (!(*it)->getIsVisible()) 
-                    continue;
+            //std::vector<cocos2d::CCSprite*>::iterator it;
+            //std::vector<cocos2d::CCSprite*>::iterator lit;
+            //for (it = _asteroids.begin(); it != _asteroids.end(); ++it)
+            //{
+            //    if (!(*it)->getIsVisible()) 
+            //        continue;
 
-                // If laser hits asteroid, destroy both of them
-                for (lit = _shipLasers.begin(); lit != _shipLasers.end(); ++lit)
-                {
-                    if (!(*lit)->getIsVisible()) 
-                        continue;
+            //    // If laser hits asteroid, destroy both of them
+            //    for (lit = _shipLasers.begin(); lit != _shipLasers.end(); ++lit)
+            //    {
+            //        if (!(*lit)->getIsVisible()) 
+            //            continue;
 
-                    if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), (*lit)->boundingBox())) 
-                    {
-                        (*it)->setIsVisible(false);
-                        (*lit)->setIsVisible(false);
-                        continue;
-                    }
-                }
+            //        if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), (*lit)->boundingBox())) 
+            //        {
+            //            (*it)->setIsVisible(false);
+            //            (*lit)->setIsVisible(false);
+            //            continue;
+            //        }
+            //    }
 
-                if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), ship_node_->boundingBox())) 
-                {
-                    (*it)->setIsVisible(false);
-                    ship_node_->runAction(CCBlink::actionWithDuration(1.0, 9));
-                    game_->SetNumLives(game_->NumLives() - 1);
-                    continue;
-                }
-            }
+            //    if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), ship_node_->boundingBox())) 
+            //    {
+            //        (*it)->setIsVisible(false);
+            //        ship_node_->runAction(CCBlink::actionWithDuration(1.0, 9));
+            //        game_->SetNumLives(game_->NumLives() - 1);
+            //        continue;
+            //    }
+            //}
         }
 
         // If number of lives if less than 0, do game over
         if (game_->NumLives() <= 0) 
         {
+            CCLOG("[%s][%d] - Game is Over", __FUNCTION__, __LINE__);
             game_->SetGameOver(true);
             if (is_shooting_)
             {
@@ -361,57 +306,38 @@ void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
     }
 }
 
+void ShmupLayer::AttachRenderComponents(const Cistron::ObjectId& objId)
+{
+    std::list<Cistron::Component*>::iterator it;
+    std::list<Cistron::Component*> list = game_->getComponents(objId, "RenderComponent");    
+    for (it = list.begin(); it != list.end(); ++it)
+    {
+        GFGame::Components::RenderComponent* node = (GFGame::Components::RenderComponent*)(*it);
+        this->addChild(node->Node());
+    }
+}
+
 void ShmupLayer::SpawnAsteroid()
 {
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
-    
-    float randY = GFort::Core::MathHelper::RandomBetween(0.0f, winSize.height);
-    float randDuration = GFort::Core::MathHelper::RandomBetween(2.0f, 10.0f);
-    
-    CCSprite *asteroid;
-    
 
-    float x, y, dx, dy;
-    dx = 0;
-    if (true)
-    {
-        asteroid = _asteroids[_nextAsteroid];
-        _nextAsteroid = (_nextAsteroid + 1) % _asteroids.size();
-    
-        float scale = GFort::Core::MathHelper::RandomBetween(0.4f, 0.5f);
-        asteroid->setScale(scale);
-        asteroid->setIsVisible(true);
+    //Cistron::ObjectId objId;
+    //{
+    //    objId = game_->SpawnAsteroid(b2Vec2(winSize.width/2, 0), 0);
+    //    AttachRenderComponents(objId);
 
-        x = winSize.width * 0.5f - asteroid->getContentSize().width * scale * 0.5;
-        y = 0 - asteroid->getContentSize().height;
-        dy = winSize.height + asteroid->getContentSize().height * 2;
+    //    std::list<Cistron::Component*> list = game_->getComponents(objId, "Obstacle");
+    //    Asteroid* obj = ((Asteroid*)(*list.begin()));
+    //    obj->Move(0, 5);
+    //}
+    //{
+    //    objId = game_->SpawnAsteroid(b2Vec2(winSize.width/2, winSize.height), 0);
+    //    AttachRenderComponents(objId);
 
-        asteroid->setPosition(ccp(x, y));
-        asteroid->stopAllActions();
-        asteroid->runAction(CCSequence::actions(
-            CCMoveBy::actionWithDuration(randDuration, ccp(dx, dy)),
-            NULL));
-    }
-
-    {   
-        asteroid = _asteroids[_nextAsteroid];
-        _nextAsteroid = (_nextAsteroid + 1) % _asteroids.size();
-    
-        float scale = GFort::Core::MathHelper::RandomBetween(0.4f, 0.5f);
-        asteroid->setScale(scale);
-        asteroid->setIsVisible(true);
-
-        x = winSize.width * 0.5f + asteroid->getContentSize().width * scale * 0.5;
-        y = winSize.height + asteroid->getContentSize().height;
-        dy = -(winSize.height + asteroid->getContentSize().height * 2);
-
-        asteroid->setPosition(ccp(x, y));
-        asteroid->stopAllActions();
-        asteroid->runAction(CCSequence::actions(
-            CCMoveBy::actionWithDuration(randDuration, ccp(dx, dy)),
-            NULL));
-    }
-    
+    //    std::list<Cistron::Component*> list = game_->getComponents(objId, "Obstacle");
+    //    Asteroid* obj = ((Asteroid*)(*list.begin()));
+    //    obj->Move(0, -5);
+    //}
 }
 
 } } } // namespace

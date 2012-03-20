@@ -18,8 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_BATTLE_SCENE_H_
-#define WARRIOR_BATTLE_SCENE_H_
+#pragma once
+#ifndef GFGAME_SHMUP_SHMUPSCENE_H_
+#define GFGAME_SHMUP_SHMUPSCENE_H_
 
 #include "cocos2d.h"
 #include <Viewer/Box2dDebugViewer.h>
@@ -60,4 +61,4 @@ private:
 
 } } } // namespace
 
-#endif // WARRIOR_BATTLE_SCENE_H_
+#endif // GFGAME_SHMUP_SHMUPSCENE_H_

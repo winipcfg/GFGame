@@ -18,8 +18,9 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFORT_GAMES_SHMUP_MISSILE_NODE_H_
-#define GFORT_GAMES_SHMUP_MISSILE_NODE_H_
+#pragma once
+#ifndef GFGAME_SHMUP_MISSILE_NODE_H_
+#define GFGAME_SHMUP_MISSILE_NODE_H_
 
 #include <Box2D/Box2D.h>
 #include <Cistron/Cistron.h>
@@ -77,4 +78,4 @@ public:
 
 } } } // namespace
 
-#endif // GFORT_GAMES_SHMUP_MISSILE_NODE_H_
+#endif // GFGAME_SHMUP_MISSILE_NODE_H_
