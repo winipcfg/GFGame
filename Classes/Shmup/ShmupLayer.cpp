@@ -32,31 +32,9 @@ namespace GFort { namespace Games { namespace Shmup
 {
 
 #define PLAY_BG_MUSIC           0//1
-#define kNumAsteroids           40
-#define kNumLasers              5
-#define kNumLives               3
 #define kNumShootsPerSecond     1
-
-#define kSpriteBatchNode        "Assets/Shmup/Sprites.pvr.ccz"
-#define kSpriteFrames           "Assets/Shmup/Sprites.plist"
-#define kSpriteShip             "SpaceFlier_sm_1.png"
-#define kSpriteDust1            "Assets/Shmup/bg_front_spacedust.png"
-#define kSpriteDust2            "Assets/Shmup/bg_front_spacedust.png"
-#define kSpriteSunrise          "Assets/Shmup/bg_planetsunrise.png"
-#define kSpriteGalaxy           "Assets/Shmup/bg_galaxy.png"
-#define kSpriteSpacialAnomaly   "Assets/Shmup/bg_spacialanomaly.png"
-#define kSpriteSpacialAnomaly2  "Assets/Shmup/bg_spacialanomaly2.png"
-
-const std::string   kSprite             = "Assets/Shmup/Sprites.pvr.ccz";
-const std::string   kSpriteShipFrame    = "Assets/Shmup/Sprites.plist";
-
-enum 
-{
-    kTagParallax    = -5,
-    kTagBackground  = -1,
-    kTagJoystick    = 2,
-};
-
+#define kTagJoystick            2
+    
 typedef enum {
     kEndReasonWin,
     kEndReasonLose
@@ -68,11 +46,10 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     , touch_start_position_(cocos2d::CCPointZero)
     , touch_end_position_(cocos2d::CCPointZero)
     , game_(game)
-    , is_shooting_(false)
+    , is_shooting_(true)
     , last_shoot_time_(0)
     , joystick_(NULL)
-    , _nextAsteroid(0)
-    , _nextAsteroidSpawn(0)
+    , next_asteroid_(0)
     , ship_(NULL)
 {
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
@@ -80,63 +57,29 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     // Ship
     std::list<Cistron::Component*> list;
     std::list<Cistron::Component*>::iterator it;
-    Cistron::ObjectId objId;
-    objId = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.25, winSize.height * 0.5));
-    AttachRenderComponents(objId);
-    list = game_->getComponents(objId, "RenderComponent");  
+    ship_ = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.25, winSize.height * 0.5));
+    AttachRenderComponents(ship_->getOwnerId());
+    list = game_->getComponents(ship_->getOwnerId(), "RenderComponent");  
     GFGame::Components::RenderComponent* node = (GFGame::Components::RenderComponent*)(*list.begin());
     ship_node_ = (ShipNode*)node->Node();
-
-    list = game_->getComponents(objId, "Unit");
-    ship_ = (Ship*)(*list.begin());
-
+    
     // Another Ship
-    objId = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.75, winSize.height * 0.5), 1);
-    AttachRenderComponents(objId);
+    Ship* ship = game_->SpawnPlayerShip(b2Vec2(winSize.width * 0.75, winSize.height * 0.5), 1);
+    AttachRenderComponents(ship->getOwnerId());
     
-    // Create the CCParallaxNode
-    _backgroundNode = CCParallaxNode::node();
-    this->addChild(_backgroundNode, -1);
-
-    _spacedust1 = cocos2d::CCSprite::spriteWithFile(kSpriteDust1);
-    _spacedust2 = cocos2d::CCSprite::spriteWithFile(kSpriteDust2);
-    _planetsunrise = cocos2d::CCSprite::spriteWithFile(kSpriteSunrise);
-    _galaxy = cocos2d::CCSprite::spriteWithFile(kSpriteGalaxy);
-    _spacialanomaly = cocos2d::CCSprite::spriteWithFile(kSpriteSpacialAnomaly);
-    _spacialanomaly2 = cocos2d::CCSprite::spriteWithFile(kSpriteSpacialAnomaly2);
-    
-    // 3) Determine relative movement speeds for space dust and background
-    cocos2d::CCPoint dustSpeed = ccp(0.1, 0.1);
-    cocos2d::CCPoint bgSpeed = ccp(0.05, 0.05);
-                     
-    //// 4) Add children to CCParallaxNode
-    _backgroundNode->addChild(_spacedust1, 0, dustSpeed, ccp(0,winSize.height/2));
-    _backgroundNode->addChild(_spacedust2, 0, dustSpeed, ccp(_spacedust1->getContentSize().width,winSize.height/2));
-    _backgroundNode->addChild(_galaxy, -1, bgSpeed, ccp(0,winSize.height * 0.7));
-    _backgroundNode->addChild(_planetsunrise, -1, bgSpeed, ccp(600,winSize.height * 0));
-    _backgroundNode->addChild(_spacialanomaly, -1, bgSpeed, ccp(900,winSize.height * 0.3));
-    _backgroundNode->addChild(_spacialanomaly2, -1, bgSpeed, ccp(1500,winSize.height * 0.9));
-
-    // Particles
-    CCParticleSystemQuad* starsEffect = CCParticleSystemQuad::particleWithFile("Assets/Shmup/Stars1.plist");
-    this->addChild(starsEffect, 1);
-    starsEffect = CCParticleSystemQuad::particleWithFile("Assets/Shmup/Stars2.plist");
-    this->addChild(starsEffect, 1);
-    starsEffect = CCParticleSystemQuad::particleWithFile("Assets/Shmup/Stars3.plist");
-    this->addChild(starsEffect, 1);
-    
-    // Render Texture
-    render_texture_ = cocos2d::CCRenderTexture::renderTextureWithWidthAndHeight(winSize.width, winSize.height);
-    render_texture_->retain();
-    render_texture_->autorelease();
-    render_texture_->setPosition(ccp(winSize.width * 0.5, winSize.height * 0.5));
-    this->addChild(render_texture_); 
-    
+    //// Particles
+    //CCParticleSystemQuad* starsEffect = CCParticleSystemQuad::particleWithFile("Assets/Shmup/Stars1.plist");
+    //this->addChild(starsEffect, 1);
+    //starsEffect = CCParticleSystemQuad::particleWithFile("Assets/Shmup/Stars2.plist");
+    //this->addChild(starsEffect, 1);
+    //starsEffect = CCParticleSystemQuad::particleWithFile("Assets/Shmup/Stars3.plist");
+    //this->addChild(starsEffect, 1);
+        
     // Add joystick
     joystick_ =  HSJoystick::node();
     joystick_->setAnchorPoint(ccp(0.5, 0.5));
     this->addChild(joystick_, kTagJoystick, kTagJoystick);
-
+    
     this->setIsTouchEnabled(true);
     this->setIsAccelerometerEnabled(true);
     this->scheduleUpdate();
@@ -149,7 +92,6 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
 
 ShmupLayer::~ShmupLayer()
 {
-    CC_SAFE_RELEASE(render_texture_);
 }
 
 void ShmupLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
@@ -185,7 +127,7 @@ void ShmupLayer::DoFire()
     ObjectId objId = game_->SpawnLaser(pos, 0);
     AttachRenderComponents(objId);
 
-    std::list<Cistron::Component*> list = game_->getComponents(objId, "Ship");
+    std::list<Cistron::Component*> list = game_->getComponents(objId, "Unit");
     Ship* obj = ((Ship*)(*list.begin()));
     obj->Move(20, 0);
 }
@@ -194,34 +136,6 @@ void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
 {
     game_->Update(dt);
 
-    cocos2d::CCPoint backgroundScrollVel(ccp(-1000, 0));
-    _backgroundNode->setPosition(ccpAdd(_backgroundNode->getPosition(), ccpMult(backgroundScrollVel, dt)));
-
-    //std::vector<cocos2d::CCSprite*> spaceDusts;
-    //spaceDusts.push_back(_spacedust1);
-    //spaceDusts.push_back(_spacedust2);
-    //std::vector<cocos2d::CCSprite*>::iterator it;
-    //for (it = spaceDusts.begin(); it != spaceDusts.end(); ++it)
-    //{
-    //    if (_backgroundNode->convertToWorldSpace((*it)->getPosition()).x < (*it)->getContentSize().width)
-    //    {
-    //        (*it)->setPosition(ccpAdd((*it)->getPosition(), ccp(2 * (*it)->getContentSize().width, 0)));
-    //    }
-    //} 
-
-    //std::vector<cocos2d::CCSprite*> backgrounds;
-    //backgrounds.push_back(_planetsunrise);
-    //backgrounds.push_back(_galaxy);
-    //backgrounds.push_back(_spacialanomaly);
-    //backgrounds.push_back(_spacialanomaly2);
-    //for (it = backgrounds.begin(); it != backgrounds.end(); ++it)
-    //{
-    //    if (_backgroundNode->convertToWorldSpace((*it)->getPosition()).x < -(*it)->getContentSize().width)
-    //    {
-    //        (*it)->setPosition(ccpAdd((*it)->getPosition(), ccp(2000, 0)));
-    //    }
-    //} 
-    
     if (!game_->GameOver())
     {
         // If number of lives if larger than 0
@@ -247,42 +161,12 @@ void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
             }
 
             // Asteroids
-            if (duration_ > _nextAsteroidSpawn) 
+            if (duration_ > next_asteroid_) 
             {
                 this->SpawnAsteroid();
                 float randSecs = GFort::Core::MathHelper::RandomBetween(1.5f, 2.2f);
-                _nextAsteroidSpawn = randSecs + duration_;        
+                next_asteroid_ = randSecs + duration_;        
             }
-
-            //std::vector<cocos2d::CCSprite*>::iterator it;
-            //std::vector<cocos2d::CCSprite*>::iterator lit;
-            //for (it = _asteroids.begin(); it != _asteroids.end(); ++it)
-            //{
-            //    if (!(*it)->getIsVisible()) 
-            //        continue;
-
-            //    // If laser hits asteroid, destroy both of them
-            //    for (lit = _shipLasers.begin(); lit != _shipLasers.end(); ++lit)
-            //    {
-            //        if (!(*lit)->getIsVisible()) 
-            //            continue;
-
-            //        if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), (*lit)->boundingBox())) 
-            //        {
-            //            (*it)->setIsVisible(false);
-            //            (*lit)->setIsVisible(false);
-            //            continue;
-            //        }
-            //    }
-
-            //    if (CCRect::CCRectIntersectsRect((*it)->boundingBox(), ship_node_->boundingBox())) 
-            //    {
-            //        (*it)->setIsVisible(false);
-            //        ship_node_->runAction(CCBlink::actionWithDuration(1.0, 9));
-            //        game_->SetNumLives(game_->NumLives() - 1);
-            //        continue;
-            //    }
-            //}
         }
 
         // If number of lives if less than 0, do game over
@@ -295,9 +179,6 @@ void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
                 is_shooting_ = false;    
                 last_shoot_time_ = duration_;
             }
-            //[shipSprite_ stopAllActions];
-            //shipSprite_.visible = FALSE;
-            //[self endScene:kEndReasonLose];
         } 
         else
         {
@@ -320,24 +201,16 @@ void ShmupLayer::AttachRenderComponents(const Cistron::ObjectId& objId)
 void ShmupLayer::SpawnAsteroid()
 {
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
-
-    //Cistron::ObjectId objId;
-    //{
-    //    objId = game_->SpawnAsteroid(b2Vec2(winSize.width/2, 0), 0);
-    //    AttachRenderComponents(objId);
-
-    //    std::list<Cistron::Component*> list = game_->getComponents(objId, "Obstacle");
-    //    Asteroid* obj = ((Asteroid*)(*list.begin()));
-    //    obj->Move(0, 5);
-    //}
-    //{
-    //    objId = game_->SpawnAsteroid(b2Vec2(winSize.width/2, winSize.height), 0);
-    //    AttachRenderComponents(objId);
-
-    //    std::list<Cistron::Component*> list = game_->getComponents(objId, "Obstacle");
-    //    Asteroid* obj = ((Asteroid*)(*list.begin()));
-    //    obj->Move(0, -5);
-    //}
+    {
+        Asteroid* obj = game_->SpawnAsteroid(b2Vec2(winSize.width/2, 0), 0);
+        AttachRenderComponents(obj->getOwnerId());
+        obj->Move(0, 5);
+    }
+    {
+        Asteroid* obj = game_->SpawnAsteroid(b2Vec2(winSize.width/2, winSize.height), 0);
+        AttachRenderComponents(obj->getOwnerId());
+        obj->Move(0, -5);
+    }
 }
 
 } } } // namespace

@@ -35,43 +35,53 @@
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-//extern class Game;
+/// The core component of an entity which generates and stores energy.
+/// Each entity has single core
+class Core : public Cistron::Component
+{
+    short energy_;
+};
+
+class ShipPart : public Cistron::Component
+{
+    short energy_consumption_;
+};
 
 /// The entities that are controlled by Players
 class Ship : public Unit
 {
 public:
-    typedef GFort::Core::Game::IWeapon&             WeaponReference;
-    typedef GFort::Core::Game::IWeapon*             WeaponPtr;
-    typedef std::vector<WeaponPtr >                 WeaponList;
+    //typedef GFort::Core::Game::IWeapon&             WeaponReference;
+    //typedef GFort::Core::Game::IWeapon*             WeaponPtr;
+    //typedef std::vector<WeaponPtr >                 WeaponList;
     typedef GFGame::Components::PhysicsComponent    PhysicsComponent;
     typedef GFGame::Components::RenderComponent     RenderComponent;
     typedef PhysicsComponent*                       PhysicsComponentPtr;
     typedef RenderComponent*                        RenderComponentPtr;
     typedef std::vector<PhysicsComponent* >         PhysicsComponentPtrList;
     typedef std::vector<RenderComponent* >          RenderComponentPtrList;
+    
+    typedef Unit                                    Component;
+    typedef std::vector<Component* >                Components;
 
 public:
     /// Constructor.
-    Ship(Game* game, const PlayerSide& side);
+    Ship(Game* game, const GameSide& side);
 
     /// Destructor.
     ~Ship();
 
-    ///// Add new weapon to the object.
+    ///// Add new part to the object.
     ///// @param weapon
-    //void AddWeapon(WeaponReference weapon);
+    //void AddPart(WeaponReference weapon);
 
-    ///// Remove a weapon from the object
+    ///// Remove a part from the object
     ///// @param index
-    //void RemoveWeapon(const short& index);
+    //void RemovePart(const short& index);
     
-    ///// Remove all weapons.
-    //void RemoveAllWeapons();
+    ///// Remove all parts
+    //void RemoveAllParts();
     
-    /// Gets current weapon.
-    WeaponPtr CurrentWeapon() const         { return current_weapon_; }
-
     /// Kill the object.
     virtual void Die();
 
@@ -86,17 +96,15 @@ public:
     /// Stop movement.
     void StopMove();
 
-    /// Gets the bounding region.
-    BPolygon GetBoundingRegion();
+    ///// Gets the bounding region.
+    //BPolygon GetBoundingRegion();
 
 
 private:
-    // Stores weapons and the weapon currently used
-    WeaponList              weapons_;
-    short                   current_weapon_index_; 
-    WeaponPtr               current_weapon_;
-
     // Components
+    Core*                   core_;
+    Components              components_;
+
     PhysicsComponentPtrList physics_component_;
     RenderComponentPtrList  render_component_;
 

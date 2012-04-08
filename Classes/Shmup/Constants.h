@@ -29,17 +29,18 @@
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-typedef Cistron::ObjectId   ObjectId;
-typedef b2Vec2              Vector2;    
-typedef short               PlayerSide;
+typedef Cistron::ObjectId       ObjectId;
+typedef b2Vec2                  Vector2;  
+typedef b2World                 PhysicsWorld;
+typedef short                   GameSide;
 
-static const std::string   kSpriteBeam                 = "Assets/Shmup/laserbeam.png";
-static const std::string   kSpriteAsteroid             = "Assets/Shmup/asteroid_sm.png";
+static const std::string        kSpriteBeam                 = "Assets/Shmup/laserbeam.png";
+static const std::string        kSpriteAsteroid             = "Assets/Shmup/asteroid_sm.png";
 
 // Name of components
-static const std::string   kComponentUnit              = "Ship";
-static const std::string   kComponentMissile           = "Missile";
-static const std::string   kComponentWeapon            = "Weapon";
+static const std::string        kComponentUnit              = "Ship";
+static const std::string        kComponentMissile           = "Missile";
+static const std::string        kComponentWeapon            = "Weapon";
 
 /// Mask Bits and Category Bits. They are classified into the following types
 ///    Boundary - Boundary of the battle scene

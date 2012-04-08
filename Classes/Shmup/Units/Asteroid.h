@@ -44,7 +44,7 @@ public:
 
 public:
     /// Constructor
-    Asteroid(Game* game, const PlayerSide& side);
+    Asteroid(Game* game, const GameSide& side);
 
     /// Destructor
     ~Asteroid()                             {}
@@ -74,7 +74,7 @@ private:
     friend class Game;
 };
 
-inline Asteroid::Asteroid(Game* game, const PlayerSide& side)
+inline Asteroid::Asteroid(Game* game, const GameSide& side)
     : Unit("Obstacle", game, side)
 {
 }

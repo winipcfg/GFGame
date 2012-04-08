@@ -27,6 +27,7 @@ using namespace cocos2d;
 namespace GFort { namespace Games { namespace Shmup 
 {
 
+//const std::string   kSprite                     = "Assets/Shmup/Ship/ShipCore.png";
 const std::string   kSprite                     = "Assets/Shmup/Sprites.pvr.ccz";
 const std::string   kSpriteShipFrame            = "Assets/Shmup/Sprites.plist";
 const short         kAnimationStart             = 1;

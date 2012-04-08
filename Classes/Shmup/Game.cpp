@@ -88,7 +88,7 @@ void Game::ExitGame()
 {
 }
 
-ObjectId Game::SpawnPlayerShip(const Vector2& position, const PlayerSide& side)
+Ship* Game::SpawnPlayerShip(const Vector2& position, const GameSide& side)
 {
     ObjectId objId = this->SpawnEntity();
     Ship* unit = new Ship(this, side);
@@ -196,21 +196,22 @@ ObjectId Game::SpawnPlayerShip(const Vector2& position, const PlayerSide& side)
     //jointDef.enableMotor = true;
 
 
-    //b2RevoluteJointDef jointDef;
-    //jointDef.Initialize(body, body2, body->GetWorldCenter());
-    //jointDef.lowerAngle = -0.2f * b2_pi; // -90 degrees
-    //jointDef.upperAngle = 0;//0.2f * b2_pi; // 45 degrees
-    //jointDef.enableLimit = true;
-    //jointDef.maxMotorTorque = 10.0f;
-    //jointDef.motorSpeed = 10.0f;
-    //jointDef.enableMotor = true;
+    b2RevoluteJointDef jointDef;
+    jointDef.Initialize(body, body2, body->GetWorldCenter());
+    jointDef.lowerAngle = -0.2f * b2_pi; // -90 degrees
+    jointDef.upperAngle = 0;//0.2f * b2_pi; // 45 degrees
+    jointDef.enableLimit = true;
+    jointDef.maxMotorTorque = 10.0f;
+    jointDef.motorSpeed = 10.0f;
+    jointDef.enableMotor = true;
 
-    b2DistanceJointDef jointDef;
-    jointDef.Initialize(body, body2, body->GetWorldCenter(), body2->GetWorldCenter());
-    jointDef.collideConnected = true;
-    jointDef.length = 1;
-    jointDef.frequencyHz = 1.0f;
-    jointDef.dampingRatio = 0.5f;
+    //b2DistanceJointDef jointDef;
+    //jointDef.Initialize(body, body2, body->GetWorldCenter(), body2->GetWorldCenter());
+    //jointDef.collideConnected = true;
+    //jointDef.length = 1;
+    //jointDef.frequencyHz = 1.0f;
+    //jointDef.dampingRatio = 0.5f;
+
     b2Joint* joint = phys_controller_.World()->CreateJoint(&jointDef);
 
     //####TEST
@@ -219,10 +220,11 @@ ObjectId Game::SpawnPlayerShip(const Vector2& position, const PlayerSide& side)
     //BeamGun* weapon = new BeamGun();
     //this->addComponent(objId, weapon);
 
-    return objId;
+    return unit;
+    //return objId;
 }
 
-ObjectId Game::SpawnLaser(const Vector2& position, const PlayerSide& side)
+ObjectId Game::SpawnLaser(const Vector2& position, const GameSide& side)
 {
     ObjectId objId = this->SpawnEntity();
     Ship* unit = new Ship(this, side);
@@ -260,7 +262,7 @@ ObjectId Game::SpawnLaser(const Vector2& position, const PlayerSide& side)
     return objId;
 }
 
-ObjectId Game::SpawnAsteroid(const Vector2& position, const PlayerSide& side)
+Asteroid* Game::SpawnAsteroid(const Vector2& position, const GameSide& side)
 {
     // Main
     ObjectId objId = this->SpawnEntity();
@@ -297,7 +299,8 @@ ObjectId Game::SpawnAsteroid(const Vector2& position, const PlayerSide& side)
     this->addComponent(objId, physics);
     unit->physics_component_ = physics;
 
-    return objId;
+    return unit;
+    //return objId;
 }
 
 void Game::Update(const float& dt)

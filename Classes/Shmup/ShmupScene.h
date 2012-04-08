@@ -42,18 +42,21 @@ public:
 
     /// Destructor.
     ~ShmupScene();
+    
+    /// Set the game camera.
+    void SetGameCamera();
 
     /// Toggles whether the physics debug viewer is visible or not.
     void TogglePhysicsDebugViewer();
     
     SCENE_NODE_FUNC(ShmupScene)
 
-protected:
 private:
     // Game itself
     Game            game_;
 
     // Stores layer reference
+    cocos2d::CCLayer*                   game_layer_;
     ShmupHUD*                           hud_layer_;
     GFGame::Viewer::Box2dDebugViewer*   physics_debug_viewer;
     ShmupLayer*                         shmup_layer_;

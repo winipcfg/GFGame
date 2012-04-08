@@ -28,35 +28,56 @@ namespace GFort { namespace Games { namespace Shmup
 enum 
 {
     kTagBattleLayer = 0,
-    kTagHUD         = 20,
-    kTagBox2dDebug  = 30,
+    kTagBox2dDebug  = 10,
+    kTagGameLayer   = 20,
+    kTagHUD         = 30,    
 };
 
 ShmupScene::ShmupScene()
-    : hud_layer_(NULL)
+    : game_layer_(NULL)
+    , hud_layer_(NULL)
     , physics_debug_viewer(NULL)
     , shmup_layer_(NULL)
 {
+    ////////////////////////////////////////////////////////////
+    ///
+    /// Scene
+    /// |-- HUD Layer
+    /// |-- Game Layer
+    ///     |-- Shmup Layer
+    ///     |-- Physics Debug Layer
+    ///
+    ////////////////////////////////////////////////////////////
     hud_layer_ = Shmup::ShmupHUD::node();
-    addChild(hud_layer_, kTagHUD, kTagHUD);
+    this->addChild(hud_layer_, kTagHUD, kTagHUD);
 
     game_.Initialize();
     game_.SetNumLives(100);
 
-    shmup_layer_ = new ShmupLayer(&game_);
-    //shmup_layer_->SetViewer(hud_layer_);
-    addChild(shmup_layer_, kTagBattleLayer, kTagBattleLayer);
+    game_layer_ = cocos2d::CCLayer::node();
+    this->addChild(game_layer_, kTagGameLayer, kTagGameLayer);
 
+    shmup_layer_ = new ShmupLayer(&game_);
+    game_layer_->addChild(shmup_layer_, kTagBattleLayer, kTagBattleLayer);
+    
     physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
     physics_debug_viewer->SetWorld(game_.World(), &game_.PhysicsSettings());
-    physics_debug_viewer->setIsVisible(false);
-    addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
+    physics_debug_viewer->setIsVisible(true);
+    game_layer_->addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);   
+
+    //SetGameCamera();
 }
 
 ShmupScene::~ShmupScene()
 {
     this->unscheduleUpdate();
     this->unscheduleAllSelectors();
+}
+
+void ShmupScene::SetGameCamera()
+{
+    //cocos2d::CCFollow* follow = cocos2d::CCFollow::actionWithTarget(shmup_layer_->ship_node_);
+    //game_layer_->runAction(follow);
 }
 
 void ShmupScene::TogglePhysicsDebugViewer()

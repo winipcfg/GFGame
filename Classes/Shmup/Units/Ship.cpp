@@ -26,9 +26,8 @@
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-Ship::Ship(Game* game, const PlayerSide& side)
+Ship::Ship(Game* game, const GameSide& side)
     : Unit("Unit", game, side)
-    , current_weapon_(NULL)
     , physics_component_(NULL)
     , render_component_(NULL)
 {
@@ -65,21 +64,21 @@ void Ship::StopMove()
     }
 }
 
-BPolygon Ship::GetBoundingRegion()
-{
-    if (physics_component_.size() > 0)
-    {
-        return BPolygon();
-    }
-    else if (render_component_.size() > 0)
-    {
-        return BPolygon();
-    }
-    else
-    {
-        return BPolygon();
-    }
-}
+//BPolygon Ship::GetBoundingRegion()
+//{
+//    if (physics_component_.size() > 0)
+//    {
+//        return BPolygon();
+//    }
+//    else if (render_component_.size() > 0)
+//    {
+//        return BPolygon();
+//    }
+//    else
+//    {
+//        return BPolygon();
+//    }
+//}
 
 //void Ship::AddWeapon(WeaponReference weapon)
 //{

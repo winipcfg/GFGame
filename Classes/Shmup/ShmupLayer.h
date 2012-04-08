@@ -73,7 +73,6 @@ private:
     Point                       touch_start_position_;
     Point                       touch_end_position_;
 
-    cocos2d::CCRenderTexture*   render_texture_;
     HSJoystick*                 joystick_;
 
     // Reference
@@ -84,23 +83,11 @@ private:
     double                                      last_shoot_time_;
 
     Ship*                                   ship_;
+
+public:
     ShipNode*                               ship_node_;
-
-    cocos2d::CCSpriteBatchNode*              batchNode_;
     
-    
-    cocos2d::CCParallaxNode*                 _backgroundNode;
-    cocos2d::CCSprite*                       _spacedust1;
-    cocos2d::CCSprite*                       _spacedust2;
-    cocos2d::CCSprite*                       _planetsunrise;
-    cocos2d::CCSprite*                       _galaxy;
-    cocos2d::CCSprite*                       _spacialanomaly;
-    cocos2d::CCSprite*                       _spacialanomaly2;
-
-    float                                    _shipPointsPerSecY;
-    
-    int                                      _nextAsteroid;
-    double                                   _nextAsteroidSpawn;
+    double                                   next_asteroid_;
 };
 
 } } } // namespace

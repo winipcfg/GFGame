@@ -30,10 +30,14 @@
 #include <GFort/Core/Game/Game.h>
 #include <GFort/Core/Physics/PhysicsController.h>
 //#include "Units/Ship.h"
+//#include "Units/Asteroid.h"
 #include "Constants.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
+
+class Ship;
+class Asteroid;
 
 /// Game class that provide logics
 class Game : public Cistron::ObjectManager, public GFort::Core::Game::Game
@@ -75,13 +79,6 @@ public:
     /// @param numLives
     void SetNumLives(const short& numLives)                         { num_lives_ = numLives; }
 
-    ///// Gets maximum number of lives.
-    //const short& MaxNumLives() const                                { return max_num_lives_; }        
-
-    ///// Set maximum number of lives.
-    ///// @param maxNumLives
-    //void SetMaxNumLives(const short& maxNumLives)                   { max_num_lives_ = maxNumLives; }
-
     /// Gets the physics world.
     b2World* World()                                                { return phys_controller_.World(); }
 
@@ -95,31 +92,27 @@ public:
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
-    ObjectId SpawnPlayerShip(const Vector2& position)               { return SpawnPlayerShip(position, 0); }
+    Ship* SpawnPlayerShip(const Vector2& position)                  { return SpawnPlayerShip(position, 0); }
 
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
-    ObjectId SpawnPlayerShip(const Vector2& position, const PlayerSide& side);
+    Ship* SpawnPlayerShip(const Vector2& position, const GameSide& side);
     
     /// Spawn player ship at specified location.
     /// @param position
     /// @param side    
-    ObjectId SpawnLaser(const Vector2& position, const PlayerSide& side);
+    ObjectId SpawnLaser(const Vector2& position, const GameSide& side);
 
     /// Spawn asteroid at specified location.
     /// @param position
     /// @param side    
-    ObjectId SpawnAsteroid(const Vector2& position, const PlayerSide& side);
+    Asteroid* SpawnAsteroid(const Vector2& position, const GameSide& side);
 
     /// Update the battle.
     void Update(const float& dt);
     
 private:
-    //// Ships controlled by players
-    //Ship                                        player_one_;
-    //Ship                                        player_two_;
-
     short                                       num_lives_;
     short                                       max_num_lives_;
 
