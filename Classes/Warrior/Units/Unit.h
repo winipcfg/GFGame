@@ -30,6 +30,7 @@
 #include <Cistron/Cistron.h>
 #include <Warrior/Model/Struct.h>
 #include <Warrior/TypeDef.h>
+#include <Warrior/Units/UnitProperties.h>
 
 namespace Warrior 
 {
@@ -40,6 +41,9 @@ class Unit : public Cistron::Component, public GFort::Core::ISubject<Unit>
 public:
     /// Constructor.
     Unit();
+
+    /// Destructor.
+    ~Unit();
     
     /// Gets whether the unit is alive.
     const bool Alive() const                                { return lives_ > 0; }
@@ -93,17 +97,8 @@ public:
     //---------------------------------------------------------------
     // Properties
     //---------------------------------------------------------------
-    /// Gets maximum health point of the unit.
-    const short MaxLives() const                            { return max_lives_; }
-
-    /// Gets maximum stamina of the unit.
-    const short MaxStamina() const                          { return max_stamina_; }
-
-    /// Gets the walk speed of the unit.
-    const float WalkSpeed() const                           { return walk_speed_; }
-
-    /// Gets the run speed of the unit.
-    const float RunSpeed() const                            { return run_speed_; }
+    /// Gets properties of the unit.
+    UnitProperties* Properties()                            { return properties_; }
 
     /// Gets the side of the unit.
     const short Side() const                                { return side_; }
@@ -116,22 +111,7 @@ public:
 
     /// Gets facing direction.
     const FacingDirection& Facing()                         { return facing_; }
-
-    /// Gets whether the unit is floating in the air.
-    const bool& FloatingInTheAir() const                    { return floating_in_the_air_; }
-
-    /// Sets maximum lives of the unit.
-    /// @param value
-    virtual void SetMaxLives(const short& value)            { max_lives_ = value; }
-
-    /// Sets walk speed of the unit.
-    /// @param value
-    virtual void SetWalkSpeed(const float& value)           { walk_speed_ = value; }
-
-    /// Sets run speed of the unit.
-    /// @param value
-    virtual void SetRunSpeed(const float& value)            { run_speed_ = value; }
-
+    
     /// Sets the side of the unit. Zero is neutral
     /// @param value
     virtual void SetSide(const short& value)                { side_ = value; }
@@ -147,21 +127,13 @@ public:
     /// Sets facing dircection of the unit.
     /// @param value
     virtual void SetFacing(const FacingDirection& value)    { facing_ = value; }
-
-    /// Sets whether the unit is floating in the air.
-    /// @param value
-    virtual void SetFloatingInTheAir(const bool& value)     { floating_in_the_air_ = value; }
     
 protected:
     // Physics body
     b2Body*                     body_;
 
     // Attributes
-    short                       max_lives_;
-    short                       max_stamina_;
-    short                       stamina_regenerate_speed_;
-    float                       walk_speed_;
-    float                       run_speed_;
+    UnitProperties*             properties_;
 
     // Instances
     short                       side_;
@@ -174,8 +146,6 @@ protected:
 public:
     UnitAction                  action_;
     std::deque<UnitAction >     pending_actions_;
-
-    bool                        floating_in_the_air_;   
 };    
     
 } // namespace

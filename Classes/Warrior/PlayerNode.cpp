@@ -22,6 +22,7 @@
 #include <cmath>
 #include <boost/format.hpp>
 #include <GFort/Core/Physics/PhysicsHelper.h>
+#include <Warrior/Model/BattleHelper.h>
 #include "BattleLayer.h"
 #include "CCExtensions/CCSpriteHelper.h"
 #include "CCExtensions/CCTranslate.h"
@@ -38,6 +39,9 @@ const float kRunSpeed                       = 400.0f;
 //const std::string   kUnitSpriteFrameNameSyntax          = "warrior%02d.png";
 //const std::string   kUnitSpriteAttackFrameNameSyntax    = "warrior_attack%02d.png";
 
+//const std::string   kSprite             = "Assets/Test/Dummy/M/dummy.png";
+//const std::string   kSpriteShipFrame    = "Assets/Test/Dummy/M/dummy.plist";
+
 const std::string   kUnitSpriteIdle                     = "Assets/Char/hero_idle.png";
 const std::string   kUnitSpriteFrameNameSyntaxRL        = "Assets/Char/enemy_run%02d.png";
 const std::string   kUnitSpriteFrameNameSyntaxRR        = "Assets/Char/enemy_run%02d.png";
@@ -46,12 +50,21 @@ const std::string   kUnitSpriteFrameNameSyntaxAR        = "Assets/Char/hero_idle
 
 PlayerNode::PlayerNode(Unit* unit)
     : UnitNode(unit)
+    , sprite_(NULL)
 {
+    //use_physics_motion_ = true;
     use_physics_motion_ = false;
 }
 
 PlayerNode::~PlayerNode()
 {
+    for (std::hash_map<std::string, cocos2d::CCAction* >::iterator it = actions_.begin(); 
+        it != actions_.end(); 
+        ++it) 
+    {
+        if (it->second)
+            it->second->release();
+    } 
 }
 
 void PlayerNode::ResetState()
@@ -59,8 +72,8 @@ void PlayerNode::ResetState()
     if (state_ != NULL)
     {
         state_->Reset();
-        state_->SetWalkSpeed(kWalkSpeed);
-        state_->SetRunSpeed(kRunSpeed);
+        //state_->SetWalkSpeed(kWalkSpeed);
+        //state_->SetRunSpeed(kRunSpeed);
         state_->Detach(this);
         state_->Attach(this);
     }
@@ -158,6 +171,33 @@ bool PlayerNode::init()
     return true;
 }
 
+void PlayerNode::UpdateNode(cocos2d::ccTime dt)
+{
+    state_->Update(dt);
+        
+    if (use_physics_motion_)
+    {
+        cocos2d::CCPoint position = cocos2d::CCPoint(
+            (state_->Body()->GetPosition().x * PTM_RATIO), 
+            (state_->Body()->GetPosition().y * PTM_RATIO));
+        float rotation = CC_RADIANS_TO_DEGREES(-1 * state_->Body()->GetAngle());
+        sprite_->setAnchorPoint(ccp(0.5, 0.5));
+        this->setRotation(rotation);           
+        this->setPosition(position);        
+    }
+    else
+    {
+        if (state_->Body())
+        {
+            state_->Body()->SetTransform(
+                b2Vec2((this->getPosition().x) * GFort::Core::Physics::kINV_PTM_RATIO, 
+                       (this->getPosition().y + this->boundingBox().size.height / 2) * GFort::Core::Physics::kINV_PTM_RATIO), 
+                state_->Body()->GetAngle());
+            state_->Body()->SetAwake(true);
+        }
+    }
+}
+
 void PlayerNode::UpdateAction()
 {
     if (state_->Alive())
@@ -187,7 +227,7 @@ void PlayerNode::Walk(const cocos2d::CCPoint& position)
 {
     cocos2d::CCPoint diff = cocos2d::ccpSub(position, this->getPosition());
     diff.y = 0;
-    float duration = abs(diff.x) / state_->WalkSpeed();
+    float duration = abs(diff.x) / state_->Properties()->WalkSpeed();
 
     CCLOG("Node move to (%0.2f, %0.2f) with duration %0.2f", 
             position.x, 
@@ -204,17 +244,17 @@ void PlayerNode::Walk(const cocos2d::CCPoint& position)
         //necessaryMovement.Normalize();
         //float forceMagnitude = b2Min(maxAllowableForce, necessaryDistance);
         //b2Vec2 force = forceMagnitude * necessaryMovement;
-        //state_->Body()->ApplyForceToCenter(state_->Body()->GetMass() * 100 * force);
+        ////state_->Body()->ApplyForceToCenter(state_->Body()->GetMass() * 100 * force);
 
-        //// Apply force
-        //GFort::Core::Physics::Box2dSettings setting;
-        //b2Vec2 impulse = GFort::Core::Physics::PhysicsHelper::GetTrajectoryVelocity(
-        //    state_->Body()->GetWorld(),
-        //    &setting,
-        //    b2Vec2(this->getPosition().x, this->getPosition().y),
-        //    b2Vec2(position.x, position.y),
-        //    duration);
-        //state_->Body()->ApplyLinearImpulse(state_->Body()->GetMass() * impulse, state_->Body()->GetWorldCenter());
+        ////// Apply force
+        ////GFort::Core::Physics::Box2dSettings setting;
+        ////b2Vec2 impulse = GFort::Core::Physics::PhysicsHelper::GetTrajectoryVelocity(
+        ////    state_->Body()->GetWorld(),
+        ////    &setting,
+        ////    b2Vec2(this->getPosition().x, this->getPosition().y),
+        ////    b2Vec2(position.x, position.y),
+        ////    duration);
+        ////state_->Body()->ApplyLinearImpulse(state_->Body()->GetMass() * impulse, state_->Body()->GetWorldCenter());
 
         //cocos2d::CCDelayTime* delayAction = cocos2d::CCDelayTime::actionWithDuration(duration);
         //cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::actionWithTarget(
@@ -244,7 +284,7 @@ void PlayerNode::Run(const cocos2d::CCPoint& position)
 {
     cocos2d::CCPoint diff = cocos2d::ccpSub(position, this->getPosition());
     diff.y = 0;
-    float duration = abs(diff.x) / state_->RunSpeed();
+    float duration = abs(diff.x) / state_->Properties()->RunSpeed();
 
     CCLOG("Node move to (%0.2f, %0.2f) with duration %0.2f", 
             position.x, 
@@ -312,7 +352,9 @@ void PlayerNode::Attack(UnitAction& action)
             callfunc_selector(PlayerNode::FinishAction));
     
         cocos2d::CCFiniteTimeAction* newAction = cocos2d::CCSequence::actions(
-            moveAction, callAction, endAction, NULL);
+            moveAction, callAction, 
+            //endAction,
+            NULL);
     
         this->stopAllActions();
         this->runAction(newAction);
@@ -331,6 +373,97 @@ void PlayerNode::Move(const cocos2d::CCPoint& position)
         
     ChangeFacingDirection((diff.x > 0) ? kFacingRight : kFacingLeft);
     ShowAnimation(kUnitAnimationRun);
+}
+
+void PlayerNode::ShowAnimation(const UnitAnimationType& value)
+{
+    if (animation_type_ != value ||
+        needs_update_)
+    {
+        animation_type_ = value;
+        sprite_->stopAllActions();
+
+        if (state_->Facing() == kFacingLeft)
+        {
+            switch (animation_type_)
+            {
+            case kUnitAnimationIdle:
+                //sprite_->runAction(cocos2d::CCAnimate::actionWithDuration(1, animations_["RUN_LEFT"], false));
+                sprite_->setFlipX(true);
+                sprite_->runAction(actions_["RUN_LEFT"]);
+                break;
+            case kUnitAnimationRun:
+                //sprite_->runAction(cocos2d::CCAnimate::actionWithDuration(1, animations_["RUN_LEFT"], false));
+                sprite_->setFlipX(true);
+                sprite_->runAction(actions_["RUN_LEFT"]);
+                break;
+            case kUnitAnimationAttack:
+                //sprite_->runAction(cocos2d::CCAnimate::actionWithDuration(1, animations_["ATTACK_LEFT"], false));
+                sprite_->setFlipX(true);
+                sprite_->runAction(actions_["ATTACK_LEFT"]);
+                break;
+            default:
+                break;
+            }
+        }
+        else
+        {
+            switch (animation_type_)
+            {
+            case kUnitAnimationIdle:
+                //sprite_->runAction(cocos2d::CCAnimate::actionWithDuration(1, animations_["RUN_RIGHT"], false));
+                sprite_->setFlipX(false);
+                sprite_->runAction(actions_["RUN_RIGHT"]);
+                break;
+            case kUnitAnimationRun:
+                //sprite_->runAction(cocos2d::CCAnimate::actionWithDuration(1, animations_["RUN_RIGHT"], false));
+                sprite_->setFlipX(false);
+                sprite_->runAction(actions_["RUN_RIGHT"]);
+                break;
+            case kUnitAnimationAttack:
+                //sprite_->runAction(cocos2d::CCAnimate::actionWithDuration(1, animations_["ATTACK_RIGHT"], false));
+                sprite_->setFlipX(false);
+                sprite_->runAction(actions_["ATTACK_RIGHT"]);
+                break;
+            default:
+                break;
+            }
+        }
+        needs_update_ = false;
+    }
+}
+
+cocos2d::CCRect PlayerNode::boundingBox(void) 
+{ 
+    if (sprite_)
+    {
+        cocos2d::CCRect region = sprite_->boundingBox();
+        return CCRectMake(
+            this->getPosition().x + region.origin.x,
+            this->getPosition().y + region.origin.y,
+            region.size.width,
+            region.size.height);
+    }
+    else
+    {
+        return cocos2d::CCRectZero; 
+    }
+} 
+
+cocos2d::CCSize PlayerNode::Size() 
+{ 
+    return (sprite_) ? sprite_->boundingBox().size : cocos2d::CCSizeZero;
+}
+
+BPolygon PlayerNode::GetBoundingRegion()
+{
+    cocos2d::CGFloat minX, minY, maxX, maxY;
+    cocos2d::CCRect rect = this->boundingBox();
+    minX = cocos2d::CCRect::CCRectGetMinX(rect);
+    maxX = cocos2d::CCRect::CCRectGetMaxX(rect);
+    minY = cocos2d::CCRect::CCRectGetMinY(rect);
+    maxY = cocos2d::CCRect::CCRectGetMaxY(rect);
+    return BattleHelper::ConvertToPolygon(minX, minY, maxX, maxY);
 }
 
 } // namespace

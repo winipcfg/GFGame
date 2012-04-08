@@ -25,12 +25,12 @@
 #include <GFort/Core/IObserver.h>
 #include <Warrior/Model/GameStat.h>
 #include <Warrior/Model/Battle.h>
+#include <Warrior/ViewController/BattleHUD.h>
 #include <Cistron/Cistron.h>
 
 #include "cocos2d.h"
 #include "TypeDef.h"
 #include "SliceLayer.h"
-#include "BattleHUD.h"
 #include "BattleAudioHandler.h"
 #include "EmitterHandler.h"
 #include "PlayerNode.h"

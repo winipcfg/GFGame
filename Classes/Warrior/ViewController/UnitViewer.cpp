@@ -18,7 +18,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#include "UnitDebugViewer.h"
+#include "UnitViewer.h"
 #include <string>
 #include <Warrior/Model/BattleHelper.h>
 
@@ -30,14 +30,14 @@ namespace Warrior
 const std::string   kLabelActionFont                    = "Arial";
 const int           kLabelActionFontSize                = 20;
     
-UnitDebugViewer::UnitDebugViewer()
+UnitViewer::UnitViewer()
     : unit_(NULL),
       label_action_(NULL),
       alive_(false),
       current_action_type_(kUnitActionTypeIdle)
 {
     this->scheduleUpdate();
-    this->schedule(schedule_selector(UnitDebugViewer::UpdateNode));
+    this->schedule(schedule_selector(UnitViewer::UpdateNode));
 
     //---------------------------------------------------------------
     // Labels
@@ -52,12 +52,12 @@ UnitDebugViewer::UnitDebugViewer()
     this->addChild(label_action_, 1);
 }
 
-UnitDebugViewer::~UnitDebugViewer()
+UnitViewer::~UnitViewer()
 {
     this->unscheduleUpdate();
 }
 
-void UnitDebugViewer::UpdateNode(cocos2d::ccTime dt)
+void UnitViewer::UpdateNode(cocos2d::ccTime dt)
 {
     if (unit_)
     {

@@ -19,6 +19,7 @@
 //THE SOFTWARE.
 
 #include "MissileNode.h"
+#include <GFort/Core/Macros.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include "CCExtensions/CCSpriteHelper.h"
 #include "Components/Missile.h"
@@ -38,7 +39,6 @@ const std::string   kSpriteShipFrame    = "Assets/Shmup/Sprites.plist";
 MissileNode::MissileNode()
     : Cistron::Component("MissileNode"),
       sprite_(NULL),
-      //sprite_new_(NULL),
       body_(NULL)
 {
     this->scheduleUpdate();
@@ -47,6 +47,7 @@ MissileNode::MissileNode()
 
 MissileNode::~MissileNode()
 {
+    //SAFE_DELETE(sprite_);
 }
 
 bool MissileNode::init()
@@ -105,10 +106,6 @@ void MissileNode::UpdateNode(cocos2d::ccTime dt)
         float rotation = CC_RADIANS_TO_DEGREES(-1 * body_->GetAngle());
         this->setRotation(rotation);        
         this->setPosition(position);
-
-        //std::list<Cistron::Component*> missiles = this->getComponents("Missxzcile", this->getOwnerId());
-        //Missile* missile = static_cast<Missile*>(missiles.front());
-        //int i = missile->GetDamage();
     }
 
     if (body_ && !body_->IsAwake())
@@ -122,16 +119,17 @@ void MissileNode::Destroy()
     if (body_)
     {
         body_->GetWorld()->DestroyBody(body_);
+        body_ = NULL;
     }
 
     this->unscheduleUpdate();
     this->unscheduleAllSelectors();
     this->removeAllChildrenWithCleanup(true);
     this->removeFromParentAndCleanup(true);    
+    sprite_ = NULL;
     
     // CANNOT destroy object here
     //this->getObjectManager()->destroyObject(this->getOwnerId());
-    
 }
 
 

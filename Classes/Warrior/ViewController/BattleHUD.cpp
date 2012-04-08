@@ -21,8 +21,8 @@
 #include "BattleHUD.h"
 #include <string>
 #include <GFort/Core/StringHelper.h>
+#include <Warrior/BattleScene.h>
 #include "CCExtensions/CCSpriteHelper.h"
-#include "BattleScene.h"
 
 using namespace cocos2d;
 

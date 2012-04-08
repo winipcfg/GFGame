@@ -51,15 +51,9 @@ public:
 
     /// Initialize.
     virtual bool init() = 0;
-
-    /// Gets the bounding box.
-    cocos2d::CCRect boundingBox(void);
-
-    /// Gets the size of bounding box.
-    cocos2d::CCSize Size();
-
+    
     /// Gets the bounding region.
-    BPolygon GetBoundingRegion();
+    virtual BPolygon GetBoundingRegion() = 0;
 
     /// Reset all data in node.
     virtual void Reset();
@@ -70,10 +64,6 @@ public:
     /// Change facing direction.
     /// @param value
     void ChangeFacingDirection(const FacingDirection& value);
-    
-    /// Show animation.
-    /// @param value
-    void ShowAnimation(const UnitAnimationType& value);
         
     /// Gets the state.
     Unit* GetState()                    { return state_; }
@@ -92,7 +82,7 @@ protected:
 protected:
     /// Update the node.
     /// @param dt
-    virtual void UpdateNode(cocos2d::ccTime dt);
+    virtual void UpdateNode(cocos2d::ccTime dt) {}
 
 protected:
     /// Resolve attack.
@@ -104,19 +94,10 @@ protected:
 protected:
     // Attributes
     Unit*                               state_;
-
-    
+        
     // If true, then the node follows physics motion. Else, it follows sprite motion
     bool                                use_physics_motion_;  
-
-    // Main node and sprite for actions and animations
-    cocos2d::CCSprite*                  sprite_;
-    //cocos2d::AdvanceSprite*             sprite_new_;
-
-    // Stores animations and default actions
-    std::hash_map<std::string, cocos2d::CCAnimation*>   animations_;
-    std::hash_map<std::string, cocos2d::CCAction*>      actions_;
-
+    
     // Instance Data
     UnitAnimationType                   animation_type_;
     bool                                needs_update_;

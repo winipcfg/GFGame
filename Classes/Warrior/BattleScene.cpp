@@ -28,29 +28,42 @@ namespace Warrior
 enum 
 {
     kTagBattleLayer = 0,
+    kTagGameLayer   = 10,
     kTagHUD         = 20,
     kTagBox2dDebug  = 30,
     kTagPauseGame   = 100,
 };
 
 BattleScene::BattleScene()
-    : hud_layer_(NULL),
-      physics_debug_viewer(NULL),
-      battle_layer_(NULL),
-      pause_game_layer_(NULL)
+    : hud_layer_(NULL)
+    , game_layer_(NULL)
+    , physics_debug_viewer(NULL)
+    , battle_layer_(NULL)
+    , pause_game_layer_(NULL)
 {
+    ////////////////////////////////////////////////////////////
+    ///
+    /// Scene
+    /// |-- HUD Layer
+    /// |-- Game Layer
+    ///     |-- Battle Layer
+    ///     |-- Physics Debug Layer
+    ///
+    ////////////////////////////////////////////////////////////
     hud_layer_ = Warrior::BattleHUD::node();
     addChild(hud_layer_, kTagHUD, kTagHUD);
 
+    game_layer_ = cocos2d::CCLayer::node();
+    this->addChild(game_layer_, kTagGameLayer, kTagGameLayer);
+
     battle_layer_ = Warrior::BattleLayer::node();
     battle_layer_->SetViewer(hud_layer_);
-    addChild(battle_layer_, kTagBattleLayer, kTagBattleLayer);
-    //battle_layer_->release();
+    game_layer_->addChild(battle_layer_, kTagBattleLayer, kTagBattleLayer);
 
     physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
     physics_debug_viewer->SetWorld(battle_layer_->GetBattle()->World(), &battle_layer_->GetBattle()->PhysicsSettings());
-    physics_debug_viewer->setIsVisible(false);
-    addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
+    physics_debug_viewer->setIsVisible(true);
+    game_layer_->addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
 }
 
 BattleScene::~BattleScene()

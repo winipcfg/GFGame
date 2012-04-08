@@ -18,8 +18,8 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef GFGAME_WARRIOR_UNIT_DEBUG_VIEWER_H_
-#define GFGAME_WARRIOR_UNIT_DEBUG_VIEWER_H_
+#ifndef GFGAME_WARRIOR_UNIT_VIEWER_H_
+#define GFGAME_WARRIOR_UNIT_VIEWER_H_
 
 #include "cocos2d.h"
 #include <Warrior/Units/Unit.h>
@@ -28,19 +28,19 @@ namespace Warrior
 {
 
 /// Class for viewing unit information
-class UnitDebugViewer : public cocos2d::CCLayer
+class UnitViewer : public cocos2d::CCLayer
 {    
 public:
     /// Constructor.
-    UnitDebugViewer();
+    UnitViewer();
 
     /// Destructor.
-    ~UnitDebugViewer();
+    ~UnitViewer();
 
     /// Set the unit that it refers to.
     void SetUnit(Unit* unit)            { unit_ = unit; }
         
-    LAYER_NODE_FUNC(UnitDebugViewer)
+    LAYER_NODE_FUNC(UnitViewer)
 
 protected:
     /// Update the node.
@@ -58,4 +58,4 @@ private:
 
 } // namespace
 
-#endif // GFGAME_WARRIOR_UNIT_DEBUG_VIEWER_H_
+#endif // GFGAME_WARRIOR_UNIT_VIEWER_H_

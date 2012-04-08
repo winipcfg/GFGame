@@ -32,7 +32,7 @@ namespace Warrior
 {
 
 class MissileNode 
-    : public cocos2d::CCLayer,
+    : public cocos2d::CCNode,
       public Cistron::Component
 {    
 public:

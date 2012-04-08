@@ -25,7 +25,7 @@
 #include <Viewer/Box2dDebugViewer.h>
 #include <Scene/GameScene.h>
 #include <Scene/PauseGameLayer.h>
-#include "BattleHUD.h"
+#include <Warrior/ViewController/BattleHUD.h>
 #include "BattleLayer.h"
 
 namespace Warrior 
@@ -51,6 +51,7 @@ protected:
 private:
     // Stores layer reference
     BattleHUD*                          hud_layer_;
+    cocos2d::CCLayer*                   game_layer_;    
     GFGame::Viewer::Box2dDebugViewer*   physics_debug_viewer;
     BattleLayer*                        battle_layer_;
     GFGame::Scene::PauseGameLayer*      pause_game_layer_;

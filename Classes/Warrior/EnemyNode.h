@@ -45,6 +45,9 @@ public:
 
     /// Set the bot of the node.
     void SetBot(Bot* bot) { bot_ = bot; }
+
+    /// Gets the bounding region.
+    virtual BPolygon GetBoundingRegion();
         
 protected:
     /// Update action based on current command.
@@ -55,7 +58,7 @@ protected:
     virtual void Attack(UnitAction& action);
 
 private:
-    void Update(cocos2d::ccTime dt);
+    void UpdateNode(cocos2d::ccTime dt);
     void Think(cocos2d::ccTime dt);
 
     /// Destroy itself.

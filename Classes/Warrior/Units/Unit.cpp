@@ -19,6 +19,7 @@
 //THE SOFTWARE.
 
 #include "Unit.h"
+#include <GFort/Core/Macros.h>
 #include <Warrior/Model/BattleHelper.h>
 
 namespace Warrior 
@@ -26,20 +27,22 @@ namespace Warrior
     
 Unit::Unit()
     : Cistron::Component("Unit"),
-      max_lives_(0),
-      max_stamina_(0),
-      stamina_regenerate_speed_(0),
-      walk_speed_(0),
-      run_speed_(0),
       side_(0),
       lives_(0),
       stamina_(0),
       facing_(kFacingRight),
-      floating_in_the_air_(false),
       last_attacker_(NULL),
       motion_updated_by_phys_(false),
       body_(NULL)
 {
+    //Cistron::ObjectId objId = this->getObjectManager()->createObject();
+    properties_ = new UnitProperties();
+    //this->getObjectManager()->addComponent(objId, properties_);
+}
+
+Unit::~Unit()
+{
+    SAFE_DELETE(properties_);
 }
 
 const bool Unit::TakeDamage(Unit* attacker, const short& damage)
@@ -73,7 +76,6 @@ void Unit::Reset()
     lives_ = 1;
     action_.Reset();
     facing_ = kFacingRight;
-    floating_in_the_air_ = false;
     this->action_.Reset();
     this->pending_actions_.clear();
 }

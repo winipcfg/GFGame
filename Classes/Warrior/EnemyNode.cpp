@@ -30,24 +30,14 @@ namespace Warrior
 
 const float kWalkSpeed                  = 100.0f;
 const float kRunSpeed                   = 200.0f;
-
-const std::string   kUnitSprite                         = "Assets/Char/enemy_idle.png";
-//const std::string   kUnitSpriteFrameNameSyntaxRL        = "Assets/Char/enemy_run%02d.png";
-//const std::string   kUnitSpriteFrameNameSyntaxRR        = "Assets/Char/enemy_run%02d.png";
-//const std::string   kUnitSpriteFrameNameSyntaxAL        = "Assets/Char/enemy_idle.png";
-//const std::string   kUnitSpriteFrameNameSyntaxAR        = "Assets/Char/enemy_idle.png";
-const std::string   kUnitSpriteFrameNameSyntaxRL        = "Assets/Test/rogue.png";
-const std::string   kUnitSpriteFrameNameSyntaxRR        = "Assets/Test/rogue.png";
-const std::string   kUnitSpriteFrameNameSyntaxAL        = "Assets/Test/rogue.png";
-const std::string   kUnitSpriteFrameNameSyntaxAR        = "Assets/Test/rogue.png";
-
+const short         kUnitMoveSpeed                      = 4;
 
 EnemyNode::EnemyNode(Unit* unit)
     : UnitNode(unit),
       bot_(NULL)
 {
+    use_physics_motion_ = true;
     this->schedule(schedule_selector(EnemyNode::Think), 0.5);
-    //this->scheduleUpdate();
 }
 
 EnemyNode::~EnemyNode()
@@ -59,8 +49,8 @@ void EnemyNode::ResetState()
     if (state_ != NULL)
     {
         state_->Reset();
-        state_->SetWalkSpeed(kWalkSpeed);
-        state_->SetRunSpeed(kRunSpeed);
+        //state_->SetWalkSpeed(kWalkSpeed);
+        //state_->SetRunSpeed(kRunSpeed);
         state_->Detach(this);
         state_->Attach(this);
     }
@@ -70,78 +60,6 @@ bool EnemyNode::init()
 {
     cocos2d::CCSpriteFrameCache* cache = cocos2d::CCSpriteFrameCache::sharedSpriteFrameCache();
     //cache->addSpriteFramesWithFile(kEnemySpriteFrame.c_str());
-
-    // Create a sprite sheet with image
-    //cocos2d::CCSpriteBatchNode* spriteSheet = cocos2d::CCSpriteBatchNode::batchNodeWithFile(kEnemySprite.c_str());
-    //addChild(spriteSheet);
-
-    //---------------------------------------------------------------
-    // Sprites
-    //---------------------------------------------------------------
-    char frameName[100] = {0};
-    sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kUnitSprite.c_str());
-    cocos2d::CCPoint pt = sprite_->getAnchorPoint();
-    sprite_->setAnchorPoint(ccp(0.5, 0));
-    this->addChild(sprite_);
-
-    //---------------------------------------------------------------
-    // Animations
-    //---------------------------------------------------------------    
-    cocos2d::CCAnimation* animation;
-    animation = cocos2d::CCAnimation::animation();    
-    animations_["RUN_LEFT"] = animation;
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRL.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRL.c_str(), 3);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRL.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRL.c_str(), 1);
-    animation->addFrameWithFileName(frameName);    
-    actions_["RUN_LEFT"] = cocos2d::CCRepeatForever::actionWithAction(
-        cocos2d::CCAnimate::actionWithDuration(1, animation, true));
-    actions_["RUN_LEFT"]->retain();
-
-    animation = cocos2d::CCAnimation::animation();
-    animations_["RUN_RIGHT"] = animation;
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRR.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRR.c_str(), 3);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRR.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxRR.c_str(), 1);
-    animation->addFrameWithFileName(frameName);    
-    actions_["RUN_RIGHT"] = cocos2d::CCRepeatForever::actionWithAction(
-        cocos2d::CCAnimate::actionWithDuration(1, animation, true));
-    actions_["RUN_RIGHT"]->retain();
-    
-    animation = cocos2d::CCAnimation::animation();       
-    animations_["ATTACK_LEFT"] = animation;
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAL.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAL.c_str(), 3);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAL.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAL.c_str(), 1);
-    animation->addFrameWithFileName(frameName);    
-    actions_["ATTACK_LEFT"] = cocos2d::CCAnimate::actionWithDuration(1, animation, false);
-    actions_["ATTACK_LEFT"]->retain();
-
-    animation = cocos2d::CCAnimation::animation(); 
-    animations_["ATTACK_RIGHT"] = animation;
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAR.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAR.c_str(), 3);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAR.c_str(), 2);
-    animation->addFrameWithFileName(frameName);
-    sprintf(frameName, kUnitSpriteFrameNameSyntaxAR.c_str(), 1);
-    animation->addFrameWithFileName(frameName);    
-    actions_["ATTACK_RIGHT"] = cocos2d::CCAnimate::actionWithDuration(1, animation, false);
-    actions_["ATTACK_RIGHT"]->retain();
-   
     return true;
 }
 
@@ -163,21 +81,16 @@ void EnemyNode::UpdateAction()
 void EnemyNode::Attack(UnitAction& action)
 {
     float dx = action.PositionX - this->getPosition().x;
-    float jumpDuration = 1.0f;
-    float jumpHeight = boundingBox().size.height;
+    float duration = 2.0f;
     cocos2d::CCPoint position = action.Target->getPosition();
     CCLOG("Node tries move from (%0.2f, %0.2f) to attack target at (%0.2f, %0.2f) with duration %0.2f",
         this->getPosition().x,
         this->getPosition().y,
         position.x,
         position.y,
-        jumpDuration);
-    
-    //cocos2d::CCJumpTo* jumpAction = cocos2d::CCJumpTo::actionWithDuration(
-    //    jumpDuration, 
-    //    position, 
-    //    jumpHeight, 
-    //    1);
+        duration);
+
+    cocos2d::CCDelayTime* delayAction = cocos2d::CCDelayTime::actionWithDuration(duration);
     cocos2d::CCCallFunc* resolveAction = cocos2d::CCCallFunc::actionWithTarget(
         this,
         callfunc_selector(EnemyNode::ResolveAttack));
@@ -186,7 +99,7 @@ void EnemyNode::Attack(UnitAction& action)
         callfunc_selector(EnemyNode::FinishAction));
         
     cocos2d::CCFiniteTimeAction* newAction = cocos2d::CCSequence::actions(
-        //jumpAction, 
+        delayAction,
         resolveAction, 
         endAction, 
         NULL);
@@ -194,12 +107,82 @@ void EnemyNode::Attack(UnitAction& action)
     this->stopAllActions();
     this->runAction(newAction);
     ChangeFacingDirection((dx > 0) ? kFacingRight : kFacingLeft);
-    ShowAnimation(kUnitAnimationAttack);
+    //ShowAnimation(kUnitAnimationAttack);
 }
 
-void EnemyNode::Update(cocos2d::ccTime dt)
+void EnemyNode::UpdateNode(cocos2d::ccTime dt)
 {    
-    
+    state_->Update(dt);
+        
+    if (use_physics_motion_)
+    {
+        if (state_->Alive() && state_->Body())
+        {
+            CCPoint position;
+            short speed = 0;
+            switch (state_->CurrentAction().ActionType)
+            {
+			    case kUnitActionTypeMoveLeft:
+                    speed = -kUnitMoveSpeed;
+                    state_->SetFacing(kFacingLeft);
+                    break;
+			    case kUnitActionTypeMoveRight:
+                    speed = kUnitMoveSpeed;
+                    state_->SetFacing(kFacingRight);
+                    break;
+                default:
+                    break;
+            }
+
+            if (speed)
+            {
+                b2Vec2 velocity = state_->Body()->GetLinearVelocity();
+                float velChange = speed - velocity.x;
+                float impulse = state_->Body()->GetMass() * velChange;
+                state_->Body()->ApplyLinearImpulse(b2Vec2(impulse,0), state_->Body()->GetWorldCenter());
+            }
+        }
+
+        cocos2d::CCPoint position = cocos2d::CCPoint(
+            (state_->Body()->GetPosition().x * PTM_RATIO), 
+            (state_->Body()->GetPosition().y * PTM_RATIO));
+        float rotation = CC_RADIANS_TO_DEGREES(-1 * state_->Body()->GetAngle());
+        this->setRotation(rotation);           
+        this->setPosition(position);        
+    }
+    else
+    {
+        if (state_->Alive())
+        {
+            CCPoint position;
+            short speed = 0;
+            switch (state_->CurrentAction().ActionType)
+            {
+			    case kUnitActionTypeMoveLeft:
+                    speed = -kUnitMoveSpeed;
+                    state_->SetFacing(kFacingLeft);
+                    break;
+			    case kUnitActionTypeMoveRight:
+                    speed = kUnitMoveSpeed;
+                    state_->SetFacing(kFacingRight);
+                    break;
+                default:
+                    break;
+            }
+            position = this->getPosition();
+            position.x += speed;
+            this->setPosition(position);
+        }
+
+        if (state_->Body())
+        {
+            state_->Body()->SetTransform(
+                b2Vec2((this->getPosition().x) * GFort::Core::Physics::kINV_PTM_RATIO, 
+                       (this->getPosition().y + this->boundingBox().size.height / 2) * GFort::Core::Physics::kINV_PTM_RATIO), 
+                state_->Body()->GetAngle());
+            state_->Body()->SetAwake(true);
+        }
+    }
 }
 
 void EnemyNode::Think(cocos2d::ccTime dt)
@@ -221,6 +204,31 @@ void EnemyNode::Destroy()
     }
 
     this->removeFromParentAndCleanup(true);
+}
+
+BPolygon EnemyNode::GetBoundingRegion()
+{
+    //cocos2d::CGFloat minX, minY, maxX, maxY;
+    //cocos2d::CCRect rect = this->boundingBox();
+    //minX = cocos2d::CCRect::CCRectGetMinX(rect);
+    //maxX = cocos2d::CCRect::CCRectGetMaxX(rect);
+    //minY = cocos2d::CCRect::CCRectGetMinY(rect);
+    //maxY = cocos2d::CCRect::CCRectGetMaxY(rect);
+    //return BattleHelper::ConvertToPolygon(minX, minY, maxX, maxY);
+    //if (state_->Body())
+    //{
+    //    b2AABB aabb;
+    //    aabb.lowerBound = b2Vec2(HUGE_FLOAT, HUGE_FLOAT);
+    //    aabb.upperBound = b2Vec2(-HUGE_FLOAT, -HUGE_FLOAT); 
+    //    b2Fixture* fixture = state_->Body()->GetFixtureList();
+    //    while (fixture != NULL)
+    //    {
+    //        aabb.Combine(aabb, fixture->GetAABB());
+    //        fixture = fixture->GetNext();
+    //    }
+    //}
+    //return BPolygon();
+    return BPolygon();
 }
 
 } // namespace
