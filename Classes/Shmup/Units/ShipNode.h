@@ -60,12 +60,16 @@ private:
     /// @param dt
     void UpdateNode(cocos2d::ccTime dt);
 
+    /// Update position and rotation of the node.
+    void UpdatePositionAndRotation();
+
     /// Destroy itself.
     void Destroy();
 
 public:
     // Main node and sprite for actions and animations
-    cocos2d::AdvanceSprite*                  sprite_;
+    //cocos2d::AdvanceSprite*                  sprite_;
+    cocos2d::CCSprite*                  sprite_;
 
 public:
     // Physics body

@@ -22,7 +22,9 @@
 #include <string>
 #include <GFort/Core/StringHelper.h>
 #include "CCExtensions/CCSpriteHelper.h"
-#include "../ShmupScene.h"
+#include "../Scene/ShmupScene.h"
+//#include "CCControlExtension/CCControlSlider.h"
+//#include "../Scene/GameSettingLayer.h"
 
 using namespace cocos2d;
 
@@ -85,6 +87,7 @@ void ShmupHUD::SetupViewer()
     //---------------------------------------------------------------
     // Game Menu
     //---------------------------------------------------------------
+    // Pause Button
     button_pause_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
         kButtonPause.c_str(), 
         kButtonPause.c_str(), 
@@ -93,6 +96,7 @@ void ShmupHUD::SetupViewer()
     button_pause_->setAnchorPoint(ccp(1.0, 1.0));
     button_pause_->setPosition(CCPointMake(size.width - kButtonPausePosition, size.height - kButtonPausePosition));
 
+    // Debug Button
     button_debug_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
         kButtonDebug.c_str(), 
         kButtonDebug.c_str(), 

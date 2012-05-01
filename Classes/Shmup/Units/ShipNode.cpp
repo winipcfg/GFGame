@@ -28,8 +28,9 @@ namespace GFort { namespace Games { namespace Shmup
 {
 
 //const std::string   kSprite                     = "Assets/Shmup/Ship/ShipCore.png";
-const std::string   kSprite                     = "Assets/Shmup/Sprites.pvr.ccz";
-const std::string   kSpriteShipFrame            = "Assets/Shmup/Sprites.plist";
+const std::string   kSprite                     = "Assets/Shmup/ship_4.png";
+//const std::string   kSprite                     = "Assets/Shmup/Sprites.pvr.ccz";
+//const std::string   kSpriteShipFrame            = "Assets/Shmup/Sprites.plist";
 const short         kAnimationStart             = 1;
 const short         kAnimationEnd               = 3;
 const short         kNumberOfFramePerSecond     = 10;
@@ -42,7 +43,6 @@ ShipNode::ShipNode()
     , body_(NULL)
     , physics_component_(NULL)
 {
-    this->scheduleUpdate();
     this->schedule(schedule_selector(ShipNode::UpdateNode)); 
 }
 
@@ -56,12 +56,15 @@ bool ShipNode::init()
     //---------------------------------------------------------------
     // Sprites
     //---------------------------------------------------------------
-    sprite_ = new AdvanceSprite();
-    sprite_->init();
-    sprite_->addFrames(kSpriteShipFrame.c_str(), kSprite.c_str());
-    sprite_->startAnimation(kAnimationStart, kAnimationEnd, -1, 0, this, kNumberOfFramePerSecond, false, false);
-    sprite_->setIsVisible(true);
+    sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kSprite.c_str());
     this->addChild(sprite_);
+
+    //sprite_ = new AdvanceSprite();
+    //sprite_->init();
+    //sprite_->addFrames(kSpriteShipFrame.c_str(), kSprite.c_str());
+    //sprite_->startAnimation(kAnimationStart, kAnimationEnd, -1, 0, this, kNumberOfFramePerSecond, false, false);
+    //sprite_->setIsVisible(true);
+    //this->addChild(sprite_);
 
     return true;
 }
@@ -85,6 +88,16 @@ cocos2d::CCRect ShipNode::boundingBox(void)
 
 void ShipNode::UpdateNode(cocos2d::ccTime dt)
 {    
+    //UpdatePositionAndRotation();
+
+    //if (body_ && !body_->IsAwake())
+    //{
+    //    Destroy();
+    //}
+}
+
+void ShipNode::UpdatePositionAndRotation()
+{
     if (body_ && sprite_)
     {
         cocos2d::CCPoint position = cocos2d::CCPoint(
@@ -94,11 +107,6 @@ void ShipNode::UpdateNode(cocos2d::ccTime dt)
         this->setRotation(rotation);        
         this->setPosition(position);
     }
-
-    //if (body_ && !body_->IsAwake())
-    //{
-    //    Destroy();
-    //}
 }
 
 void ShipNode::Destroy() 

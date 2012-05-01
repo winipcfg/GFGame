@@ -25,6 +25,8 @@
 #include <string>
 #include <Box2D/Box2D.h>
 #include <Cistron/Cistron.h>
+#include "Components/PhysicsComponent.h"
+#include "Components/RenderComponent.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
@@ -34,11 +36,19 @@ typedef b2Vec2                  Vector2;
 typedef b2World                 PhysicsWorld;
 typedef short                   GameSide;
 
+typedef GFGame::Components::PhysicsComponent    PhysicsComponent;
+typedef GFGame::Components::RenderComponent     RenderComponent;
+typedef PhysicsComponent*                       PhysicsComponentPtr;
+typedef RenderComponent*                        RenderComponentPtr;
+typedef std::vector<PhysicsComponent* >         PhysicsComponentPtrList;
+typedef std::vector<RenderComponent* >          RenderComponentPtrList;
+
 static const std::string        kSpriteBeam                 = "Assets/Shmup/laserbeam.png";
 static const std::string        kSpriteAsteroid             = "Assets/Shmup/asteroid_sm.png";
 
 // Name of components
 static const std::string        kComponentUnit              = "Ship";
+static const std::string        kComponentCore              = "Core";
 static const std::string        kComponentMissile           = "Missile";
 static const std::string        kComponentWeapon            = "Weapon";
 

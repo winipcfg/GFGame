@@ -22,9 +22,14 @@
 #include <GFort/Core/Physics/PhysicsHelper.h>
 //#include "../Constants.h"
 #include "../Game.h"
-
+#include "ShipNode.h"
 namespace GFort { namespace Games { namespace Shmup 
 {
+
+#ifndef DEGTORAD
+#define DEGTORAD 0.0174532925199432957f
+#define RADTODEG 57.295779513082320876f
+#endif
 
 Ship::Ship(Game* game, const GameSide& side)
     : Unit("Unit", game, side)
@@ -44,23 +49,81 @@ void Ship::Move(const float& dx, const float& dy)
     if (physics_component_.size() > 0)
     {
         b2Body* body = physics_component_[0]->Body();
-        b2Vec2 velocity = body->GetLinearVelocity();
-        b2Vec2 impulse(dx - velocity.x, dy - velocity.y);
-        impulse *= body->GetMass();
-        body->ApplyLinearImpulse(impulse, body->GetWorldCenter());
+        
+        float bodyAngle = body->GetAngle();
+        float desiredAngle = atan2f(-dx, dy);
+
+        float totalRotation = desiredAngle - bodyAngle;
+        while (totalRotation < -180 * DEGTORAD) totalRotation += 360 * DEGTORAD;
+        while (totalRotation >  180 * DEGTORAD) totalRotation -= 360 * DEGTORAD;
+
+        float change = 1 * DEGTORAD; //allow 1 degree rotation per time step
+        float newAngle = bodyAngle + min(change, max(-change, totalRotation));
+        body->SetAngularVelocity(0);
+        body->SetTransform(body->GetPosition(), newAngle);
+
+        UpdateDrive(sqrt(dx*dx+dy*dy));
     }
 }
 
 void Ship::StopMove()
 {
+    //// Gets the first physics component and do action
+    //if (physics_component_.size() > 0)
+    //{
+    //    b2Body* body = physics_component_[0]->Body();
+    //    b2Vec2 velocity = body->GetLinearVelocity();
+    //    b2Vec2 impulse = 0.2f * velocity;
+    //    impulse *= body->GetMass();
+    //    body->ApplyLinearImpulse(-impulse, body->GetWorldCenter());
+    //}
+}
+
+Vector2 Ship::Forward()
+{
+    if (physics_component_.size() > 0)
+        return physics_component_[0]->Body()->GetWorldVector(b2Vec2(0, 1));
+    else
+        return Vector2(0, 0);
+}
+
+void Ship::UpdateDrive(const float& delta)
+{
+    const float m_maxForwardSpeed = 80;
+    const float m_maxBackwardSpeed = 80;
+    const float m_maxDriveForce = 1;
+    const float m_currentTraction = 1;
+
     // Gets the first physics component and do action
     if (physics_component_.size() > 0)
     {
         b2Body* body = physics_component_[0]->Body();
+        float desiredSpeed = 0;
+        if (delta > 0)
+            desiredSpeed = m_maxForwardSpeed;
+        else if (delta < 0)
+            desiredSpeed = -m_maxBackwardSpeed;
+        else
+            return;        
+        
+        // Find current speed in forward direction
+        b2Vec2 currentForwardNormal = body->GetWorldVector(b2Vec2(0, 1));
+        b2Vec2 currentForwardVelocity = b2Dot(currentForwardNormal, body->GetLinearVelocity()) * currentForwardNormal;
+        float currentSpeed = b2Dot(currentForwardVelocity, currentForwardNormal);
+
+        // Apply necessary force
+        float force = 0;
+        if (desiredSpeed > currentSpeed)
+            force = m_maxDriveForce;
+        else if (desiredSpeed < currentSpeed)
+            force = -m_maxDriveForce;
+        else
+            return;
+
+        float magitude = 0.5;
         b2Vec2 velocity = body->GetLinearVelocity();
-        b2Vec2 impulse = 0.2f * velocity;
-        impulse *= body->GetMass();
-        body->ApplyLinearImpulse(-impulse, body->GetWorldCenter());
+        body->ApplyLinearImpulse(force * magitude * currentForwardNormal, body->GetWorldCenter());
+        body->SetLinearDamping(5);
     }
 }
 
@@ -111,6 +174,17 @@ void Ship::Die()
 
 void Ship::Destroy()
 {
+}
+
+void Ship::Update(const float& dt)
+{
+    if (render_component_.size() > 0 && physics_component_.size() > 0)
+    {
+        Vector2 position;
+        float rotation;
+        physics_component_[0]->GetPositionAndRotation(position, rotation);
+        render_component_[0]->UpdatePositionAndRotation(position, rotation);
+    }
 }
     
 } } } // namespace

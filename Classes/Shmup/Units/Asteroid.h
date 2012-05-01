@@ -26,8 +26,6 @@
 #include <Cistron/Cistron.h>
 #include <GFort/Core/Game/IEntity.h>
 #include <GFort/Core/Game/IWeapon.h>
-#include "Components/PhysicsComponent.h"
-#include "Components/RenderComponent.h"
 #include "Unit.h"
 
 namespace GFort { namespace Games { namespace Shmup 
@@ -35,13 +33,6 @@ namespace GFort { namespace Games { namespace Shmup
 
 class Asteroid : public Unit
 {
-public:
-    typedef GFort::Core::Game::IWeapon&             WeaponReference;
-    typedef GFort::Core::Game::IWeapon*             WeaponPtr;
-    typedef std::vector<WeaponPtr >                 WeaponList;
-    typedef GFGame::Components::PhysicsComponent    PhysicsComponent;
-    typedef GFGame::Components::RenderComponent     RenderComponent;
-
 public:
     /// Constructor
     Asteroid(Game* game, const GameSide& side);
@@ -65,6 +56,10 @@ public:
 
     /// Gets the bounding region.
     BPolygon GetBoundingRegion();
+
+    /// Update the object.
+    /// @param dt
+    virtual void Update(const float& dt);
 
 private:
     // Components

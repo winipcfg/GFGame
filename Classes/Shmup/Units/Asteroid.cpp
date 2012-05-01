@@ -62,5 +62,11 @@ BPolygon Asteroid::GetBoundingRegion()
         return BPolygon();
     }
 }
+
+void Asteroid::Update(const float& dt)
+{
+
+}
+  
     
 } } } // namespace

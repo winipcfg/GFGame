@@ -51,8 +51,8 @@ Game::~Game()
 bool Game::Initialize()
 {
     // Physics World
-    float32 width = 480;
-	float32 height = 320;
+    float32 width = 1024;
+	float32 height = 1024;
 		
     b2World* world = (b2World*) phys_controller_.World();
     world->SetContinuousPhysics(true);    
@@ -60,7 +60,7 @@ bool Game::Initialize()
     short boundary = 20;
     b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBoundedArea(
         world,
-        b2Vec2(boundary, boundary), 
+        b2Vec2(boundary - width * 0.5, boundary - height * 0.5), 
         width - boundary * 2,           
         height - boundary * 2);   
 
@@ -105,12 +105,18 @@ Ship* Game::SpawnPlayerShip(const Vector2& position, const GameSide& side)
 
     // Physics Component
     GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
-    b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+    //b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
+    //    phys_controller_.World(),
+    //    position,
+    //    ship->boundingBox().size.width * ship->getScaleX(),
+    //    ship->boundingBox().size.height * ship->getScaleY());
+    b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateCircle(
         phys_controller_.World(),
+        b2_dynamicBody,
         position,
-        ship->boundingBox().size.width * ship->getScaleX(),
-        ship->boundingBox().size.height * ship->getScaleY());
-    body->SetFixedRotation(true);
+        max(ship->boundingBox().size.width * ship->getScaleX(),
+            ship->boundingBox().size.height * ship->getScaleY()) * 0.5);
+    //body->SetFixedRotation(true);
 
     // Set the dynamic body fixture.
     b2Fixture* fixture = body->GetFixtureList();	
@@ -137,56 +143,66 @@ Ship* Game::SpawnPlayerShip(const Vector2& position, const GameSide& side)
     this->addComponent(objId, physics);
     unit->physics_component_.push_back(physics);
 
+    ////add radar sensor to ship
+    //b2FixtureDef fixtureDef;
+    //b2CircleShape circleShape;
+    //circleShape.m_radius = 4;
+    //fixtureDef.shape = &circleShape;
+    //fixtureDef.isSensor = true;
+    ////fixtureDef.filter.categoryBits = RADAR_SENSOR;
+    ////fixtureDef.filter.maskBits = ENEMY_AIRCRAFT;//radar only collides with aircraft
+    //body->CreateFixture(&fixtureDef);
 
-    //####
-    //####TEST
-    //####
-        // Render Component
-    ship = new ShipNode();    
-    ship->init();
-    ship->setScale(0.5f);
-    ship->setPosition(position.x, position.y);
-    render = new GFGame::Components::RenderComponent(ship);
-    this->addComponent(objId, render);
-    unit->render_component_.push_back(render);
+    ////####
+    ////####TEST
+    ////####
+    //    // Render Component
+    //ship = new ShipNode();    
+    //ship->init();
+    //ship->setScale(0.5f);
+    //ship->setPosition(position.x, position.y);
+    //render = new GFGame::Components::RenderComponent(ship);
+    //this->addComponent(objId, render);
+    //unit->render_component_.push_back(render);
 
-    // Physics Component
-    physics = new GFGame::Components::PhysicsComponent();
-    b2Body* body2 = GFort::Core::Physics::PhysicsHelper::CreateBox(
-        phys_controller_.World(),
-        b2Vec2(position.x, position.y+30),
-        ship->boundingBox().size.width * ship->getScaleX()*2,
-        ship->boundingBox().size.height * ship->getScaleY()*0.5);
-    body2->SetFixedRotation(false);
+    //// Physics Component
+    //physics = new GFGame::Components::PhysicsComponent();
+    //b2Body* body2 = GFort::Core::Physics::PhysicsHelper::CreateBox(
+    //    phys_controller_.World(),
+    //    b2Vec2(position.x, position.y+30),
+    //    ship->boundingBox().size.width * ship->getScaleX()*2,
+    //    ship->boundingBox().size.height * ship->getScaleY()*0.5);
+    //body2->SetFixedRotation(false);
 
-    // Set the dynamic body fixture.
-    fixture = body2->GetFixtureList();	
-    fixture[0].SetDensity(1.0f);
-    fixture[0].SetFriction(1.0f);
-    fixture[0].SetRestitution(0.0f);	
-    body2->ResetMassData();
+    //// Set the dynamic body fixture.
+    //fixture = body2->GetFixtureList();	
+    //fixture[0].SetDensity(1.0f);
+    //fixture[0].SetFriction(1.0f);
+    //fixture[0].SetRestitution(0.0f);	
+    //body2->ResetMassData();
 
-    filter = fixture[0].GetFilterData();
-    if (side == 0)
-    {
-        filter.categoryBits = kCategoryBitsPlayer;
-        filter.maskBits = kMaskBitsPlayer;
-    }
-    else
-    {
-        filter.categoryBits = kCategoryBitsEnemy;
-        filter.maskBits = kMaskBitsEnemy;
-    }
-    fixture[0].SetFilterData(filter);
+    //filter = fixture[0].GetFilterData();
+    //if (side == 0)
+    //{
+    //    filter.categoryBits = kCategoryBitsPlayer;
+    //    filter.maskBits = kMaskBitsPlayer;
+    //}
+    //else
+    //{
+    //    filter.categoryBits = kCategoryBitsEnemy;
+    //    filter.maskBits = kMaskBitsEnemy;
+    //}
+    //fixture[0].SetFilterData(filter);
 
-    physics->AddBody("root", body2);
-    ship->SetBody(body2);
-    this->addComponent(objId, physics);
-    unit->physics_component_.push_back(physics);
+    //physics->AddBody("root", body2);
+    //ship->SetBody(body2);
+    //this->addComponent(objId, physics);
+    //unit->physics_component_.push_back(physics);
 
 
     //b2PrismaticJointDef jointDef;
-    //b2Vec2 worldAxis(-1.0f, 1.0f);
+    ////b2Vec2 worldAxis(-1.0f, 1.0f);
+    //b2Vec2 worldAxis(0.0f, 1.0f);
     //jointDef.Initialize(body, body2, body->GetWorldCenter(), worldAxis);
     //jointDef.lowerTranslation = 0.0f;
     //jointDef.upperTranslation = 1.5f;
@@ -196,14 +212,14 @@ Ship* Game::SpawnPlayerShip(const Vector2& position, const GameSide& side)
     //jointDef.enableMotor = true;
 
 
-    b2RevoluteJointDef jointDef;
-    jointDef.Initialize(body, body2, body->GetWorldCenter());
-    jointDef.lowerAngle = -0.2f * b2_pi; // -90 degrees
-    jointDef.upperAngle = 0;//0.2f * b2_pi; // 45 degrees
-    jointDef.enableLimit = true;
-    jointDef.maxMotorTorque = 10.0f;
-    jointDef.motorSpeed = 10.0f;
-    jointDef.enableMotor = true;
+    //b2RevoluteJointDef jointDef;
+    //jointDef.Initialize(body, body2, body->GetWorldCenter());
+    //jointDef.lowerAngle = -0.2f * b2_pi; // -90 degrees
+    //jointDef.upperAngle = 0;//0.2f * b2_pi; // 45 degrees
+    //jointDef.enableLimit = true;
+    //jointDef.maxMotorTorque = 10.0f;
+    //jointDef.motorSpeed = 10.0f;
+    //jointDef.enableMotor = true;
 
     //b2DistanceJointDef jointDef;
     //jointDef.Initialize(body, body2, body->GetWorldCenter(), body2->GetWorldCenter());
@@ -212,7 +228,7 @@ Ship* Game::SpawnPlayerShip(const Vector2& position, const GameSide& side)
     //jointDef.frequencyHz = 1.0f;
     //jointDef.dampingRatio = 0.5f;
 
-    b2Joint* joint = phys_controller_.World()->CreateJoint(&jointDef);
+    //b2Joint* joint = phys_controller_.World()->CreateJoint(&jointDef);
 
     //####TEST
 

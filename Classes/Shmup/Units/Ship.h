@@ -31,18 +31,13 @@
 //#include "../Constants.h"
 #include "../Game.h"
 #include "Unit.h"
+#include "Core.h"
+#include "OpenSteer/SimpleVehicle.h"
 
 namespace GFort { namespace Games { namespace Shmup 
 {
 
-/// The core component of an entity which generates and stores energy.
-/// Each entity has single core
-class Core : public Cistron::Component
-{
-    short energy_;
-};
-
-class ShipPart : public Cistron::Component
+class ShipPart : public OpenSteer::SimpleVehicle, public Cistron::Component
 {
     short energy_consumption_;
 };
@@ -54,13 +49,7 @@ public:
     //typedef GFort::Core::Game::IWeapon&             WeaponReference;
     //typedef GFort::Core::Game::IWeapon*             WeaponPtr;
     //typedef std::vector<WeaponPtr >                 WeaponList;
-    typedef GFGame::Components::PhysicsComponent    PhysicsComponent;
-    typedef GFGame::Components::RenderComponent     RenderComponent;
-    typedef PhysicsComponent*                       PhysicsComponentPtr;
-    typedef RenderComponent*                        RenderComponentPtr;
-    typedef std::vector<PhysicsComponent* >         PhysicsComponentPtrList;
-    typedef std::vector<RenderComponent* >          RenderComponentPtrList;
-    
+        
     typedef Unit                                    Component;
     typedef std::vector<Component* >                Components;
 
@@ -96,9 +85,18 @@ public:
     /// Stop movement.
     void StopMove();
 
+    /// Gets the forward direction.
+    Vector2 Forward();
+
     ///// Gets the bounding region.
     //BPolygon GetBoundingRegion();
 
+    /// Update the object.
+    /// @param dt
+    virtual void Update(const float& dt);
+
+private:
+    void UpdateDrive(const float& delta);
 
 private:
     // Components

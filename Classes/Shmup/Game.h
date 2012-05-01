@@ -29,8 +29,7 @@
 #include <Cistron/Cistron.h>
 #include <GFort/Core/Game/Game.h>
 #include <GFort/Core/Physics/PhysicsController.h>
-//#include "Units/Ship.h"
-//#include "Units/Asteroid.h"
+#include "Battlefield.h"
 #include "Constants.h"
 
 namespace GFort { namespace Games { namespace Shmup 
@@ -85,6 +84,9 @@ public:
     /// Gets the physics settings.
     GFort::Core::Physics::Box2dSettings& PhysicsSettings()          { return phys_settings_; }
 
+    /// Gets the battlefield.
+    Battlefield* GetBattlefield()                                   { return &map_info_; }
+
 public:
     /// Spawn an entity.
     ObjectId SpawnEntity()                                          { return this->createObject(); }
@@ -115,6 +117,7 @@ public:
 private:
     short                                       num_lives_;
     short                                       max_num_lives_;
+    Battlefield                                 map_info_;
 
     bool                                        game_over_;  
 
