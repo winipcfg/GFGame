@@ -79,7 +79,7 @@ void GameScene::PauseGame()
 
         pause_game_layer_ = GFGame::Scene::PauseGameLayer::node();
         addChild(pause_game_layer_, kTagPauseGame, kTagPauseGame);
-        paused_ = true;
+        paused_ = true;        
     }
 }
 

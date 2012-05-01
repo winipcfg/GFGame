@@ -1,4 +1,4 @@
-//Copyright (C) 2011 by Gavin Fong
+//Copyright (C) 2012 by Gavin Fong
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -18,39 +18,17 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PAUSE_GAME_LAYER_H_
-#define WARRIOR_PAUSE_GAME_LAYER_H_
+#include "SceneHelper.h"
+#include "Shmup/Scene/ShmupScene.h"
 
-#include "cocos2d.h"
-
-namespace GFGame { namespace Scene  
+namespace GFort { namespace Games { namespace Shmup 
 {
 
-/// Class for pause game. 
-class PauseGameLayer : public cocos2d::CCLayer
+#define kTransitionDuration				1.0f
+
+void SceneHelper::GoDefault()
 {    
-public:
-    /// Constructor.
-    PauseGameLayer();
+    GoScene(ShmupScene::node());
+}
 
-    /// Destructor.
-    ~PauseGameLayer();
-
-    virtual void onExit();
-            
-    virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-
-    LAYER_NODE_FUNC(PauseGameLayer)
-   
-protected:
-private:
-    void SetupViewer();
-
-    virtual void draw(void);
-};
-
-} } // namespace
-
-#endif // WARRIOR_PAUSE_GAME_LAYER_H_
+} } } // namespace

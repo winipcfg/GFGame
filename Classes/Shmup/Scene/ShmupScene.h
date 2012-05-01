@@ -1,4 +1,4 @@
-//Copyright (C) 2011 by Gavin Fong
+//Copyright (C) 2012 by Gavin Fong
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -18,39 +18,50 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PAUSE_GAME_LAYER_H_
-#define WARRIOR_PAUSE_GAME_LAYER_H_
+#pragma once
+#ifndef GFGAME_SHMUP_SHMUPSCENE_H_
+#define GFGAME_SHMUP_SHMUPSCENE_H_
 
 #include "cocos2d.h"
+#include <Viewer/Box2dDebugViewer.h>
+#include <Scene/GameScene.h>
+#include "Shmup/Viewer/ShmupHUD.h"
+#include "ShmupLayer.h"
+#include "../Game.h"
 
-namespace GFGame { namespace Scene  
+namespace GFort { namespace Games { namespace Shmup 
 {
 
-/// Class for pause game. 
-class PauseGameLayer : public cocos2d::CCLayer
-{    
+class ShmupScene : public GFGame::Scene::GameScene
+{
+public:
+    
 public:
     /// Constructor.
-    PauseGameLayer();
+    ShmupScene();
 
     /// Destructor.
-    ~PauseGameLayer();
+    ~ShmupScene();
+    
+    /// Set the game camera.
+    void SetGameCamera();
 
-    virtual void onExit();
-            
-    virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
+    /// Toggles whether the physics debug viewer is visible or not.
+    void TogglePhysicsDebugViewer();
+    
+    SCENE_NODE_FUNC(ShmupScene)
 
-    LAYER_NODE_FUNC(PauseGameLayer)
-   
-protected:
 private:
-    void SetupViewer();
+    // Game itself
+    Game            game_;
 
-    virtual void draw(void);
+    // Stores layer reference
+    cocos2d::CCLayer*                   game_layer_;
+    ShmupHUD*                           hud_layer_;
+    GFGame::Viewer::Box2dDebugViewer*   physics_debug_viewer;
+    ShmupLayer*                         shmup_layer_;
 };
 
-} } // namespace
+} } } // namespace
 
-#endif // WARRIOR_PAUSE_GAME_LAYER_H_
+#endif // GFGAME_SHMUP_SHMUPSCENE_H_

@@ -1,4 +1,4 @@
-//Copyright (C) 2011 by Gavin Fong
+//Copyright (C) 2012 by Gavin Fong
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -18,39 +18,51 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PAUSE_GAME_LAYER_H_
-#define WARRIOR_PAUSE_GAME_LAYER_H_
+#pragma once
+#ifndef GFGAME_SHMUP_GAMESETTINGLAYER_H_
+#define GFGAME_SHMUP_GAMESETTINGLAYER_H_
 
 #include "cocos2d.h"
+#include <Scene/GameScene.h>
+#include "../Game.h"
+#include "CCControlExtension/CCControlButton.h"
+#include "CCControlExtension/CCControlSlider.h"
+#include "CCControlExtension/CCControlSwitch.h"
 
-namespace GFGame { namespace Scene  
+
+namespace GFort { namespace Games { namespace Shmup 
 {
 
-/// Class for pause game. 
-class PauseGameLayer : public cocos2d::CCLayer
-{    
+class GameSettingLayer : public GFGame::Scene::GameScene
+{
+public:
+    
 public:
     /// Constructor.
-    PauseGameLayer();
+    GameSettingLayer();
 
     /// Destructor.
-    ~PauseGameLayer();
+    ~GameSettingLayer();
 
-    virtual void onExit();
-            
-    virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
+    void GameSettingLayer::ValueChanged(CCControlSlider* sender);
+    void GameSettingLayer::ButtonClicked(CCControlButton* sender);
+        
+    LAYER_NODE_FUNC(GameSettingLayer)
 
-    LAYER_NODE_FUNC(PauseGameLayer)
-   
-protected:
 private:
-    void SetupViewer();
+    /// Load default setting.
+    void LoadUserDefault();
+    
+    /// Save default setting.
+    void SaveUserDefault();
 
-    virtual void draw(void);
+private:
+    cocos2d::CCLabelTTF*    display_value_label_;
+    CCControlSlider*        music_volume_control_;
+    CCControlSlider*        audio_volume_control_;
+    CCControlSwitch*        show_hints_control_;
 };
 
-} } // namespace
+} } } // namespace
 
-#endif // WARRIOR_PAUSE_GAME_LAYER_H_
+#endif // GFGAME_SHMUP_GAMESETTINGLAYER_H_

@@ -18,39 +18,42 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PAUSE_GAME_LAYER_H_
-#define WARRIOR_PAUSE_GAME_LAYER_H_
+#ifndef WARRIOR_BOT_H_
+#define WARRIOR_BOT_H_
 
-#include "cocos2d.h"
+#include <Cistron/Cistron.h>
 
-namespace GFGame { namespace Scene  
+namespace Warrior 
 {
 
-/// Class for pause game. 
-class PauseGameLayer : public cocos2d::CCLayer
-{    
+class UnitNode;
+class BattleLayer;
+
+/// Base class of a Bot
+class Bot : public Cistron::Component
+{
 public:
     /// Constructor.
-    PauseGameLayer();
+    Bot(UnitNode* node);
 
     /// Destructor.
-    ~PauseGameLayer();
+    ~Bot();
 
-    virtual void onExit();
-            
-    virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
+    ///// Attach to node.
+    ///// @param node
+    //void Attach(UnitNode* node);
 
-    LAYER_NODE_FUNC(PauseGameLayer)
-   
+    /// Think and do some actions for a single turn.
+    /// This method will not be called if the unit is not ready to think.
+    /// @param gameState 
+    virtual void Update(BattleLayer& gameState) = 0;
+    
 protected:
-private:
-    void SetupViewer();
-
-    virtual void draw(void);
+    // Stores the pointer of unit 
+    UnitNode*             node_;
 };
 
-} } // namespace
 
-#endif // WARRIOR_PAUSE_GAME_LAYER_H_
+} // namepsace
+
+#endif // WARRIOR_BOT_H_

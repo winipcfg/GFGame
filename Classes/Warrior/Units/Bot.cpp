@@ -18,39 +18,26 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PAUSE_GAME_LAYER_H_
-#define WARRIOR_PAUSE_GAME_LAYER_H_
-
+#include "Bot.h"
 #include "cocos2d.h"
 
-namespace GFGame { namespace Scene  
+#include <GFort/Core/MathHelper.h>
+#include <Warrior/Model/UnitAction.h>
+#include "../UnitNode.h"
+#include "../BattleLayer.h"
+
+
+namespace Warrior 
 {
 
-/// Class for pause game. 
-class PauseGameLayer : public cocos2d::CCLayer
-{    
-public:
-    /// Constructor.
-    PauseGameLayer();
+Bot::Bot(UnitNode* node)
+    : Cistron::Component("Bot"),
+      node_(node)
+{
+}
 
-    /// Destructor.
-    ~PauseGameLayer();
+Bot::~Bot()
+{
+}
 
-    virtual void onExit();
-            
-    virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-    virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
-
-    LAYER_NODE_FUNC(PauseGameLayer)
-   
-protected:
-private:
-    void SetupViewer();
-
-    virtual void draw(void);
-};
-
-} } // namespace
-
-#endif // WARRIOR_PAUSE_GAME_LAYER_H_
+} // namepsace
