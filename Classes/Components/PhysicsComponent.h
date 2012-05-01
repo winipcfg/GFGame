@@ -26,6 +26,7 @@
 #include <Cistron/Cistron.h>
 #include <Box2D/Box2D.h>
 #include <Warrior/TypeDef.h>
+#include <GFort/Core/Physics/PhysicsHelper.h>
 
 namespace GFGame { namespace Components 
 {
@@ -47,6 +48,16 @@ public:
     /// @param body
     void AddBody(std::string name, b2Body* body)            { bodies_[name] = body; }
 
+    /// Gets position and rotation of the component.
+    /// @param[out] position
+    /// @param[out] rotation
+    void GetPositionAndRotation(b2Vec2& position, float& rotation);
+
+    /// Update position and rotation.
+    /// @param position
+    /// @param rotation
+    void UpdatePositionAndRotation(const b2Vec2& position, const float& rotation);
+
     /// Gets the bounding region.
     BPolygon GetBoundingRegion() const;
                 
@@ -62,6 +73,21 @@ inline PhysicsComponent::PhysicsComponent()
 
 inline PhysicsComponent::~PhysicsComponent()
 {
+}
+
+inline void PhysicsComponent::GetPositionAndRotation(b2Vec2& position, float& rotation)
+{
+    b2Body* body = this->Body();
+    position.x = body->GetPosition().x * PTM_RATIO;
+    position.y = body->GetPosition().y * PTM_RATIO;
+    rotation = body->GetAngle();
+}
+
+inline void PhysicsComponent::UpdatePositionAndRotation(const b2Vec2& position, const float& rotation)
+{
+    b2Body* body = this->Body();
+    body->SetTransform(position, rotation);
+    body->SetAwake(true);
 }
     
 } } // namespace

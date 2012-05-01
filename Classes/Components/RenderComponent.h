@@ -27,6 +27,8 @@
 namespace GFGame { namespace Components 
 {
 
+using namespace cocos2d;
+
 class RenderComponent : public Cistron::Component
 {
 public:
@@ -35,6 +37,16 @@ public:
 
     /// Destructor.
     ~RenderComponent();
+
+    /// Gets position and rotation of the component.
+    /// @param[out] position
+    /// @param[out] rotation
+    void GetPositionAndRotation(b2Vec2& position, float& rotation);
+
+    /// Update position and rotation.
+    /// @param position
+    /// @param rotation
+    void UpdatePositionAndRotation(const b2Vec2& position, const float& rotation);
 
     /// Return the node.
     cocos2d::CCNode* Node() { return node_; }
@@ -52,6 +64,23 @@ inline RenderComponent::RenderComponent(cocos2d::CCNode* node)
 
 inline RenderComponent::~RenderComponent()
 {
+    node_->removeAllChildrenWithCleanup(true);
+    node_->removeFromParentAndCleanup(true);
+    node_ = NULL;
+}
+
+inline void RenderComponent::GetPositionAndRotation(b2Vec2& position, float& rotation)
+{    
+    position.Set(node_->getPosition().x * GFort::Core::Physics::kINV_PTM_RATIO,
+        node_->getPosition().y * GFort::Core::Physics::kINV_PTM_RATIO);
+    rotation = -1 * CC_DEGREES_TO_RADIANS(node_->getRotation());
+}
+
+inline void RenderComponent::UpdatePositionAndRotation(const b2Vec2& position, const float& rotation)
+{
+    float rad = CC_RADIANS_TO_DEGREES(-1 * rotation);
+    node_->setRotation(rad);        
+    node_->setPosition(ccp(position.x, position.y));
 }
     
 } } // namespace
