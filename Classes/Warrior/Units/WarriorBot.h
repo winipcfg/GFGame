@@ -21,7 +21,7 @@
 #ifndef WARRIOR_UNITS_WARRIOR_BOT_H_
 #define WARRIOR_UNITS_WARRIOR_BOT_H_
 
-#include <Warrior/Components/Bot.h>
+#include <Warrior/Units/Bot.h>
 
 namespace Warrior 
 {

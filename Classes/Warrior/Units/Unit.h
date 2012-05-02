@@ -140,8 +140,10 @@ protected:
     short                       lives_;
     short                       stamina_;
     FacingDirection             facing_;
-    bool                        motion_updated_by_phys_;
     Unit*                       last_attacker_;
+
+    // If true, then the node follows physics motion. Else, it follows sprite motion
+    bool                        use_physics_motion_;
 
 public:
     UnitAction                  action_;

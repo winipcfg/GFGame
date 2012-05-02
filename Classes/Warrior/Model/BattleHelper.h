@@ -46,10 +46,21 @@ public:
     /// @param maxY
     static BPolygon ConvertToPolygon(const float& minX, const float& minY, const float& maxX, const float& maxY);
 
+    ///// Returns bounding region of given b2Body.
+    ///// @param body
+    //static BPolygon GetBoundingRegion(const b2Body& body);
+
 	/// Find units that collide with the trail.
 	/// @param trail
 	/// @param units
 	static std::set<Unit*> Collide(const Trail& trail, std::vector<Unit*>& units);
+
+    /// Find units that collide with the trail.
+	/// @param trail
+	/// @param units
+    /// @param[out] collideUnits
+    /// @param[out] collidePoints
+	static void Collide(const Trail& trail, std::vector<Unit*>& units, std::set<Unit*>& collideUnits, std::list<std::vector<BTurnInfo> >& collidePoints);
     
     /// Apply force on unit.
     /// @param target

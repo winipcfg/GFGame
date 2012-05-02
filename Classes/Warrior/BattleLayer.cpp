@@ -25,15 +25,14 @@
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <Warrior/Model/Struct.h>
 #include <Warrior/Model/BattleHelper.h>
-#include "Components/CCNodeComponent.h"
-#include "Components/Missile.h"
+#include <Warrior/Units/Missile.h>
+#include <Warrior/Units/Bot.h>
 #include "Components/PhysicsComponent.h"
-#include "Components/Bot.h"
 #include "Units/ArcherBot.h"
 #include "Units/WarriorBot.h"
 #include "TypeDef.h"
 #include "Scene/SceneHelper.h"
-#include "EnemyNode2.h"
+#include "GraphicNode.h"
 
 using namespace cocos2d;
 
@@ -42,7 +41,7 @@ namespace Warrior
 
 const float kFallSpeed                  = 0.5f;
 const int kMinSliceLength               = 20;
-const int kNumEnemies                   = 1;//20;
+const int kNumEnemies                   = 10;//20;
 const float kMinSpawnTime               = 0.5f;
 const float kMaxSpawnTime               = 1.5f;
 
@@ -200,8 +199,9 @@ void BattleLayer::SpawnPlayer(const Point& position)
     CCLOG("[%s][%d] - Add sprite %0.2f x %02.f", __FUNCTION__, __LINE__, position.x, position.y);
     
     Cistron::ObjectId objId = battle_.SpawnEntity();
-    player_ = new Player();
-    battle_.addComponent(objId, player_);
+    player_ = new Player();    
+    battle_.addComponent(objId, player_);    
+    player_->registerName(player_->getName());
 
     player_node_ = new PlayerNode(player_);  
     player_node_->ResetState();
@@ -209,14 +209,26 @@ void BattleLayer::SpawnPlayer(const Point& position)
     player_node_->setPosition(position);    
     battle_.addComponent(objId, player_node_);
     this->addChild(player_node_); 
+
+    ///***************TEST************************
+    GraphicNode* node = new GraphicNode(player_);
+    node->init();
+    battle_.addComponent(objId, node);
+    node->registerName(node->getName());
+    this->addChild(node); 
+
+    float x = position.x;
+    float y = position.y + node->Size().height * 0.5;
+    player_node_->setPosition(ccp(x, y)); 
+    ///***************TEST************************
     
     // Create body
     GFGame::Components::PhysicsComponent* physics = new GFGame::Components::PhysicsComponent();
     b2Body* body = GFort::Core::Physics::PhysicsHelper::CreateBox(
         battle_.World(),
-        b2Vec2(player_node_->getPosition().x, player_node_->getPosition().y + player_node_->Size().height / 2),
-        player_node_->Size().width,
-        player_node_->Size().height);
+        b2Vec2(player_node_->getPosition().x, player_node_->getPosition().y + node->Size().height / 2),
+        node->Size().width,
+        node->Size().height);
 
     body->SetFixedRotation(true);
 
@@ -273,19 +285,18 @@ void BattleLayer::SpawnEnemy(const Point& position)
     EnemyNode* enemy = new EnemyNode(unit);    
     enemy->ResetState();    
     enemy->init();
-    enemy->setPosition(position);      
-
     enemies_nodes_.push_back(enemy);
     battle_.addComponent(objId, enemy);
     this->addChild(enemy);       
 
-    ///***************TEST************************
-    EnemyNode2* node = new EnemyNode2(unit);
+    // Graphic
+    GraphicNode* node = new GraphicNode(unit);
     node->init();
-    node->setPosition(ccp(160, 240));    
     battle_.addComponent(objId, node);
+    node->registerName(node->getName());
     this->addChild(node); 
-    ///***************TEST************************
+    
+    enemy->setPosition(ccp(position.x, position.y + node->Size().height * 0.5)); 
 
     // AI
     Bot* bot;
@@ -337,36 +348,36 @@ void BattleLayer::DoSlice()
     std::set<EnemyNode* > damaged_enemies; 
     EnemyNode* enemy;
     std::vector<BTurnInfo> turns;
-    //for (unsigned int j = 0; j < enemies_nodes_.size(); ++j)
-    //{
-    //    enemy = static_cast<EnemyNode*>(enemies_nodes_[j]);
-    //    if (enemy->getIsVisible() && enemy->GetState()->Alive())
-    //    {         
-    //        turns.clear();
-    //        if (slice_layer_->Collide(enemy->GetBoundingRegion(), turns))
-    //        {
-    //            battle_.ResolveAttack(*player_, *enemy->GetState());
-    //            if (!enemy->GetState()->Alive())
-    //            {
-    //                damaged_enemies.insert(enemy);
-    //    
-    //                if (enemy->GetState()->Body())
-    //                    enemy->GetState()->Body()->SetFixedRotation(false);
-    //                const float kImpulseStrength        = 2000.0f;
-    //                
-    //                b2Vec2 impulse(
-    //                    slice_layer_->Slice().GetEndPosition().x() - turns[0].point.x(), 
-    //                    slice_layer_->Slice().GetEndPosition().y() - turns[0].point.y());
-    //                impulse.Normalize();
-    //                impulse *= kImpulseStrength;
-    //                BattleHelper::ApplyForceOnUnit(enemy->GetState(), turns[0].point, impulse);
+    for (unsigned int j = 0; j < enemies_nodes_.size(); ++j)
+    {
+        enemy = static_cast<EnemyNode*>(enemies_nodes_[j]);
+        if (enemy->getIsVisible() && enemy->GetState()->Alive())
+        {         
+            turns.clear();
+            if (slice_layer_->Collide(enemy->GetState()->GetBoundingRegion(), turns))
+            {
+                battle_.ResolveAttack(*player_, *enemy->GetState());
+                if (!enemy->GetState()->Alive())
+                {
+                    damaged_enemies.insert(enemy);
+        
+                    if (enemy->GetState()->Body())
+                        enemy->GetState()->Body()->SetFixedRotation(false);
+                    const float kImpulseStrength        = 2000.0f;
+                    
+                    b2Vec2 impulse(
+                        slice_layer_->Slice().GetEndPosition().x() - turns[0].point.x(), 
+                        slice_layer_->Slice().GetEndPosition().y() - turns[0].point.y());
+                    impulse.Normalize();
+                    impulse *= kImpulseStrength;
+                    BattleHelper::ApplyForceOnUnit(enemy->GetState(), turns[0].point, impulse);
 
-    //                //std::list<Cistron::Component*> component = battle_.getComponents(enemy->getOwnerId(), "PhysicsComponent");
-    //                //PhysicsComponent* component = static_cast<PhysicsComponent*>(component.front());                    
-    //            }
-    //        }
-    //    }
-    //}
+                    //std::list<Cistron::Component*> component = battle_.getComponents(enemy->getOwnerId(), "PhysicsComponent");
+                    //PhysicsComponent* component = static_cast<PhysicsComponent*>(component.front());                    
+                }
+            }
+        }
+    }
 
     if (damaged_enemies.size() > 0)
     {
@@ -455,14 +466,6 @@ void BattleLayer::UpdateNode(cocos2d::ccTime dt)
     else
     {
         battle_.Update(dt);
-
-        //std::list<Cistron::Component*> bots = battle_.getComponentsByName("Bot");
-        //std::list<Cistron::Component*>::iterator it;
-        //for (it = bots.begin(); it != bots.end(); ++it)
-        //{
-        //    static_cast<Bot*>(*it)->Update(*this);
-        //}
-
         duration_ = duration_ + dt;
            
         {         
@@ -472,24 +475,11 @@ void BattleLayer::UpdateNode(cocos2d::ccTime dt)
                 next_enemy_spawn_ = duration_ + GFort::Core::MathHelper::RandomBetween(kMinSpawnTime, kMaxSpawnTime);
             }
         } 
-
-        //{
-            Point position = player_node_->getPosition();
-            if (position.y > battle_.Map().Landscape())
-            {
-                player_node_->setPosition(Point(position.x, position.y + battle_.Map().Gravity() * kFallSpeed));
-            }
-            else if (position.y < battle_.Map().Landscape())
-            {
-                player_node_->setPosition(Point(position.x, static_cast<float>(battle_.Map().Landscape())));
-            }
-
     }
 }
 
 void BattleLayer::UpdateCamera(const Point& position)
 {
-    // INCORRECT! All box2d go to wrong location
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
     
     cocos2d::CCRect boundary(0, 0, 960, 320);
@@ -505,6 +495,34 @@ void BattleLayer::UpdateCamera(const Point& position)
 
     cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::actionWithDuration(kCameraChasingDuration, cameraPosition);
     this->getParent()->runAction(moveAction);
+}
+
+void BattleLayer::draw(void)
+{
+    cocos2d::CCSize size = cocos2d::CCDirector::sharedDirector()->getWinSize();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+
+    const GLfloat glVertices[] = {
+        -1.0f * size.width,    1.0f * size.height,               // top left
+        -1.0f * size.width,   -1.0f * size.height,               // bottom left
+         1.0f * size.width,   -1.0f * size.height,               // bottom right
+         1.0f * size.width,    1.0f * size.height                // top right
+    };
+
+    glVertexPointer(2, GL_FLOAT, 0, glVertices);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+    // restore default GL states
+    glEnable(GL_TEXTURE_2D);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 

@@ -54,9 +54,9 @@ private:
 
     
 inline Missile::Missile()
-    : Cistron::Component("Missile"),
-      damage_(0),
-      use_physics_(false)
+    : Cistron::Component("Missile")
+    , damage_(0)
+    , use_physics_(false)
 {
 }
 

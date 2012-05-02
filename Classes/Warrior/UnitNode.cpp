@@ -37,7 +37,6 @@ namespace Warrior
     
 UnitNode::UnitNode(Unit* unit)
     : Cistron::Component("UnitComponent"),
-      needs_update_(false),
       state_(unit),
       use_physics_motion_(false)
 {
@@ -52,12 +51,35 @@ UnitNode::UnitNode(Unit* unit)
 UnitNode::~UnitNode()
 {
     this->unscheduleUpdate();
-    //CC_SAFE_RELEASE(sprite_new_);
 }
 
 void UnitNode::Reset()
 {
     state_->Reset();
+}
+
+void UnitNode::RefreshPosition()
+{
+    if (use_physics_motion_)
+    {
+        cocos2d::CCPoint position = cocos2d::CCPoint(
+            (state_->Body()->GetPosition().x * PTM_RATIO), 
+            (state_->Body()->GetPosition().y * PTM_RATIO));
+        float rotation = CC_RADIANS_TO_DEGREES(-1 * state_->Body()->GetAngle());
+        this->setRotation(rotation);           
+        this->setPosition(position);
+    }
+    else
+    {
+        if (state_->Body())
+        {
+            state_->Body()->SetTransform(
+                b2Vec2((this->getPosition().x) * GFort::Core::Physics::kINV_PTM_RATIO, 
+                       (this->getPosition().y) * GFort::Core::Physics::kINV_PTM_RATIO), 
+                state_->Body()->GetAngle());
+            state_->Body()->SetAwake(true);
+        }
+    }
 }
 
 void UnitNode::ResolveAttack()
@@ -86,11 +108,11 @@ void UnitNode::Die()
 
     cocos2d::CCDelayTime* delayAction = cocos2d::CCDelayTime::actionWithDuration(10);
 
-    cocos2d::CCCallFunc* dieAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(UnitNode::SetInvisible));
+    //cocos2d::CCCallFunc* dieAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(UnitNode::SetInvisible));
 
     cocos2d::CCFiniteTimeAction* action = cocos2d::CCSequence::actions(
         delayAction,
-        dieAction, 
+        //dieAction, 
         NULL);
 
     this->stopAllActions();
@@ -103,7 +125,6 @@ void UnitNode::ChangeFacingDirection(const FacingDirection& value)
     if (state_->Facing() != value)
     {
         state_->SetFacing(value);
-        needs_update_ = true;
     }
 }
 
@@ -115,11 +136,6 @@ void UnitNode::ResetState()
 void UnitNode::FinishAction()
 {
     state_->action_.Reset();
-}
-
-void UnitNode::SetInvisible()
-{
-    this->setIsVisible(false);
 }
 
 void UnitNode::Update(Unit* subject)

@@ -37,6 +37,7 @@ EnemyNode::EnemyNode(Unit* unit)
       bot_(NULL)
 {
     use_physics_motion_ = true;
+    //use_physics_motion_ = false;
     this->schedule(schedule_selector(EnemyNode::Think), 0.5);
 }
 
@@ -58,8 +59,6 @@ void EnemyNode::ResetState()
 
 bool EnemyNode::init()
 {
-    cocos2d::CCSpriteFrameCache* cache = cocos2d::CCSpriteFrameCache::sharedSpriteFrameCache();
-    //cache->addSpriteFramesWithFile(kEnemySpriteFrame.c_str());
     return true;
 }
 
@@ -107,13 +106,10 @@ void EnemyNode::Attack(UnitAction& action)
     this->stopAllActions();
     this->runAction(newAction);
     ChangeFacingDirection((dx > 0) ? kFacingRight : kFacingLeft);
-    //ShowAnimation(kUnitAnimationAttack);
 }
 
 void EnemyNode::UpdateNode(cocos2d::ccTime dt)
-{    
-    state_->Update(dt);
-        
+{            
     if (use_physics_motion_)
     {
         if (state_->Alive() && state_->Body())
@@ -141,14 +137,7 @@ void EnemyNode::UpdateNode(cocos2d::ccTime dt)
                 float impulse = state_->Body()->GetMass() * velChange;
                 state_->Body()->ApplyLinearImpulse(b2Vec2(impulse,0), state_->Body()->GetWorldCenter());
             }
-        }
-
-        cocos2d::CCPoint position = cocos2d::CCPoint(
-            (state_->Body()->GetPosition().x * PTM_RATIO), 
-            (state_->Body()->GetPosition().y * PTM_RATIO));
-        float rotation = CC_RADIANS_TO_DEGREES(-1 * state_->Body()->GetAngle());
-        this->setRotation(rotation);           
-        this->setPosition(position);        
+        }   
     }
     else
     {
@@ -173,16 +162,8 @@ void EnemyNode::UpdateNode(cocos2d::ccTime dt)
             position.x += speed;
             this->setPosition(position);
         }
-
-        if (state_->Body())
-        {
-            state_->Body()->SetTransform(
-                b2Vec2((this->getPosition().x) * GFort::Core::Physics::kINV_PTM_RATIO, 
-                       (this->getPosition().y + this->boundingBox().size.height / 2) * GFort::Core::Physics::kINV_PTM_RATIO), 
-                state_->Body()->GetAngle());
-            state_->Body()->SetAwake(true);
-        }
     }
+    RefreshPosition();
 }
 
 void EnemyNode::Think(cocos2d::ccTime dt)
@@ -204,31 +185,6 @@ void EnemyNode::Destroy()
     }
 
     this->removeFromParentAndCleanup(true);
-}
-
-BPolygon EnemyNode::GetBoundingRegion()
-{
-    //cocos2d::CGFloat minX, minY, maxX, maxY;
-    //cocos2d::CCRect rect = this->boundingBox();
-    //minX = cocos2d::CCRect::CCRectGetMinX(rect);
-    //maxX = cocos2d::CCRect::CCRectGetMaxX(rect);
-    //minY = cocos2d::CCRect::CCRectGetMinY(rect);
-    //maxY = cocos2d::CCRect::CCRectGetMaxY(rect);
-    //return BattleHelper::ConvertToPolygon(minX, minY, maxX, maxY);
-    //if (state_->Body())
-    //{
-    //    b2AABB aabb;
-    //    aabb.lowerBound = b2Vec2(HUGE_FLOAT, HUGE_FLOAT);
-    //    aabb.upperBound = b2Vec2(-HUGE_FLOAT, -HUGE_FLOAT); 
-    //    b2Fixture* fixture = state_->Body()->GetFixtureList();
-    //    while (fixture != NULL)
-    //    {
-    //        aabb.Combine(aabb, fixture->GetAABB());
-    //        fixture = fixture->GetNext();
-    //    }
-    //}
-    //return BPolygon();
-    return BPolygon();
 }
 
 } // namespace

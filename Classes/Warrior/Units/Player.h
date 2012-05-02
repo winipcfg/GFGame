@@ -22,7 +22,7 @@
 #define WARRIOR_PLAYER_H_
 
 #include "Unit.h"
-#include <Warrior/Components/Weapon.h>
+#include <Warrior/Units/Weapon.h>
 
 namespace Warrior 
 {

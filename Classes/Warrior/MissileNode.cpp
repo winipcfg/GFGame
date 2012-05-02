@@ -21,8 +21,8 @@
 #include "MissileNode.h"
 #include <GFort/Core/Macros.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
+#include <Warrior/Units/Missile.h>
 #include "CCExtensions/CCSpriteHelper.h"
-#include "Components/Missile.h"
 
 using namespace cocos2d;
 
@@ -31,8 +31,6 @@ namespace Warrior
 
 const std::string   kUnitSprite         = "Assets/Test/spell.png";
 
-//const std::string   kSprite             = "Assets/Test/Dummy/M/dummy.png";
-//const std::string   kSpriteShipFrame    = "Assets/Test/Dummy/M/dummy.plist";
 const std::string   kSprite             = "Assets/Shmup/Sprites.pvr.ccz";
 const std::string   kSpriteShipFrame    = "Assets/Shmup/Sprites.plist";
 
@@ -62,19 +60,19 @@ bool MissileNode::init()
     //---------------------------------------------------------------
     // Sprites
     //---------------------------------------------------------------
-    //char frameName[100] = {0};
-    //sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kUnitSprite.c_str());
-    //this->addChild(sprite_);
+    char frameName[100] = {0};
+    sprite_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kUnitSprite.c_str());
+    this->addChild(sprite_);
 
     ////---------------------------------------------------------------
     //// Sprites Test - Cannot use AdvanceSprite due to bounding box issue
     ////---------------------------------------------------------------
-    sprite_ = new AdvanceSprite();
-    sprite_->init();
-    sprite_->addFrames(kSpriteShipFrame.c_str(), kSprite.c_str());
-    sprite_->startAnimation(1, 3, -1, 0, this, 10, false, false);
-    sprite_->setIsVisible(true);
-    this->addChild(sprite_);
+    //sprite_ = new AdvanceSprite();
+    //sprite_->init();
+    //sprite_->addFrames(kSpriteShipFrame.c_str(), kSprite.c_str());
+    //sprite_->startAnimation(1, 3, -1, 0, this, 10, false, false);
+    //sprite_->setIsVisible(true);
+    //this->addChild(sprite_);
         
     return true;
 }

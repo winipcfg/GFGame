@@ -57,15 +57,8 @@ void WarriorBot::Update(BattleLayer& gameState)
         cocos2d::CCPoint diff = cocos2d::ccpSub(player->getPosition(), node_->getPosition());
         //cocos2d::CGFloat distance = cocos2d::ccpLength(diff);
 
-		float distance = 50;
+		float distance = 100;
 
-        //if (IsTargetInFront(*player, *node_))
-        //{
-        //    UnitAction action;
-        //    action.ActionType = kUnitActionTypeIdle;            
-        //    node_->GetState()->IssueCommand(action, true);
-        //}
-        //else 
         if (abs(diff.x) > distance)
         {
             // Chase player

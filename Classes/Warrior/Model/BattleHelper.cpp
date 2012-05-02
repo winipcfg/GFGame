@@ -102,6 +102,20 @@ BPolygon BattleHelper::ConvertToPolygon(const float& minX, const float& minY, co
     return polygon;
 }
 
+//BPolygon BattleHelper::GetBoundingRegion(const b2Body& body)
+//{
+//    b2AABB aabb;
+//    aabb.lowerBound = b2Vec2(FLT_MAX, FLT_MAX);
+//    aabb.upperBound = b2Vec2(-FLT_MAX, -FLT_MAX); 
+//    const b2Fixture* fixture = body.GetFixtureList();
+//    while (fixture != NULL)
+//    {
+//        aabb.Combine(aabb, fixture->GetAABB());
+//        fixture = fixture->GetNext();
+//    }
+//    return BPolygon();
+//}
+
 std::set<Unit*> BattleHelper::Collide(const Trail& trail, std::vector<Unit*>& units)
 {
 	std::set<Unit*> result;
@@ -117,6 +131,30 @@ std::set<Unit*> BattleHelper::Collide(const Trail& trail, std::vector<Unit*>& un
         }
     }
 	return result;
+}
+
+void BattleHelper::Collide(
+    const Trail& trail, 
+    std::vector<Unit*>& units, 
+    std::set<Unit*>& collideUnits, 
+    std::list<std::vector<BTurnInfo> >& collidePoints)
+{
+    collideUnits.clear();
+    collidePoints.clear();
+
+	Unit* unit;
+    std::vector<BTurnInfo> turns;
+    for (unsigned int i = 0; i < units.size(); ++i)
+    {
+        unit = units[i];
+        turns.clear();
+        if (trail.Collide(unit->GetBoundingRegion(), turns) && 
+            collideUnits.find(unit) != collideUnits.end())
+        {
+            collideUnits.insert(unit);
+            collidePoints.push_back(turns);
+        }
+    }
 }
 
 void BattleHelper::ApplyForceOnUnit(Unit* target, const BPoint& position, const b2Vec2& impulse)

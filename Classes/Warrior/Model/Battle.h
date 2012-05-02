@@ -83,7 +83,9 @@ public:
 
 public:    
     /// Spawn an entity.
-    Cistron::ObjectId SpawnEntity();
+    Cistron::ObjectId SpawnEntity()                         { return this->createObject(); }
+    
+    void SpawnEnemy(const b2Vec2& position);
     
     /// Shoot a missile towards a target.
     /// @param owner
@@ -104,7 +106,7 @@ public:
     /// @param attacker
     /// @param target
     void ResolveAttack(Unit& attacker, Unit& target);
-        
+
 protected:
     GFort::Core::Physics::PhysicsController     phys_controller_;
     GFort::Core::Physics::Box2dSettings         phys_settings_;

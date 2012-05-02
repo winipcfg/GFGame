@@ -62,7 +62,7 @@ BattleScene::BattleScene()
 
     physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
     physics_debug_viewer->SetWorld(battle_layer_->GetBattle()->World(), &battle_layer_->GetBattle()->PhysicsSettings());
-    physics_debug_viewer->setIsVisible(true);
+    physics_debug_viewer->setIsVisible(false);
     game_layer_->addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
 }
 

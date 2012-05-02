@@ -43,18 +43,9 @@ public:
 
     /// Reset all parameters of the state.
     virtual void ResetState();
-
-    /// Gets the bounding box.
-    cocos2d::CCRect boundingBox(void);
-
-    /// Gets the size of bounding box.
-    cocos2d::CCSize Size();
-
-    /// Gets the bounding region.
-    BPolygon GetBoundingRegion();
             
 protected:
-    void UpdateNode(cocos2d::ccTime dt);
+    void UpdateNode(cocos2d::ccTime dt);        
 
     /// Update action based on current command.
     virtual void UpdateAction();
@@ -70,23 +61,6 @@ protected:
     /// Perform attack.
     /// @param action
     virtual void Attack(UnitAction& action);
-    
-    /// Move to specified position.
-    /// @param position
-    virtual void Move(const cocos2d::CCPoint& position);
-
-    /// Show animation.
-    /// @param value
-    virtual void ShowAnimation(const UnitAnimationType& value);
-    
-private:
-    // Attributes
-    // Main node and sprite for actions and animations
-    cocos2d::CCSprite*                  sprite_;
-
-    // Stores animations and default actions
-    std::hash_map<std::string, cocos2d::CCAnimation*>   animations_;
-    std::hash_map<std::string, cocos2d::CCAction*>      actions_;
 };
 
 } // namespace

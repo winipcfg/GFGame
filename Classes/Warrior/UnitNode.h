@@ -51,9 +51,6 @@ public:
 
     /// Initialize.
     virtual bool init() = 0;
-    
-    /// Gets the bounding region.
-    virtual BPolygon GetBoundingRegion() = 0;
 
     /// Reset all data in node.
     virtual void Reset();
@@ -84,12 +81,24 @@ protected:
     /// @param dt
     virtual void UpdateNode(cocos2d::ccTime dt) {}
 
+    /// Refresh the position.
+    void RefreshPosition();
+
 protected:
     /// Resolve attack.
     void ResolveAttack();
-        
-    /// Set the node to be invisible.
-    void SetInvisible();
+
+    ///// Set the node to be visible.
+    //void SetVisible()                           { this->setIsVisible(true); }
+    //    
+    ///// Set the node to be invisible.
+    //void SetInvisible()                         { this->setIsVisible(false); }
+
+    /// Start to use node motion instead of physics motion.
+    void StartNodeMotion()                        { use_physics_motion_ = false; }
+
+    /// Stop to use node motion instead of physics motion.
+    void StopNodeMotion()                         { use_physics_motion_ = true; }
         
 protected:
     // Attributes
@@ -97,10 +106,6 @@ protected:
         
     // If true, then the node follows physics motion. Else, it follows sprite motion
     bool                                use_physics_motion_;  
-    
-    // Instance Data
-    UnitAnimationType                   animation_type_;
-    bool                                needs_update_;
 };
 
 } // namespace

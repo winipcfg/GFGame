@@ -1,4 +1,4 @@
-//Copyright (C) 2012 by Gavin Fong
+//Copyright (C) 2011 by Gavin Fong
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -18,45 +18,54 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_MISSILE_NODE_H_
-#define WARRIOR_MISSILE_NODE_H_
+#ifndef WARRIOR_GRAPHIC_NODE_H_
+#define WARRIOR_GRAPHIC_NODE_H_
 
-#include <Box2D/Box2D.h>
-#include <Cistron/Cistron.h>
 #include "cocos2d.h"
-#include "Components/PhysicsComponent.h"
-#include "Components/RenderComponent.h"
+#include <Cistron/Cistron.h>
 #include <CCExtensions/AdvanceSprite.h>
+#include <Warrior/Units/Unit.h>
 
 namespace Warrior 
 {
 
-class MissileNode 
-    : public cocos2d::CCNode,
-      public Cistron::Component
+class GraphicNode : public cocos2d::CCNode, public Cistron::Component
 {    
 public:
     /// Constructor.
-    MissileNode();
+    GraphicNode(Unit* unit);
 
     /// Destructor.
-    ~MissileNode();
+    ~GraphicNode();
+
+    /// Gets the size of bounding box.
+    cocos2d::CCSize Size();
 
     /// Initialize.
     virtual bool init();
 
-    /// Gets the bounding box.
-    cocos2d::CCRect boundingBox(void);
+    /// Gets position and rotation of the component.
+    /// @param[out] position
+    /// @param[out] rotation
+    void GetPositionAndRotation(b2Vec2& position, float& rotation);
 
-    /// Gets the physics body.
-    b2Body* Body()                                          { return body_; }
+    /// Update position and rotation.
+    /// @param position
+    /// @param rotation
+    void UpdatePositionAndRotation(const b2Vec2& position, const float& rotation);
 
-    /// Assign physics body to the unit.
-    /// @param body
-    void SetBody(b2Body* body)                              { body_ = body; }
-       
+    /// Sets the offset of graphic.
+    /// @param value
+    void SetOffset(cocos2d::CCPoint value)  { offset_ = value; }
+
+    /// Gets the offset of graphic.
+    cocos2d::CCPoint Offset() const         { return offset_; }
+        
 protected:
-private:    
+    /// Show animation.
+    void ShowAnimation();
+
+public:
     /// Update the node.
     /// @param dt
     void UpdateNode(cocos2d::ccTime dt);
@@ -64,17 +73,20 @@ private:
     /// Destroy itself.
     void Destroy();
 
+    /// Resolve attack.
+    void ResolveAttack();
+    
 private:
-    // Main node and sprite for actions and animations
-    cocos2d::CCSprite*                  sprite_;
-    //cocos2d::AdvanceSprite*             sprite_;
+    // Attributes
+    Unit*                               state_;
 
-public:
-    // Physics body
-    b2Body*                             body_;
-    //PhysicsComponent*                   physics_component_;
+    cocos2d::AdvanceSprite*             sprite_;
+    cocos2d::CCPoint                    offset_;
+    FacingDirection                     facing_;
+    UnitActionType                      action_type_;
+    bool                                needs_update_;    
 };
 
 } // namespace
 
-#endif // WARRIOR_MISSILE_NODE_H_
+#endif // WARRIOR_GRAPHIC_NODE_H_

@@ -84,6 +84,8 @@ private:
     void UpdateNode(cocos2d::ccTime dt);
 
     void UpdateCamera(const Point& position);
+
+    virtual void draw(void);
     
 private:
     // Stores time information

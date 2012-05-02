@@ -180,22 +180,6 @@ void BattleHUD::SetupViewer()
     cocos2d::CCMenu* pMenu = CCMenu::menuWithItems(button_pause_, button_debug_, NULL);
     pMenu->setPosition(CCPointZero);    
     addChild(pMenu, kZOrderMenu, kZOrderMenu);
-
-
-    //// Background
-    //cocos2d::CCSprite* background = cocos2d::CCSprite::spriteWithFile(kBackground.c_str());
-    //ccBlendFunc blend;
-    //blend.src = GL_ONE;
-    //blend.dst = GL_ONE;
-    //background->setBlendFunc(blend);
-    //addChild(background);
-
-    //cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::actionWithDuration(kBackgroundScaleDuration, kBackgroundScaleSize, kBackgroundScaleSize);
-    //cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::actionWithDuration(kBackgroundScaleDuration, 1, 1);
-    //cocos2d::CCRotateBy* rotateAction = cocos2d::CCRotateBy::actionWithDuration(kBackgroundScaleDuration * 2, kBackgroundRotateBy);        
-    //cocos2d::CCSequence* scaleAction = cocos2d::CCSequence::actionOneTwo(scaleToAction, scaleBackAction);
-    //cocos2d::CCSpawn* spawnAction = cocos2d::CCSpawn::actionOneTwo(scaleAction, rotateAction);
-    //background->runAction(cocos2d::CCRepeatForever::actionWithAction(spawnAction));
 }
 
 void BattleHUD::ButtonPauseCallback(CCObject* pSender)

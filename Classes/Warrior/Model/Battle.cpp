@@ -24,7 +24,8 @@
 #include <GFort/Core/Physics/Box2dSettings.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <GFort/Core/MathHelper.h>
-#include "../Components/Missile.h"
+#include <Warrior/Units/Missile.h>
+#include <Warrior/GraphicNode.h>
 
 namespace Warrior 
 {
@@ -52,15 +53,7 @@ Battle::~Battle()
 void Battle::Initialize()
 {   
     battle_ended_ = false;
-
     b2Body* body;
-
- //   // Create boundary
- //   body = GFort::Core::Physics::PhysicsHelper::CreateBoundedArea(
- //       phys_controller_.World(),
- //       b2Vec2(kMapBoundary, kMapBoundary),
- //       map_.Width() - kMapBoundary * 2,
- //       map_.Height() - kMapBoundary * 2);
 
     // Ground
     body = GFort::Core::Physics::PhysicsHelper::CreateBox(
@@ -144,6 +137,22 @@ void Battle::DoSlice(const Trail& trail, std::vector<Unit>& affectedUnits)
 void Battle::Update(const float& dt)
 {
     phys_controller_.Step(&phys_settings_, dt);
+
+    // Update all units
+    std::list<Cistron::Component*>::iterator it;
+    std::list<Cistron::Component*> components = this->getComponentsByName("Unit");
+    for (it = components.begin(); it != components.end(); ++it)
+    {
+        static_cast<Unit*>(*it)->Update(dt);
+    }
+
+    components = this->getComponentsByName("UnitComponent");
+    for (it = components.begin(); it != components.end(); ++it)
+    {
+        static_cast<GraphicNode*>(*it)->UpdateNode(dt);
+    }
+
+    // Remove objects that are pending to destroy
     if (objects_pending_destroyed_.size() > 0)
     {
         Cistron::ObjectId objId;        
@@ -156,6 +165,11 @@ void Battle::Update(const float& dt)
 void Battle::ResolveAttack(Unit& attacker, Unit& target)
 {
     target.TakeDamage(&attacker, 1);
+}
+
+void Battle::SpawnEnemy(const b2Vec2& position)
+{
+
 }
 
 MissileNode* Battle::ShootMissile(
@@ -210,11 +224,6 @@ MissileNode* Battle::ShootMissile(
     body->ApplyLinearImpulse(body->GetMass() * impulse, body->GetWorldCenter());
     
     return node;
-}
-
-Cistron::ObjectId Battle::SpawnEntity()
-{
-    return this->createObject();
 }
     
 } // namespace

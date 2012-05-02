@@ -23,7 +23,7 @@
 
 #include "cocos2d.h"
 #include "UnitNode.h"
-#include "Components/Bot.h"
+#include <Warrior/Units/Bot.h>
 
 namespace Warrior 
 {
@@ -46,8 +46,8 @@ public:
     /// Set the bot of the node.
     void SetBot(Bot* bot) { bot_ = bot; }
 
-    /// Gets the bounding region.
-    virtual BPolygon GetBoundingRegion();
+    ///// Gets the bounding region.
+    //virtual BPolygon GetBoundingRegion();
         
 protected:
     /// Update action based on current command.
