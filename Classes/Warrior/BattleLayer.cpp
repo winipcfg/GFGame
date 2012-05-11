@@ -32,7 +32,8 @@
 #include "Units/WarriorBot.h"
 #include "TypeDef.h"
 #include "Scene/SceneHelper.h"
-#include "GraphicNode.h"
+#include "Units/GraphicNode.h"
+#include "Units/EntityB2Category.h"
 
 using namespace cocos2d;
 
@@ -41,7 +42,7 @@ namespace Warrior
 
 const float kFallSpeed                  = 0.5f;
 const int kMinSliceLength               = 20;
-const int kNumEnemies                   = 10;//20;
+const int kNumEnemies                   = 2;//10;//20;
 const float kMinSpawnTime               = 0.5f;
 const float kMaxSpawnTime               = 1.5f;
 
@@ -229,8 +230,8 @@ void BattleLayer::SpawnPlayer(const Point& position)
         b2Vec2(player_node_->getPosition().x, player_node_->getPosition().y + node->Size().height / 2),
         node->Size().width,
         node->Size().height);
-
     body->SetFixedRotation(true);
+    body->SetUserData(player_);
 
     // Set the dynamic body fixture.
 	b2Fixture* fixture = body->GetFixtureList();	
@@ -240,12 +241,25 @@ void BattleLayer::SpawnPlayer(const Point& position)
 	body->ResetMassData();
 
     b2Filter filter = fixture[0].GetFilterData();
-    filter.categoryBits = 0x0002;
-    filter.maskBits = 0x0001;
+    filter.categoryBits = kCategoryBitsPlayer;
+    filter.maskBits = kMaskBitsPlayer;
     fixture[0].SetFilterData(filter);
+
+
+    // Footer
+    b2CircleShape shape;
+    b2FixtureDef myFixtureDef;
+    myFixtureDef.shape = &shape;
+    myFixtureDef.density = 1;
+    shape.m_p = b2Vec2(0,-node->Size().height * 0.5 / PTM_RATIO);
+    shape.m_radius = node->Size().width * 0.25 / PTM_RATIO;
+    myFixtureDef.isSensor = true;
+    b2Fixture* footSensorFixture = body->CreateFixture(&myFixtureDef);
+    //footSensorFixture->SetUserData( (void*)3 );
 
     physics->AddBody("root", body);
     player_->SetBody(body);
+
     battle_.addComponent(objId, physics);
 }
 
@@ -328,8 +342,8 @@ void BattleLayer::SpawnEnemy(const Point& position)
 	body->ResetMassData();
 
     b2Filter filter = fixture[0].GetFilterData();
-    filter.categoryBits = 0x0002;
-    filter.maskBits = 0x0001;
+    filter.categoryBits = kCategoryBitsEnemy;
+    filter.maskBits = kMaskBitsEnemy;
     fixture[0].SetFilterData(filter);
 
     physics->AddBody("root", body);
@@ -345,24 +359,24 @@ void BattleLayer::DoSlice()
     //battle_.DoSlice(slice_layer_->Slice(), affectedUnits);
     //std::set<Unit* > units = BattleHelper::Collide(slice_layer_->Slice(), enemies_nodes_);
 	
-    std::set<EnemyNode* > damaged_enemies; 
-    EnemyNode* enemy;
+    std::set<Unit* > affected_units;
+    Unit* unit;
     std::vector<BTurnInfo> turns;
     for (unsigned int j = 0; j < enemies_nodes_.size(); ++j)
     {
-        enemy = static_cast<EnemyNode*>(enemies_nodes_[j]);
-        if (enemy->getIsVisible() && enemy->GetState()->Alive())
+        unit = enemies_nodes_[j]->GetState();
+        if (unit->Alive())
         {         
             turns.clear();
-            if (slice_layer_->Collide(enemy->GetState()->GetBoundingRegion(), turns))
+            if (slice_layer_->Collide(unit->GetBoundingRegion(), turns))
             {
-                battle_.ResolveAttack(*player_, *enemy->GetState());
-                if (!enemy->GetState()->Alive())
+                battle_.ResolveAttack(*player_, *unit);
+                if (!unit->Alive())
                 {
-                    damaged_enemies.insert(enemy);
+                    affected_units.insert(unit);
         
-                    if (enemy->GetState()->Body())
-                        enemy->GetState()->Body()->SetFixedRotation(false);
+                    if (unit->Body())
+                        unit->Body()->SetFixedRotation(false);
                     const float kImpulseStrength        = 2000.0f;
                     
                     b2Vec2 impulse(
@@ -370,7 +384,7 @@ void BattleLayer::DoSlice()
                         slice_layer_->Slice().GetEndPosition().y() - turns[0].point.y());
                     impulse.Normalize();
                     impulse *= kImpulseStrength;
-                    BattleHelper::ApplyForceOnUnit(enemy->GetState(), turns[0].point, impulse);
+                    BattleHelper::ApplyForceOnUnit(unit, turns[0].point, impulse);
 
                     //std::list<Cistron::Component*> component = battle_.getComponents(enemy->getOwnerId(), "PhysicsComponent");
                     //PhysicsComponent* component = static_cast<PhysicsComponent*>(component.front());                    
@@ -379,22 +393,22 @@ void BattleLayer::DoSlice()
         }
     }
 
-    if (damaged_enemies.size() > 0)
+    if (affected_units.size() > 0)
     {
-        std::set<EnemyNode* >::iterator it;
-        for (it = damaged_enemies.begin(); it != damaged_enemies.end(); ++it)
+        std::set<Unit* >::iterator it;
+        for (it = affected_units.begin(); it != affected_units.end(); ++it)
         {
             (*it)->Die();
         }
 
         //std::for_each(damaged_enemies.begin(), damaged_enemies.end(), boost::mem_fn(&EnemyNode::Die)); 
-        battle_.Stat().TotalKills += damaged_enemies.size();
+        battle_.Stat().TotalKills += affected_units.size();
         audio_handler_.PlayKillEffect();
     }
 
     if (hud_layer_)
     {
-        hud_layer_->SetCombo(damaged_enemies.size());
+        hud_layer_->SetCombo(affected_units.size());
         hud_layer_->SetTotalKills(battle_.Stat().TotalKills);
     }
 

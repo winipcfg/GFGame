@@ -18,56 +18,41 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_ENEMY_NODE_H_
-#define WARRIOR_ENEMY_NODE_H_
+#pragma once
+#ifndef CCB2BODYMOVEBY_H_
+#define CCB2BODYMOVEBY_H_
 
+#include <Box2D/Box2D.h>
 #include "cocos2d.h"
-#include "UnitNode.h"
-#include <Warrior/Units/Bot.h>
 
-namespace Warrior 
+namespace GFGame 
 {
+    
+using namespace cocos2d;
 
-class EnemyNode : public UnitNode
-{    
+/** @brief Moves a B2Body object by x,y. x and y are absolute coordinates by modifying it's position attribute.
+*/
+class CCB2BodyMoveBy : public CCActionInterval
+{
 public:
-    /// Constructor.
-    EnemyNode(Unit* unit);
+	/** initializes the action */
+	bool initWithDuration(ccTime duration, b2Body* body, CCPoint position, const float& PTMRatio);
+    	
+    virtual void startWithTarget(CCNode *pTarget);
+	virtual void update(ccTime time);
 
-    /// Destructor.
-    ~EnemyNode();
+public:
+	/** creates the action */
+	static CCB2BodyMoveBy* actionWithDuration(ccTime duration, b2Body* body, CCPoint position, const float& PTMRatio);
 
-    /// Initialize.
-    virtual bool init();
-
-    /// Reset all parameters of the state.
-    virtual void ResetState();
-
-    /// Set the bot of the node.
-    void SetBot(Bot* bot) { bot_ = bot; }
-
-    ///// Gets the bounding region.
-    //virtual BPolygon GetBoundingRegion();
-        
 protected:
-    /// Update action based on current command.
-    virtual void UpdateAction();
-
-    /// Perform attack.
-    /// @param action
-    virtual void Attack(UnitAction& action);
-
-private:
-    void UpdateNode(cocos2d::ccTime dt);
-    void Think(cocos2d::ccTime dt);
-
-    /// Destroy itself.
-    void Destroy();
-
-private:
-    Bot*        bot_;
+    b2Body* m_pBody;
+    float   m_fPTMRatio;
+	CCPoint m_delta;
+    CGFloat m_fLastElapsed;
 };
 
-} // namespace
 
-#endif // WARRIOR_ENEMY_NODE_H_
+} // namepace
+
+#endif //CCB2BODYMOVEBY_H_

@@ -23,7 +23,7 @@
 
 #include <GFort/Core/MathHelper.h>
 #include <Warrior/Model/UnitAction.h>
-#include "../UnitNode.h"
+#include "UnitNode.h"
 #include "../BattleLayer.h"
 
 
@@ -48,8 +48,8 @@ void ArcherBot::Update(BattleLayer& gameState)
         //cocos2d::CGFloat distance = cocos2d::ccpLength(diff);
 
 		float minDistance, maxDistance;
-		minDistance = 150;
-		maxDistance = 250;
+		minDistance = 200;
+		maxDistance = 400;
         if (abs(diff.x) < minDistance)
         {
             // Evade player

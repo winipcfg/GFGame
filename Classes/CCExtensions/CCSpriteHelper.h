@@ -1,4 +1,4 @@
-//Copyright (C) 2012 by Gavin Fong
+//Copyright (C) 2011 by Gavin Fong
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -18,60 +18,31 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_MISSILE_H_
-#define WARRIOR_MISSILE_H_
+#ifndef CCSPRITEHELPER_H_
+#define CCSPRITEHELPER_H_
 
-#include <Cistron/Cistron.h>
+#include "cocos2d.h"
 
-namespace Warrior 
+namespace GFGame 
 {
+    
+using namespace cocos2d;
 
-/// Stores missile information
-class Missile : public Cistron::Component
+class CCSpriteHelper
 {
 public:
-    /// Constructor.
-    Missile();
+    /// Creates a sprite with specified sprite frame or file.
+    /// @param nameOrFile The name of sprite or sprite frame.
+    static CCSprite* spriteWithSpriteFrameNameOrFile(const char* nameOrFile)
+    {
+        CCSpriteFrame* spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(nameOrFile);
+        if (spriteFrame)
+            return CCSprite::spriteWithSpriteFrame(spriteFrame);
+        return CCSprite::spriteWithFile(nameOrFile);
+    }    
+};
 
-    /// Destructor.
-    ~Missile();
 
-    /// Sets the damage of the missile.
-    /// @param damage
-    void SetDamage(const short& damage) { damage_ = damage; }
+} // namepace
 
-    /// Gets the damage of the missile.
-    short GetDamage()                   { return damage_; }
-
-    /// Update the unit.
-    void Update(const float& dt);
-                
-private:    
-    short       damage_;
-
-    // If true, then the node follows physics motion. Else, it follows sprite motion
-    bool        use_physics_;  
-
-    short       life_time_;
-};  
-
-    
-inline Missile::Missile()
-    : Cistron::Component("Missile")
-    , damage_(0)
-    , use_physics_(false)
-{
-}
-
-inline Missile::~Missile()
-{
-}
-
-inline void Missile::Update(const float& dt)
-{
-}
-
-    
-} // namespace
-
-#endif // WARRIOR_MISSILE_H_
+#endif //CCSPRITEHELPER_H_

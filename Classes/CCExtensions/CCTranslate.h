@@ -1,4 +1,4 @@
-//Copyright (C) 2012 by Gavin Fong
+//Copyright (C) 2011 by Gavin Fong
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -18,60 +18,37 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_MISSILE_H_
-#define WARRIOR_MISSILE_H_
+#ifndef CCTRANSLATE_H_
+#define CCTRANSLATE_H_
 
-#include <Cistron/Cistron.h>
+#include "cocos2d.h"
 
-namespace Warrior 
+namespace GFGame 
 {
+    
+using namespace cocos2d;
 
-/// Stores missile information
-class Missile : public Cistron::Component
+/** @brief Moves a CCNode object to the position x,y. x and y are absolute coordinates by modifying it's position attribute.
+*/
+class CCTranslate : public CCActionInterval
 {
 public:
-    /// Constructor.
-    Missile();
+	/** initializes the action */
+	bool initWithDuration(ccTime duration, CCPoint position);
+    	
+    virtual void startWithTarget(CCNode *pTarget);
+	virtual void update(ccTime time);
 
-    /// Destructor.
-    ~Missile();
+public:
+	/** creates the action */
+	static CCTranslate* actionWithDuration(ccTime duration, CCPoint position);
 
-    /// Sets the damage of the missile.
-    /// @param damage
-    void SetDamage(const short& damage) { damage_ = damage; }
+protected:
+	CCPoint m_delta;
+    CGFloat m_fLastElapsed;
+};
 
-    /// Gets the damage of the missile.
-    short GetDamage()                   { return damage_; }
 
-    /// Update the unit.
-    void Update(const float& dt);
-                
-private:    
-    short       damage_;
+} // namepace
 
-    // If true, then the node follows physics motion. Else, it follows sprite motion
-    bool        use_physics_;  
-
-    short       life_time_;
-};  
-
-    
-inline Missile::Missile()
-    : Cistron::Component("Missile")
-    , damage_(0)
-    , use_physics_(false)
-{
-}
-
-inline Missile::~Missile()
-{
-}
-
-inline void Missile::Update(const float& dt)
-{
-}
-
-    
-} // namespace
-
-#endif // WARRIOR_MISSILE_H_
+#endif //CCTRANSLATE_H_

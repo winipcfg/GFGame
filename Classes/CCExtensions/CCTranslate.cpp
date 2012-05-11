@@ -18,51 +18,51 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_PLAYER_NODE_H_
-#define WARRIOR_PLAYER_NODE_H_
-
+#include "CCTranslate.h"
 #include "cocos2d.h"
-#include <Warrior/Model/Struct.h>
-#include <Warrior/Units/Player.h>
-#include "UnitNode.h"
 
-namespace Warrior 
+namespace GFGame {
+
+//
+// MoveTo
+//
+CCTranslate* CCTranslate::actionWithDuration(cocos2d::ccTime duration, cocos2d::CCPoint position)
 {
+	CCTranslate *pMoveTo = new CCTranslate();
+	pMoveTo->initWithDuration(duration, position);
+	pMoveTo->autorelease();
 
-class PlayerNode : public UnitNode, public GFort::Core::ISubject<PlayerNode>
-{    
-public:
-    /// Constructor.
-    PlayerNode(Unit* unit);
+	return pMoveTo;
+}
 
-    /// Destructor.
-    ~PlayerNode();
+bool CCTranslate::initWithDuration(cocos2d::ccTime duration, cocos2d::CCPoint position)
+{
+	if (CCActionInterval::initWithDuration(duration))
+	{
+        m_fLastElapsed = 0;
+        m_delta = position;
+		return true;
+	}
 
-    /// Initialize.
-    virtual bool init();
+	return false;
+}
 
-    /// Reset all parameters of the state.
-    virtual void ResetState();
-            
-protected:
-    void UpdateNode(cocos2d::ccTime dt);        
+void CCTranslate::startWithTarget(CCNode *pTarget)
+{
+	CCActionInterval::startWithTarget(pTarget);
+}
 
-    /// Update action based on current command.
-    virtual void UpdateAction();
+void CCTranslate::update(cocos2d::ccTime time)
+{
+    cocos2d::ccTime tick = time - m_fLastElapsed;
+	if (m_pTarget)
+	{        
+        cocos2d::CCPoint position = m_pTarget->getPosition();
+        position.x = position.x + m_delta.x * tick;
+        position.y = position.y + m_delta.y * tick;
+		m_pTarget->setPosition(position);
+	}
+    m_fLastElapsed = time;
+}
 
-    /// Walk to specified location.
-    /// @param position
-    virtual void Walk(const cocos2d::CCPoint& position);
-
-    /// Run to specified location.
-    /// @param position
-    virtual void Run(const cocos2d::CCPoint& position);
-
-    /// Perform attack.
-    /// @param action
-    virtual void Attack(UnitAction& action);
-};
-
-} // namespace
-
-#endif // WARRIOR_PLAYER_NODE_H_
+}

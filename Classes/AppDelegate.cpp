@@ -5,7 +5,7 @@
 using namespace CocosDenshion;
 
 #include "Warrior/Scene/SceneHelper.h"
-#include "Shmup/SceneHelper.h"
+#include "Shmup/Scene/SceneHelper.h"
 
 using namespace cocos2d;
 
@@ -29,7 +29,8 @@ bool AppDelegate::initInstance()
         // The HelloWorld is designed as HVGA.
         CCEGLView * pMainWnd = new CCEGLView();
         CC_BREAK_IF(! pMainWnd
-            || ! pMainWnd->Create(TEXT("GFGame"), 320, 480));
+            //|| ! pMainWnd->Create(TEXT("GFGame"), 320, 480));
+            || ! pMainWnd->Create(TEXT("GFGame"), 320, 960));
 #endif  // CC_PLATFORM_WIN32
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
@@ -80,17 +81,11 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
-
-    //// create a scene. it's an autorelease object
-    //CCScene *pScene = HelloWorld::scene();
-
-    //// run
-    //pDirector->runWithScene(pScene);
-
-    //Warrior::SceneHelper manager;
-    //manager.GoDefault();
-    GFort::Games::Shmup::SceneHelper manager;
+    
+    Warrior::SceneHelper manager;
     manager.GoDefault();
+    //GFort::Games::Shmup::SceneHelper manager;
+    //manager.GoDefault();
 
     return true;
 }

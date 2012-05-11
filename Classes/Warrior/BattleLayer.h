@@ -33,9 +33,9 @@
 #include "SliceLayer.h"
 #include "BattleAudioHandler.h"
 #include "EmitterHandler.h"
-#include "PlayerNode.h"
-#include "EnemyNode.h"
-#include "MissileNode.h"
+#include "Units/PlayerNode.h"
+#include "Units/EnemyNode.h"
+#include "Units/MissileNode.h"
 #include "Landscape/Landscape.h"
 
 namespace Warrior 

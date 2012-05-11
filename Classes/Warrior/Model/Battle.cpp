@@ -25,7 +25,8 @@
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <GFort/Core/MathHelper.h>
 #include <Warrior/Units/Missile.h>
-#include <Warrior/GraphicNode.h>
+#include <Warrior/Units/GraphicNode.h>
+#include <Warrior/Units/EntityB2Category.h>
 
 namespace Warrior 
 {
@@ -67,6 +68,11 @@ void Battle::Initialize()
 	b2Fixture* fixture = body->GetFixtureList();	
 	fixture[0].SetFriction(1.0f);
 	fixture[0].SetRestitution(0.0f);	
+
+    b2Filter filter = fixture[0].GetFilterData();
+    filter.categoryBits = kCategoryBitsGround;
+    filter.maskBits = kMaskBitsGround;
+    fixture[0].SetFilterData(filter);
 
     map_.Contents().push_back(body);
 }
@@ -136,7 +142,23 @@ void Battle::DoSlice(const Trail& trail, std::vector<Unit>& affectedUnits)
 
 void Battle::Update(const float& dt)
 {
+    // Update physics layer and do collision checking
     phys_controller_.Step(&phys_settings_, dt);
+    for (int i = 0; i < phys_controller_.num_contact_points_; ++i)
+    {
+        void* userDataA = phys_controller_.contact_points_[i].fixtureA->GetBody()->GetUserData();
+        void* userDataB = phys_controller_.contact_points_[i].fixtureB->GetBody()->GetUserData();
+        if (userDataA && userDataB)
+        {
+            //Cistron::Component* missile;
+            //missile = static_cast<Cistron::Component*>(userDataA);
+            //if (missile)
+            //{
+            //    string name = missile->getName();
+            //    this->destroyObject(missile->getId());
+            //}
+        }
+    }
 
     // Update all units
     std::list<Cistron::Component*>::iterator it;
@@ -146,6 +168,7 @@ void Battle::Update(const float& dt)
         static_cast<Unit*>(*it)->Update(dt);
     }
 
+    // Graphic Node
     components = this->getComponentsByName("UnitComponent");
     for (it = components.begin(); it != components.end(); ++it)
     {
@@ -197,6 +220,8 @@ MissileNode* Battle::ShootMissile(
         b2Vec2(node->getPosition().x, node->getPosition().y),
         node->boundingBox().size.width,
         node->boundingBox().size.height);
+    body->SetBullet(true);
+    body->SetUserData(unit);
 
     // Set the dynamic body fixture.
 	b2Fixture* fixture = body->GetFixtureList();	
@@ -206,8 +231,10 @@ MissileNode* Battle::ShootMissile(
 	body->ResetMassData();
 
     b2Filter filter = fixture[0].GetFilterData();
-    filter.categoryBits = 0x0002;
-    filter.maskBits = 0x0001;
+    //filter.categoryBits = 0x0002;
+    //filter.maskBits = 0x0001;
+    filter.categoryBits = kCategoryBitsMissile;
+    filter.maskBits = kMaskBitsMissile;
     fixture[0].SetFilterData(filter);
 
     physics->AddBody("root", body);

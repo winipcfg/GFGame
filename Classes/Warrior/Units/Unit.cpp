@@ -32,7 +32,7 @@ Unit::Unit()
       stamina_(0),
       facing_(kFacingRight),
       last_attacker_(NULL),
-      use_physics_motion_(false),
+      use_physics_motion_(true),
       body_(NULL)
 {
     //Cistron::ObjectId objId = this->getObjectManager()->createObject();

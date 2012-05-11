@@ -48,11 +48,19 @@ public:
     /// @param rotation
     void UpdatePositionAndRotation(const b2Vec2& position, const float& rotation);
 
+    /// Sets the offset of graphic.
+    /// @param value
+    void SetOffset(cocos2d::CCPoint value)  { offset_ = value; }
+
+    /// Gets the offset of graphic.
+    cocos2d::CCPoint Offset() const         { return offset_; }
+
     /// Return the node.
     cocos2d::CCNode* Node() { return node_; }
                     
 private:    
-    cocos2d::CCNode* node_;
+    cocos2d::CCNode*        node_;
+    cocos2d::CCPoint        offset_;
 };  
 
     
@@ -80,7 +88,7 @@ inline void RenderComponent::UpdatePositionAndRotation(const b2Vec2& position, c
 {
     float rad = CC_RADIANS_TO_DEGREES(-1 * rotation);
     node_->setRotation(rad);        
-    node_->setPosition(ccp(position.x, position.y));
+    node_->setPosition(ccp(position.x + offset_.x, position.y + offset_.y));
 }
     
 } } // namespace

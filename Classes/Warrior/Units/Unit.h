@@ -80,6 +80,10 @@ public:
 
     /// Gets the bounding region.
     BPolygon GetBoundingRegion() const;
+
+    /// Sets whether to follow physics motion.
+    /// @param value
+    void SetUsePhysicsMotion(const bool& value)             { use_physics_motion_ = value; }
     
     //---------------------------------------------------------------
     // Actions

@@ -27,10 +27,11 @@
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <Cistron/Cistron.h>
 #include <Warrior/Model/Struct.h>
-#include <Warrior/MissileNode.h>
+#include <Warrior/Units/MissileNode.h>
 #include "Battlefield.h"
 #include "Trail.h"
 #include "GameStat.h"
+#include "BattlePhysicsListener.h"
 
 namespace Warrior 
 {
@@ -108,7 +109,8 @@ public:
     void ResolveAttack(Unit& attacker, Unit& target);
 
 protected:
-    GFort::Core::Physics::PhysicsController     phys_controller_;
+    //GFort::Core::Physics::PhysicsController     phys_controller_;
+    BattlePhysicsListener                       phys_controller_;
     GFort::Core::Physics::Box2dSettings         phys_settings_;
     
     // Stores the player and enemies.

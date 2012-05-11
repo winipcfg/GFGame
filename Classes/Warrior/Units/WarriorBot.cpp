@@ -23,7 +23,7 @@
 
 #include <GFort/Core/MathHelper.h>
 #include <Warrior/Model/UnitAction.h>
-#include "../UnitNode.h"
+#include "UnitNode.h"
 #include "../BattleLayer.h"
 
 
