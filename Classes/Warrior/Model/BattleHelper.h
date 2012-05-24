@@ -23,7 +23,7 @@
 
 #include <string>
 #include <GFort/Core/Physics/PhysicsHelper.h>
-#include <Warrior/Model/Struct.h>
+//#include <Warrior/Model/Struct.h>
 #include <Warrior/Units/Unit.h>
 #include <Warrior/Units/Enemy.h>
 #include <Warrior/Model/Trail.h>

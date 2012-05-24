@@ -25,7 +25,7 @@
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <GFort/Core/MathHelper.h>
 #include <Warrior/Units/Missile.h>
-#include <Warrior/Units/GraphicNode.h>
+#include <Warrior/Units/Nodes/GraphicNode.h>
 #include <Warrior/Units/EntityB2Category.h>
 
 namespace Warrior 
@@ -157,6 +157,7 @@ void Battle::Update(const float& dt)
             //    string name = missile->getName();
             //    this->destroyObject(missile->getId());
             //}
+            int i=0;
         }
     }
 
@@ -252,5 +253,17 @@ MissileNode* Battle::ShootMissile(
     
     return node;
 }
-    
+
+bool Battle::MeetsWinCondition()
+{
+    // If all enemies are destroyed
+    return true;
+}
+
+bool Battle::MeetsLossCondition()
+{
+    // If player is dead
+    return true;
+}    
+
 } // namespace

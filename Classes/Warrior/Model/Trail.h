@@ -23,7 +23,6 @@
 
 #include <vector>
 #include <GFort/Core/Structs.h>
-#include <Warrior/Model/Struct.h>
 #include <Warrior/TypeDef.h>
 
 namespace Warrior 

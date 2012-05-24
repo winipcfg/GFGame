@@ -26,8 +26,7 @@
 #include <GFort/Core/Physics/PhysicsController.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <Cistron/Cistron.h>
-#include <Warrior/Model/Struct.h>
-#include <Warrior/Units/MissileNode.h>
+#include <Warrior/Units/Nodes/MissileNode.h>
 #include "Battlefield.h"
 #include "Trail.h"
 #include "GameStat.h"
@@ -108,8 +107,12 @@ public:
     /// @param target
     void ResolveAttack(Unit& attacker, Unit& target);
 
+private:
+    // temp
+    bool MeetsWinCondition();
+    bool MeetsLossCondition();
+
 protected:
-    //GFort::Core::Physics::PhysicsController     phys_controller_;
     BattlePhysicsListener                       phys_controller_;
     GFort::Core::Physics::Box2dSettings         phys_settings_;
     

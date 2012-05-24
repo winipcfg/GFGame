@@ -25,7 +25,7 @@
 #include <GFort/Core/Physics/PhysicsController.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <Cistron/Cistron.h>
-#include <Warrior/Model/Struct.h>
+//#include <Warrior/Model/Struct.h>
 #include <Warrior/Units/Player.h>
 #include <Warrior/Units/Enemy.h>
 #include "Trail.h"
