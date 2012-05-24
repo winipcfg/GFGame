@@ -1,4 +1,4 @@
-//Copyright (C) 2012 by Gavin Fong
+//Copyright (C) 2011 by Gavin Fong
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -18,31 +18,26 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_UNITS_WARRIOR_BOT_H_
-#define WARRIOR_UNITS_WARRIOR_BOT_H_
+#include "Bot.h"
+#include "cocos2d.h"
 
-#include <Warrior/Units/Bot.h>
+#include <GFort/Core/MathHelper.h>
+//#include <Warrior/Model/UnitAction.h>
+#include "../Nodes/UnitNode.h"
+#include "../../BattleLayer.h"
+
 
 namespace Warrior 
 {
 
-/// Bot of archer
-class WarriorBot : public Bot
+Bot::Bot(UnitNode* node)
+    : Cistron::Component("Bot"),
+      node_(node)
 {
-public:
-    /// Constructor.
-    WarriorBot(UnitNode* node);
+}
 
-    /// Destructor.
-    ~WarriorBot();
-
-    /// Think and do some actions for a single turn.
-    /// This method will not be called if the unit is not ready to think.
-    /// @param gameState 
-    virtual void Update(BattleLayer& gameState);
-};
-
+Bot::~Bot()
+{
+}
 
 } // namepsace
-
-#endif // WARRIOR_UNITS_WARRIOR_BOT_H_

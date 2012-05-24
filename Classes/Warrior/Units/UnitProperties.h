@@ -22,7 +22,7 @@
 #define WARRIOR_UNIT_PROPERTIES_H_
 
 #include <Cistron/Cistron.h>
-#include <Warrior/Model/Struct.h>
+//#include <Warrior/Model/Struct.h>
 #include <Warrior/TypeDef.h>
 
 namespace Warrior 

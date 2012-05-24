@@ -18,26 +18,41 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#include "Bot.h"
-#include "cocos2d.h"
-
-#include <GFort/Core/MathHelper.h>
-#include <Warrior/Model/UnitAction.h>
-#include "UnitNode.h"
-#include "../BattleLayer.h"
-
+#pragma once
+#ifndef WARRIOR_UNIT_ACTION_TYPE_H_
+#define WARRIOR_UNIT_ACTION_TYPE_H_
 
 namespace Warrior 
 {
-
-Bot::Bot(UnitNode* node)
-    : Cistron::Component("Bot"),
-      node_(node)
+    
+/// Action type of units. Each unit has only 1 action.
+enum UnitActionType
 {
-}
+    /// The unit do nothing.
+    kUnitActionTypeIdle,
 
-Bot::~Bot()
-{
-}
+    /// The unit do move.
+    kUnitActionTypeWalk,
 
-} // namepsace
+    /// The unit do move with faster speed.
+    kUnitActionTypeRun,
+    
+    /// The unit do attack.
+    kUnitActionTypeAttack,
+    
+    /// The unit is charging for powerful attack.
+    kUnitActionTypeCharge, 
+
+    /// The unit is charging for defense.
+    kUnitActionTypeDefense, 
+
+    /// The unit do move to left.
+    kUnitActionTypeMoveLeft,
+
+    /// The unit do move to right.
+    kUnitActionTypeMoveRight,
+};
+
+} // namespace
+
+#endif // WARRIOR_UNIT_ACTION_TYPE_H_

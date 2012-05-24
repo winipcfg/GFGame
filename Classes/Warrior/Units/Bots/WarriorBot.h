@@ -18,23 +18,23 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#ifndef WARRIOR_UNITS_ARCHER_BOT_H_
-#define WARRIOR_UNITS_ARCHER_BOT_H_
+#ifndef WARRIOR_UNITS_WARRIOR_BOT_H_
+#define WARRIOR_UNITS_WARRIOR_BOT_H_
 
-#include <Warrior/Units/Bot.h>
+#include <Warrior/Units/Bots/Bot.h>
 
 namespace Warrior 
 {
 
 /// Bot of archer
-class ArcherBot : public Bot
+class WarriorBot : public Bot
 {
 public:
     /// Constructor.
-    ArcherBot(UnitNode* node);
+    WarriorBot(UnitNode* node);
 
     /// Destructor.
-    ~ArcherBot();
+    ~WarriorBot();
 
     /// Think and do some actions for a single turn.
     /// This method will not be called if the unit is not ready to think.
@@ -45,4 +45,4 @@ public:
 
 } // namepsace
 
-#endif // WARRIOR_UNITS_ARCHER_BOT_H_
+#endif // WARRIOR_UNITS_WARRIOR_BOT_H_

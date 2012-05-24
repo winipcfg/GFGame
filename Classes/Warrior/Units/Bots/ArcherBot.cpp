@@ -18,38 +18,28 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 
-#include "WarriorBot.h"
+#include "ArcherBot.h"
 #include "cocos2d.h"
 
 #include <GFort/Core/MathHelper.h>
-#include <Warrior/Model/UnitAction.h>
-#include "UnitNode.h"
-#include "../BattleLayer.h"
+#include <Warrior/Units/UnitAction.h>
+#include "../Nodes/UnitNode.h"
+#include "../../BattleLayer.h"
 
 
 namespace Warrior 
 {
 
-WarriorBot::WarriorBot(UnitNode* node)
+ArcherBot::ArcherBot(UnitNode* node)
     : Bot(node)
 {
 }
 
-WarriorBot::~WarriorBot()
+ArcherBot::~ArcherBot()
 {
 }
 
-bool IsTargetInFront(UnitNode& unit, UnitNode& target)
-{
-    // If diff is +ve, then target is on right hand side of the unit
-    float diff = target.getPosition().x - unit.getPosition().x;
-    if (unit.GetState()->Facing() == kFacingRight)
-        return (diff >= 0) ? true : false;
-    else
-        return (diff >= 0) ? false : true;
-}
-
-void WarriorBot::Update(BattleLayer& gameState)
+void ArcherBot::Update(BattleLayer& gameState)
 {
     if (node_)
     {
@@ -57,9 +47,27 @@ void WarriorBot::Update(BattleLayer& gameState)
         cocos2d::CCPoint diff = cocos2d::ccpSub(player->getPosition(), node_->getPosition());
         //cocos2d::CGFloat distance = cocos2d::ccpLength(diff);
 
-		float distance = 100;
+		float minDistance, maxDistance;
+		minDistance = 200;
+		maxDistance = 400;
+        if (abs(diff.x) < minDistance)
+        {
+            // Evade player
+            bool moveLeft;
+            if (diff.x > 0)
+                moveLeft = true;
+            else if (diff.x < 0)
+                moveLeft = false;
+            else
+                moveLeft = (GFort::Core::MathHelper::RandomBetween(0.0, 1.0) > 0.5);
 
-        if (abs(diff.x) > distance)
+            UnitAction action;
+            action.ActionType = moveLeft ? kUnitActionTypeMoveLeft : kUnitActionTypeMoveRight;
+            action.PositionX = player->getPosition().x + (moveLeft ? -minDistance : minDistance);
+            action.PositionY = player->getPosition().y;
+            node_->GetState()->IssueCommand(action, true);
+        }
+        else if (abs(diff.x) > maxDistance)
         {
             // Chase player
             bool moveLeft;

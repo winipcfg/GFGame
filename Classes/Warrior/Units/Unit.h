@@ -24,13 +24,15 @@
 #include <vector>
 #include <GFort/Core/IObserver.h>
 #include <GFort/Core/Game/IEntity.h>
-#include <Warrior/Model/UnitAction.h>
+//#include <Warrior/Model/UnitAction.h>
 #include <GFort/Core/Physics/PhysicsController.h>
 #include <GFort/Core/Physics/PhysicsHelper.h>
 #include <Cistron/Cistron.h>
-#include <Warrior/Model/Struct.h>
+//#include <Warrior/Model/Struct.h>
 #include <Warrior/TypeDef.h>
 #include <Warrior/Units/UnitProperties.h>
+#include <Warrior/Units/FacingDirection.h>
+#include <Warrior/Units/UnitAction.h>
 
 namespace Warrior 
 {
