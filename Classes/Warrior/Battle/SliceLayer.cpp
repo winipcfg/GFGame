@@ -35,7 +35,7 @@ namespace Warrior
 SliceLayer::SliceLayer()
     : blade_(NULL)
 {    
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(
         this, 
         0, 
         false);
@@ -99,7 +99,7 @@ void SliceLayer::ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent
 {
     cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
     Point touchLocation = convertTouchToNodeSpace(pTouch);
-    Point oldTouchLocation = pTouch->previousLocationInView(pTouch->view());
+    Point oldTouchLocation = pTouch->previousLocationInView();
     oldTouchLocation = director->convertToGL(oldTouchLocation);
     oldTouchLocation = convertToNodeSpace(oldTouchLocation);
     
@@ -157,84 +157,19 @@ void SliceLayer::ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent
     //CCLOG("Total Child of SliceLayer: %d", this->getChildren()->count());
 }
 
-//void DrawLightning(
-//    const float& x1, 
-//    const float& y1, 
-//    const float& x2, 
-//    const float& y2, 
-//    const float& displace,
-//    const float& curDetail)
-//{
-//    if (displace < curDetail) 
-//    {
-//        Point segStart = Point(x1, y1);
-//        Point segEnd = Point(x2, y2);
-//        ccDrawLine(segStart, segEnd);
-//    }
-//    else 
-//    {        
-//        float mid_x = (x2 + x1) / 2;
-//        float mid_y = (y2 + y1) / 2;
-//        mid_x += (GFort::Core::MathHelper::RandomDouble<float>() - 0.5f) * displace;
-//        mid_y += (GFort::Core::MathHelper::RandomDouble<float>() - 0.5f) * displace;
-//        DrawLightning(x1,y1,mid_x,mid_y,displace/2,curDetail);
-//        DrawLightning(x2,y2,mid_x,mid_y,displace/2,curDetail);
-//    }
-//}
-
-//void DrawLightning(
-//    const Point& start, 
-//    const Point& end)
-//{
-//    int numBolt = 5;
-//    float displacement = ccpLength(ccpSub(start, end)) / 5.0f;// 20.0f;
-//    float boltWidth = 5;
-//    const float curDetail = 4.0f;
-//    const float startVar = 12.0f;
-//    float x1, y1, x2, y2;
-//    
-//    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);    
-//    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//
-//    for (unsigned int i = 0; i < numBolt; ++i)
-//    {
-//        float red = 1;//GFort::Core::MathHelper::RandomDouble<float>();
-//        float green = GFort::Core::MathHelper::RandomDouble<float>();
-//        float blue = 0;//GFort::Core::MathHelper::RandomDouble<float>();
-//        glColor4f(red, green, blue, 0.2f);
-//
-//        glLineWidth(GFort::Core::MathHelper::RandomDouble<float>() * boltWidth);    
-//        x1 = start.x + (GFort::Core::MathHelper::RandomDouble<float>() - 0.5f) * startVar;
-//        y1 = start.y + (GFort::Core::MathHelper::RandomDouble<float>() - 0.5f) * startVar;
-//        x2 = end.x + (GFort::Core::MathHelper::RandomDouble<float>() - 0.5f) * startVar;
-//        y2 = end.y + (GFort::Core::MathHelper::RandomDouble<float>() - 0.5f) * startVar;
-//        DrawLightning(x1, y1, x2, y2, displacement, curDetail);
-//    }
-//    glLineWidth(1);
-//
-//    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//}
-
-
-
 void SliceLayer::draw(void)
 {
-    glEnable(GL_LINE_SMOOTH);
+    //glEnable(GL_LINE_SMOOTH);
     glLineWidth(1);
 
     cocos2d::ccDrawLine(GetStartPosition(), GetEndPosition());
-    //Point start = GetStartPosition();
-    //Point end = GetEndPosition();
-    //DrawLightning(start, end);
-
     Point segStart;
     const std::list<BPoint > path = slice_.Path();
     if (path.size() > 0)
     {
-        glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+        ccDrawColor4F(1.0f, 0.0f, 0.0f, 1.0f);
 
-        list<BPoint >::const_iterator it = path.begin();
+        std::list<BPoint >::const_iterator it = path.begin();
         BPoint start = path.front();
         segStart = Point(start.x(), start.y());
         ++it;
@@ -250,7 +185,7 @@ void SliceLayer::draw(void)
             segStart = Point(start.x(), start.y());
         }  
 
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        ccDrawColor4F(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }
 

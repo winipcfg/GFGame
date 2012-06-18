@@ -112,7 +112,7 @@ void SkirmishLayer::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent)
 {
     cocos2d::CCTouch* touch = static_cast<cocos2d::CCTouch*>(pTouches->anyObject());
     Point touchLocation = convertTouchToNodeSpace(touch);
-    Point oldTouchLocation = touch->previousLocationInView(touch->view());
+    Point oldTouchLocation = touch->previousLocationInView();
     oldTouchLocation = CCDirector::sharedDirector()->convertToGL(oldTouchLocation);
     oldTouchLocation = this->convertToNodeSpace(oldTouchLocation);
 
@@ -163,7 +163,7 @@ void SkirmishLayer::SetupViewer()
         pt.Y = rand() % (int)background_->getContentSize().height;
         control_points_.push_back(pt);
 
-        buttonStage = cocos2d::CCMenuItemImage::itemFromNormalImage(
+        buttonStage = cocos2d::CCMenuItemImage::itemWithNormalImage(
             kSpriteControlPointNormal.c_str(), 
             kSpriteControlPointSelected.c_str(), 
             kSpriteControlPointDisable.c_str(),
@@ -204,13 +204,11 @@ void SkirmishLayer::SetupViewer()
     player_node_->startAnimation(kIdleStart, kIdleEnd, -1, 0, this, 10, false, false);
     this->addChild(player_node_, kTagHero, kTagHero);
     
-    // Particle effect
-    effect_indicator_ = cocos2d::CCParticleFire::node();
-    //effect_indicator_->setPositionType(kCCPositionTypeGrouped);
-    effect_indicator_->setTexture(cocos2d::CCTextureCache::sharedTextureCache()->addImage(kSpriteEffectIndicator.c_str()));
-    //effect_indicator_->setAnchorPoint(ccp(0.5, 0.5));
-    effect_indicator_->setPosition(cocos2d::CCPointZero);
-    player_node_->addChild(effect_indicator_, kTagEffectIndicator, kTagEffectIndicator);
+    //// Particle effect
+    //effect_indicator_ = cocos2d::CCParticleFire::node();
+    //effect_indicator_->setTexture(cocos2d::CCTextureCache::sharedTextureCache()->addImage(kSpriteEffectIndicator.c_str()));
+    //effect_indicator_->setPosition(cocos2d::CCPointZero);
+    //player_node_->addChild(effect_indicator_, kTagEffectIndicator, kTagEffectIndicator);
 
     ////////////////////////////////////////////////////////////
     // Load saved data file

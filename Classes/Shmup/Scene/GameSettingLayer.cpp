@@ -57,7 +57,7 @@ GameSettingLayer::GameSettingLayer()
     display_value_label_->setPosition(ccp(size.width / 2.0f, size.height / 2.0f));
     addChild(display_value_label_);
 
-    music_volume_control_ = CCControlSlider::sliderFromFiles(
+    music_volume_control_ = cocos2d::extension::CCControlSlider::sliderWithFiles(
         kSliderTrackSprite.c_str(), 
         kSliderProgressSprite.c_str(), 
         kSliderThumbSprite.c_str());
@@ -68,13 +68,13 @@ GameSettingLayer::GameSettingLayer()
     music_volume_control_->addTargetWithActionForControlEvents(
         this, 
         menu_selector(GameSettingLayer::ValueChanged),
-        CCControlEventValueChanged);
+        cocos2d::extension::CCControlEventValueChanged);
     addChild(music_volume_control_);    
-
+    
     //---------------------------------------------------------------
     // Audio Volume
     //---------------------------------------------------------------
-    audio_volume_control_ = CCControlSlider::sliderFromFiles(
+    audio_volume_control_ = cocos2d::extension::CCControlSlider::sliderWithFiles(
         kSliderTrackSprite.c_str(), 
         kSliderProgressSprite.c_str(), 
         kSliderThumbSprite.c_str());
@@ -85,13 +85,13 @@ GameSettingLayer::GameSettingLayer()
     audio_volume_control_->addTargetWithActionForControlEvents(
         this, 
         menu_selector(GameSettingLayer::ValueChanged),
-        CCControlEventValueChanged);
+        cocos2d::extension::CCControlEventValueChanged);
     addChild(audio_volume_control_); 
 
     //---------------------------------------------------------------
     // Show Hints
     //--------------------------------------------------------------- 
-    show_hints_control_ = CCControlSwitch::switchWithMaskSprite(
+    show_hints_control_ = cocos2d::extension::CCControlSwitch::switchWithMaskSprite(
         CCSprite::spriteWithFile(kSwitchSpriteMask.c_str()),
         CCSprite::spriteWithFile(kSwitchSpriteOn.c_str()),
         CCSprite::spriteWithFile(kSwitchSpriteOff.c_str()),
@@ -108,29 +108,29 @@ GameSettingLayer::GameSettingLayer()
     // If parent is Splash, add button
 
     // Back Button
-    CCScale9Sprite *backgroundButton = CCScale9Sprite::scale9SpriteWithFile(kButtonBackSprite.c_str(), CCRect(0,0,42,48));
+    cocos2d::extension::CCScale9Sprite *backgroundButton = cocos2d::extension::CCScale9Sprite::spriteWithFile(kButtonBackSprite.c_str(), CCRect(0,0,42,48));
     CCLabelTTF* test = CCLabelTTF::labelWithString("Back", "Marker Felt", 16);
 
-    CCControlButton* button = CCControlButton::buttonWithLabelAndBackgroundSprite(test, backgroundButton);
+    cocos2d::extension::CCControlButton* button = cocos2d::extension::CCControlButton::buttonWithLabelAndBackgroundSprite(test, backgroundButton);
     button->setPosition(ccp(size.width / 2.0f, 30));
     button->setAnchorPoint(ccp(0.5, 0));
     button->addTargetWithActionForControlEvents(
         this,
         menu_selector(GameSettingLayer::ButtonClicked),
-        CCControlEventTouchUpInside);
+        cocos2d::extension::CCControlEventTouchUpInside);
     addChild(button);
 
     LoadUserDefault();
 }
 
-void GameSettingLayer::ValueChanged(CCControlSlider* sender)
+void GameSettingLayer::ValueChanged(cocos2d::extension::CCControlSlider* sender)
 {
     char text[100];    
     sprintf(text, "Slider value = %.0f%%", sender->getValue());
     display_value_label_->setString(text);
 }
 
-void GameSettingLayer::ButtonClicked(CCControlButton* sender)
+void GameSettingLayer::ButtonClicked(cocos2d::extension::CCControlButton* sender)
 {
     SaveUserDefault();
     this->removeAllChildrenWithCleanup(true);

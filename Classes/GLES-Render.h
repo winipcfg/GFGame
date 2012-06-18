@@ -1,11 +1,6 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-//#import <UIKit/UIKit.h>
-//#import <OpenGLES/EAGL.h>
-//#import <OpenGLES/ES1/gl.h>
-//#import <OpenGLES/ES1/glext.h>
-
 #include "Box2D/Box2D.h"
 
 struct b2AABB;

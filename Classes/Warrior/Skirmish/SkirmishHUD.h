@@ -56,12 +56,12 @@ private:
         
 private:
     // Stores data for display
-    int                             total_kills_;
+    int                             stage_;
     std::string                     title_;
 
     // Stores CCNode objects
-    cocos2d::CCSprite*              total_kills_background_;
-    cocos2d::CCLabelTTF*            label_total_kills_;
+    cocos2d::CCSprite*              label_stage_background_;
+    cocos2d::CCLabelTTF*            label_stage_;
     cocos2d::CCMenuItemImage*       button_pause_;
     cocos2d::CCMenuItemImage*       button_debug_;
 };

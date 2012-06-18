@@ -77,7 +77,7 @@ BattleLayer::BattleLayer()
 
     scheduleUpdate();
 
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(
         this, 
         0, 
         false);
@@ -95,9 +95,9 @@ BattleLayer::~BattleLayer()
     this->unscheduleAllSelectors();
     this->setIsTouchEnabled(false);
     this->removeAllChildrenWithCleanup(true);
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->removeDelegate(this);
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->removeDelegate(hud_layer_);
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->removeDelegate(slice_layer_);
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(hud_layer_);
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(slice_layer_);
 }
 
 void BattleLayer::SetViewer(BattleHUD* viewer)
@@ -117,7 +117,7 @@ void BattleLayer::ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEven
 {
     cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
     Point touchLocation = convertTouchToNodeSpace(pTouch);
-    Point oldTouchLocation = pTouch->previousLocationInView(pTouch->view());
+    Point oldTouchLocation = pTouch->previousLocationInView();
     oldTouchLocation = director->convertToGL(oldTouchLocation);
     oldTouchLocation = convertToNodeSpace(oldTouchLocation);
 
@@ -422,7 +422,7 @@ void BattleLayer::ResolveAttack(UnitNode& attacker, UnitNode& target)
     audio_handler_.PlaySliceEffect();
     if (attacker.GetState()->Alive() && target.GetState()->Alive())
     {
-        cocos2d::CGFloat diffSQ = cocos2d::ccpLengthSQ(cocos2d::ccpSub(target.getPosition(), attacker.getPosition()));
+        cocos2d::CCFloat diffSQ = cocos2d::ccpLengthSQ(cocos2d::ccpSub(target.getPosition(), attacker.getPosition()));
         if (diffSQ < 900)
         {
             // The target is inside range
@@ -469,9 +469,9 @@ void BattleLayer::UpdateNode(cocos2d::ccTime dt)
         this->unscheduleUpdate();
         this->unscheduleAllSelectors();
         this->setIsTouchEnabled(false);
-        cocos2d::CCTouchDispatcher::sharedDispatcher()->removeDelegate(this);
-        cocos2d::CCTouchDispatcher::sharedDispatcher()->removeDelegate(hud_layer_);
-        cocos2d::CCTouchDispatcher::sharedDispatcher()->removeDelegate(slice_layer_);
+        cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
+        cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(hud_layer_);
+        cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(slice_layer_);
         Warrior::SceneHelper manager;
         manager.GoBattleScene(1);
     }
@@ -511,30 +511,30 @@ void BattleLayer::UpdateCamera(const Point& position)
 
 void BattleLayer::draw(void)
 {
-    cocos2d::CCSize size = cocos2d::CCDirector::sharedDirector()->getWinSize();
+    //cocos2d::CCSize size = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
-    glDisable(GL_TEXTURE_2D);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    //glDisable(GL_TEXTURE_2D);
+    //glDisableClientState(GL_COLOR_ARRAY);
+    //glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+    //glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
 
-    const GLfloat glVertices[] = {
-        -1.0f * size.width,    1.0f * size.height,               // top left
-        -1.0f * size.width,   -1.0f * size.height,               // bottom left
-         1.0f * size.width,   -1.0f * size.height,               // bottom right
-         1.0f * size.width,    1.0f * size.height                // top right
-    };
+    //const GLfloat glVertices[] = {
+    //    -1.0f * size.width,    1.0f * size.height,               // top left
+    //    -1.0f * size.width,   -1.0f * size.height,               // bottom left
+    //     1.0f * size.width,   -1.0f * size.height,               // bottom right
+    //     1.0f * size.width,    1.0f * size.height                // top right
+    //};
 
-    glVertexPointer(2, GL_FLOAT, 0, glVertices);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    //glVertexPointer(2, GL_FLOAT, 0, glVertices);
+    //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-    // restore default GL states
-    glEnable(GL_TEXTURE_2D);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    //// restore default GL states
+    //glEnable(GL_TEXTURE_2D);
+    //glEnableClientState(GL_COLOR_ARRAY);
+    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 } // namespace

@@ -33,7 +33,7 @@ namespace Warrior
 const float         kLabelComboScaleSize            = 1.5f;
 const float         kLabelComboScaleDuration        = 0.2f;
 
-const std::string   kLabelTitle                     = "Assets/Test/banner.png";
+const std::string   kLabelTitle                     = "logo.png";//"Assets/Test/banner.png";
 const short         kLabelTitleSizeY                = 32;
 const std::string   kLabelTitleFont                 = "Arial";
 const int           kLabelTitleFontSize             = 40;
@@ -45,9 +45,9 @@ const short         kZOrderMenu                     = 1;
 
 SkirmishHUD::SkirmishHUD()
     : Cistron::Component("HUD")
-    , total_kills_background_(NULL)
-    , total_kills_(0)
-    , label_total_kills_(NULL)
+    , label_stage_background_(NULL)
+    , stage_(0)
+    , label_stage_(NULL)
     , button_pause_(NULL)
     , button_debug_(NULL)
     , title_("")
@@ -66,18 +66,18 @@ SkirmishHUD::~SkirmishHUD()
 
 void SkirmishHUD::SetTitle(const int& value)
 {
-    if (total_kills_ != value)
+    if (stage_ != value)
     {
-        total_kills_ = value;
-        if (label_total_kills_)
+        stage_ = value;
+        if (label_stage_)
         {
-            std::string s = GFort::Core::StringHelper::ToString(total_kills_);
-            label_total_kills_->setString(s.c_str());
+            std::string s = GFort::Core::StringHelper::ToString(stage_);
+            label_stage_->setString(s.c_str());
 
             cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, kLabelComboScaleSize, kLabelComboScaleSize);
             cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, 1, 1);
             cocos2d::CCFiniteTimeAction* seqAction = cocos2d::CCSequence::actions(scaleToAction, scaleBackAction, NULL);    
-            label_total_kills_->runAction(seqAction);
+            label_stage_->runAction(seqAction);
         }
     }
 }
@@ -87,23 +87,37 @@ void SkirmishHUD::SetupViewer()
     // Get window size and place the label upper. 
     cocos2d::CCSize size = cocos2d::CCDirector::sharedDirector()->getWinSize();
     
-    // Total Kills Label
-    total_kills_background_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kLabelTitle.c_str());
-    total_kills_background_->setPosition(ccp(size.width / 2, size.height - total_kills_background_->boundingBox().size.height));
-    addChild(total_kills_background_);
+    // Stage Label
+    label_stage_background_ = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kLabelTitle.c_str());
+    label_stage_background_->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));    
+    addChild(label_stage_background_);
 
-    label_total_kills_ = cocos2d::CCLabelTTF::labelWithString(
+    label_stage_ = cocos2d::CCLabelTTF::labelWithString(
         "0", 
         kLabelTitleFont.c_str(), 
         kLabelTitleFontSize);
         
-    label_total_kills_->setPosition(ccp(size.width / 2, size.height - total_kills_background_->boundingBox().size.height));
-    addChild(label_total_kills_);
+    label_stage_->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));
+    addChild(label_stage_);
+
+    label_stage_background_->setVertexZ(100);
+    CCActionInterval*  orbit1 = CCOrbitCamera::actionWithDuration(2,1, 0, 0, 180, 0, 0);
+    CCFiniteTimeAction*  action1 = CCSequence::actions(
+        orbit1,
+        orbit1->reverse(),
+        NULL);
+    //CCScaleTo* scale = CCScaleTo::actionWithDuration(1, 0, 1);
+    //CCScaleTo* scale2 = CCScaleTo::actionWithDuration(1, 1, 1);
+    //CCFiniteTimeAction*  action1 = CCSequence::actions(
+    //    scale,
+    //    scale2,
+    //    NULL);
+    label_stage_background_->runAction(CCRepeatForever::actionWithAction((CCActionInterval*)action1));
 
     //---------------------------------------------------------------
     // Game Menu
     //---------------------------------------------------------------
-    button_pause_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
+    button_pause_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
         kButtonPause.c_str(), 
         kButtonPause.c_str(), 
         this, 
@@ -111,7 +125,7 @@ void SkirmishHUD::SetupViewer()
     button_pause_->setAnchorPoint(ccp(1.0, 1.0));
     button_pause_->setPosition(CCPointMake(size.width - kButtonPausePosition, size.height - kButtonPausePosition));
 
-    button_debug_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
+    button_debug_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
         kButtonDebug.c_str(), 
         kButtonDebug.c_str(), 
         this, 

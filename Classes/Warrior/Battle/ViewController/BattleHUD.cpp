@@ -24,6 +24,7 @@
 #include "../BattleScene.h"
 #include "CCExtensions/CCSpriteHelper.h"
 #include "../../ViewController/GameSettingLayer.h"
+#include "BattleEndLayer.h"
 
 using namespace cocos2d;
 
@@ -130,8 +131,9 @@ void BattleHUD::SetupViewer()
     health_bar_background_->setPosition(ccp(kHealthBarX, size.height - kHealthBarY));
     addChild(health_bar_background_);
 
-    health_bar_ = cocos2d::CCProgressTimer::progressWithFile(kHealthBarSpriteOverlay.c_str());
-    health_bar_->setType(kCCProgressTimerTypeHorizontalBarLR);    
+    health_bar_ = cocos2d::CCProgressTimer::progressWithSprite(
+        GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kHealthBarSpriteOverlay.c_str()));
+    health_bar_->setType(kCCProgressTimerTypeBar);    
     health_bar_->setAnchorPoint(ccp(0.0, 1.0));
     health_bar_->setPosition(ccp(kHealthBarX, size.height - kHealthBarY));
     health_bar_->setPercentage(100);
@@ -162,7 +164,7 @@ void BattleHUD::SetupViewer()
     //---------------------------------------------------------------
     // Game Menu
     //---------------------------------------------------------------
-    button_pause_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
+    button_pause_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
         kButtonPause.c_str(), 
         kButtonPause.c_str(), 
         this, 
@@ -170,7 +172,7 @@ void BattleHUD::SetupViewer()
     button_pause_->setAnchorPoint(ccp(1.0, 1.0));
     button_pause_->setPosition(CCPointMake(size.width - kButtonPausePosition, size.height - kButtonPausePosition));
 
-    button_debug_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
+    button_debug_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
         kButtonDebug.c_str(), 
         kButtonDebug.c_str(), 
         this, 
@@ -205,6 +207,9 @@ void BattleHUD::ButtonToggleDebugCallback(CCObject* pSender)
 {
     BattleScene* parent = static_cast<BattleScene*>(this->getParent());
     parent->TogglePhysicsDebugViewer();
+
+    //BattleEndLayer* layer = BattleEndLayer::node();
+    //this->addChild(layer);
 }
 
 } // namespace

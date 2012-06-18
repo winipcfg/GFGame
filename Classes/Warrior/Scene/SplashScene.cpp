@@ -42,7 +42,7 @@ SplashScene::SplashScene()
 
     this->scheduleUpdate();
 
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(
         this, 
         0, 
         false);
@@ -82,7 +82,7 @@ void SplashScene::SetupMenu()
     cocos2d::CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
     cocos2d::CCMenuItemImage* menuItem;
-    menuItem = cocos2d::CCMenuItemImage::itemFromNormalImage(
+    menuItem = cocos2d::CCMenuItemImage::itemWithNormalImage(
         kButtonNewGame.c_str(), 
         kButtonNewGame.c_str(), 
         this, 

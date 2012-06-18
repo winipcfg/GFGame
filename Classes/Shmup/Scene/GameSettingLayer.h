@@ -23,12 +23,9 @@
 #define GFGAME_SHMUP_GAMESETTINGLAYER_H_
 
 #include "cocos2d.h"
+#include "cocos2dExt.h"
 #include <Scene/GameScene.h>
 #include "../Game.h"
-#include "CCControlExtension/CCControlButton.h"
-#include "CCControlExtension/CCControlSlider.h"
-#include "CCControlExtension/CCControlSwitch.h"
-
 
 namespace GFort { namespace Games { namespace Shmup 
 {
@@ -44,8 +41,8 @@ public:
     /// Destructor.
     ~GameSettingLayer();
 
-    void GameSettingLayer::ValueChanged(CCControlSlider* sender);
-    void GameSettingLayer::ButtonClicked(CCControlButton* sender);
+    void GameSettingLayer::ValueChanged(cocos2d::extension::CCControlSlider* sender);
+    void GameSettingLayer::ButtonClicked(cocos2d::extension::CCControlButton* sender);
         
     LAYER_NODE_FUNC(GameSettingLayer)
 
@@ -57,10 +54,10 @@ private:
     void SaveUserDefault();
 
 private:
-    cocos2d::CCLabelTTF*    display_value_label_;
-    CCControlSlider*        music_volume_control_;
-    CCControlSlider*        audio_volume_control_;
-    CCControlSwitch*        show_hints_control_;
+    cocos2d::CCLabelTTF*                        display_value_label_;
+    cocos2d::extension::CCControlSlider*        music_volume_control_;
+    cocos2d::extension::CCControlSlider*        audio_volume_control_;
+    cocos2d::extension::CCControlSwitch*        show_hints_control_;
 };
 
 } } } // namespace

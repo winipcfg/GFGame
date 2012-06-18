@@ -55,7 +55,7 @@ public:
 			pRet->autorelease();
 			return pRet;
 		}
-		CC_SAFE_DELETE(pRet)
+		CC_SAFE_DELETE(pRet);
 		return NULL;
 	}
 

@@ -55,7 +55,7 @@ void WarriorBot::Update(BattleLayer& gameState)
     {
         PlayerNode* player = gameState.GetPlayerNode();
         cocos2d::CCPoint diff = cocos2d::ccpSub(player->getPosition(), node_->getPosition());
-        //cocos2d::CGFloat distance = cocos2d::ccpLength(diff);
+        //cocos2d::CCFloat distance = cocos2d::ccpLength(diff);
 
 		float distance = 100;
 

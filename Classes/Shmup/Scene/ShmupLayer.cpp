@@ -214,53 +214,53 @@ void ShmupLayer::SpawnAsteroid()
     //}
 }
 
-void ccDrawEllipse(cocos2d::CCPoint center, float rx, float ry, float a, int segs, BOOL drawLineToCenter)
-{
-    int additionalSegment = 1;
-    if (drawLineToCenter)
-        additionalSegment++;
-
-    const float coef = 2.0f * (float)M_PI / segs;
-
-    float* vertices = new float[2 * (segs + 2)]; 
-    if(!vertices)
-    {
-        return;
-    }
-    memset(vertices, 0, sizeof(float) * 2 * (segs + 2));
-
-    float rads, distance, angle, j, k;
-    for(int i = 0; i <= segs; ++i)
-    {
-        rads = i * coef;
-        distance = sqrt(pow(sinf(rads) * rx, 2) + pow(cosf(rads) * ry, 2));
-        angle = atan2(sinf(rads) * rx, cosf(rads) * ry);
-        j = distance * cosf(angle + a) + center.x;
-        k = distance * sinf(angle + a) + center.y;
-
-        vertices[i*2] = j * CC_CONTENT_SCALE_FACTOR();
-        vertices[i*2+1] = k * CC_CONTENT_SCALE_FACTOR();
-    }
-    vertices[(segs+1)*2] = center.x * CC_CONTENT_SCALE_FACTOR();
-    vertices[(segs+1)*2+1] = center.y * CC_CONTENT_SCALE_FACTOR();
-
-    // Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
-    // Needed states: GL_VERTEX_ARRAY, 
-    // Unneeded states: GL_TEXTURE_2D, GL_TEXTURE_COORD_ARRAY, GL_COLOR_ARRAY	
-    glDisable(GL_TEXTURE_2D);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-
-    glVertexPointer(2, GL_FLOAT, 0, vertices);	
-    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segs+additionalSegment);
-
-    // restore default state
-    glEnableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnable(GL_TEXTURE_2D);	
-
-    delete[] vertices;
-}
+//void ccDrawEllipse(cocos2d::CCPoint center, float rx, float ry, float a, int segs, BOOL drawLineToCenter)
+//{
+//    int additionalSegment = 1;
+//    if (drawLineToCenter)
+//        additionalSegment++;
+//
+//    const float coef = 2.0f * (float)M_PI / segs;
+//
+//    float* vertices = new float[2 * (segs + 2)]; 
+//    if(!vertices)
+//    {
+//        return;
+//    }
+//    memset(vertices, 0, sizeof(float) * 2 * (segs + 2));
+//
+//    float rads, distance, angle, j, k;
+//    for(int i = 0; i <= segs; ++i)
+//    {
+//        rads = i * coef;
+//        distance = sqrt(pow(sinf(rads) * rx, 2) + pow(cosf(rads) * ry, 2));
+//        angle = atan2(sinf(rads) * rx, cosf(rads) * ry);
+//        j = distance * cosf(angle + a) + center.x;
+//        k = distance * sinf(angle + a) + center.y;
+//
+//        vertices[i*2] = j * CC_CONTENT_SCALE_FACTOR();
+//        vertices[i*2+1] = k * CC_CONTENT_SCALE_FACTOR();
+//    }
+//    vertices[(segs+1)*2] = center.x * CC_CONTENT_SCALE_FACTOR();
+//    vertices[(segs+1)*2+1] = center.y * CC_CONTENT_SCALE_FACTOR();
+//
+//    // Default GL states: GL_TEXTURE_2D, GL_VERTEX_ARRAY, GL_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY
+//    // Needed states: GL_VERTEX_ARRAY, 
+//    // Unneeded states: GL_TEXTURE_2D, GL_TEXTURE_COORD_ARRAY, GL_COLOR_ARRAY	
+//    glDisable(GL_TEXTURE_2D);
+//    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+//    glDisableClientState(GL_COLOR_ARRAY);
+//
+//    glVertexPointer(2, GL_FLOAT, 0, vertices);	
+//    glDrawArrays(GL_LINE_STRIP, 0, (GLsizei) segs+additionalSegment);
+//
+//    // restore default state
+//    glEnableClientState(GL_COLOR_ARRAY);
+//    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+//    glEnable(GL_TEXTURE_2D);	
+//
+//    delete[] vertices;
+//}
 
 void ShmupLayer::draw(void)
 {

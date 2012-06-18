@@ -23,7 +23,6 @@
 #include <GFort/Core/StringHelper.h>
 #include "CCExtensions/CCSpriteHelper.h"
 #include "../Scene/ShmupScene.h"
-//#include "CCControlExtension/CCControlSlider.h"
 //#include "../Scene/GameSettingLayer.h"
 
 using namespace cocos2d;
@@ -77,8 +76,9 @@ void ShmupHUD::SetupViewer()
     health_bar_background_->setPosition(ccp(kHealthBarX, size.height - kHealthBarY));
     addChild(health_bar_background_);
 
-    health_bar_ = cocos2d::CCProgressTimer::progressWithFile(kHealthBarSpriteOverlay.c_str());
-    health_bar_->setType(kCCProgressTimerTypeHorizontalBarLR);    
+    health_bar_ = cocos2d::CCProgressTimer::progressWithSprite(
+        GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kHealthBarSpriteOverlay.c_str()));
+    health_bar_->setType(kCCProgressTimerTypeBar);    
     health_bar_->setAnchorPoint(ccp(0.0, 1.0));
     health_bar_->setPosition(ccp(kHealthBarX, size.height - kHealthBarY));
     health_bar_->setPercentage(100);
@@ -88,7 +88,7 @@ void ShmupHUD::SetupViewer()
     // Game Menu
     //---------------------------------------------------------------
     // Pause Button
-    button_pause_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
+    button_pause_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
         kButtonPause.c_str(), 
         kButtonPause.c_str(), 
         this, 
@@ -97,7 +97,7 @@ void ShmupHUD::SetupViewer()
     button_pause_->setPosition(CCPointMake(size.width - kButtonPausePosition, size.height - kButtonPausePosition));
 
     // Debug Button
-    button_debug_ = cocos2d::CCMenuItemImage::itemFromNormalImage(
+    button_debug_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
         kButtonDebug.c_str(), 
         kButtonDebug.c_str(), 
         this, 
