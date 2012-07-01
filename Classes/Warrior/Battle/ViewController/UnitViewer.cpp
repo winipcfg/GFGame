@@ -42,7 +42,7 @@ UnitViewer::UnitViewer()
     //---------------------------------------------------------------
     // Labels
     //---------------------------------------------------------------
-    label_action_ = cocos2d::CCLabelTTF::labelWithString(
+    label_action_ = cocos2d::CCLabelTTF::create(
         "X", 
         kLabelActionFont.c_str(), 
         kLabelActionFontSize);
@@ -57,7 +57,7 @@ UnitViewer::~UnitViewer()
     this->unscheduleUpdate();
 }
 
-void UnitViewer::UpdateNode(cocos2d::ccTime dt)
+void UnitViewer::UpdateNode(CCFloat dt)
 {
     if (unit_)
     {

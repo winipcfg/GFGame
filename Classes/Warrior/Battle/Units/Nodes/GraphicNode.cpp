@@ -73,7 +73,7 @@ bool GraphicNode::init()
     return true;
 }
 
-void GraphicNode::UpdateNode(cocos2d::ccTime dt)
+void GraphicNode::UpdateNode(CCFloat dt)
 {    
     if (action_type_ != state_->CurrentAction().ActionType ||
         facing_ != state_->Facing())

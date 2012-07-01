@@ -24,6 +24,8 @@
 #include "../Battle/BattleScene.h"
 #include "CCExtensions/CCSpriteHelper.h"
 #include "../ViewController/GameSettingLayer.h"
+#include "../Card3d.h"
+#include "../CCFlipYLineal.h"
 
 using namespace cocos2d;
 
@@ -33,7 +35,7 @@ namespace Warrior
 const float         kLabelComboScaleSize            = 1.5f;
 const float         kLabelComboScaleDuration        = 0.2f;
 
-const std::string   kLabelTitle                     = "logo.png";//"Assets/Test/banner.png";
+const std::string   kLabelTitle                     = "Assets/Test/banner.png";
 const short         kLabelTitleSizeY                = 32;
 const std::string   kLabelTitleFont                 = "Arial";
 const int           kLabelTitleFontSize             = 40;
@@ -52,8 +54,8 @@ SkirmishHUD::SkirmishHUD()
     , button_debug_(NULL)
     , title_("")
 {
-    setIsTouchEnabled(true);
-    setIsAccelerometerEnabled(true);
+    setTouchEnabled(true);
+    setAccelerometerEnabled(true);
 
     SetupViewer();
 }
@@ -74,9 +76,9 @@ void SkirmishHUD::SetTitle(const int& value)
             std::string s = GFort::Core::StringHelper::ToString(stage_);
             label_stage_->setString(s.c_str());
 
-            cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, kLabelComboScaleSize, kLabelComboScaleSize);
-            cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, 1, 1);
-            cocos2d::CCFiniteTimeAction* seqAction = cocos2d::CCSequence::actions(scaleToAction, scaleBackAction, NULL);    
+            cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::create(kLabelComboScaleDuration, kLabelComboScaleSize, kLabelComboScaleSize);
+            cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::create(kLabelComboScaleDuration, 1, 1);
+            cocos2d::CCFiniteTimeAction* seqAction = cocos2d::CCSequence::create(scaleToAction, scaleBackAction, NULL);    
             label_stage_->runAction(seqAction);
         }
     }
@@ -92,7 +94,7 @@ void SkirmishHUD::SetupViewer()
     label_stage_background_->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));    
     addChild(label_stage_background_);
 
-    label_stage_ = cocos2d::CCLabelTTF::labelWithString(
+    label_stage_ = cocos2d::CCLabelTTF::create(
         "0", 
         kLabelTitleFont.c_str(), 
         kLabelTitleFontSize);
@@ -100,24 +102,23 @@ void SkirmishHUD::SetupViewer()
     label_stage_->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));
     addChild(label_stage_);
 
-    label_stage_background_->setVertexZ(100);
-    CCActionInterval*  orbit1 = CCOrbitCamera::actionWithDuration(2,1, 0, 0, 180, 0, 0);
-    CCFiniteTimeAction*  action1 = CCSequence::actions(
-        orbit1,
-        orbit1->reverse(),
-        NULL);
-    //CCScaleTo* scale = CCScaleTo::actionWithDuration(1, 0, 1);
-    //CCScaleTo* scale2 = CCScaleTo::actionWithDuration(1, 1, 1);
-    //CCFiniteTimeAction*  action1 = CCSequence::actions(
-    //    scale,
-    //    scale2,
+    //// TEST///
+    Card3d* card = Card3d::cardWithFile("stripes.png", "stripes.png");
+    card->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));    
+    addChild(card, -1);
+
+    CCActionInterval*  orbit1 = CCFlipYLineal::create(3, 0, 360);
+    //CCFiniteTimeAction*  action1 = CCSequence::create(
+    //    orbit1,
+    //    orbit1->copy(),
     //    NULL);
-    label_stage_background_->runAction(CCRepeatForever::actionWithAction((CCActionInterval*)action1));
+    card->runAction(CCRepeatForever::create((CCActionInterval*)orbit1));
+    //card->runAction(orbit1);
 
     //---------------------------------------------------------------
     // Game Menu
     //---------------------------------------------------------------
-    button_pause_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
+    button_pause_ = cocos2d::CCMenuItemImage::create(
         kButtonPause.c_str(), 
         kButtonPause.c_str(), 
         this, 
@@ -125,7 +126,7 @@ void SkirmishHUD::SetupViewer()
     button_pause_->setAnchorPoint(ccp(1.0, 1.0));
     button_pause_->setPosition(CCPointMake(size.width - kButtonPausePosition, size.height - kButtonPausePosition));
 
-    button_debug_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
+    button_debug_ = cocos2d::CCMenuItemImage::create(
         kButtonDebug.c_str(), 
         kButtonDebug.c_str(), 
         this, 
@@ -133,7 +134,7 @@ void SkirmishHUD::SetupViewer()
     button_debug_->setAnchorPoint(ccp(1.0, 1.0));
     button_debug_->setPosition(CCPointMake(size.width - kButtonPausePosition * 3, size.height - kButtonPausePosition));
 
-    cocos2d::CCMenu* pMenu = CCMenu::menuWithItems(button_pause_, button_debug_, NULL);
+    cocos2d::CCMenu* pMenu = CCMenu::create(button_pause_, button_debug_, NULL);
     pMenu->setPosition(CCPointZero);    
     addChild(pMenu, kZOrderMenu, kZOrderMenu);
 }
@@ -146,7 +147,7 @@ void SkirmishHUD::ButtonPauseCallback(CCObject* pSender)
         CCLOG("[%s][%d] - The game changes to Paused state", __FUNCTION__, __LINE__);
         parent->PauseGame();
 
-        //GameSettingLayer* layer = GameSettingLayer::node();
+        //GameSettingLayer* layer = GameSettingLayer::create();
         //this->addChild(layer);
     }
     //else

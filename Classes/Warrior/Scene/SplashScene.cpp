@@ -34,8 +34,8 @@ using namespace cocos2d;
 SplashScene::SplashScene()
     : sprite_background_(NULL)
 {
-    setIsTouchEnabled(true);
-    setIsAccelerometerEnabled(true);
+    setTouchEnabled(true);
+    setAccelerometerEnabled(true);
     
     SetupBackground();
     SetupMenu();
@@ -57,7 +57,7 @@ SplashScene::~SplashScene()
 cocos2d::CCScene* SplashScene::Scene()
 {
     // 'scene' is an autorelease object
-    cocos2d::CCScene* scene = cocos2d::CCScene::node();
+    cocos2d::CCScene* scene = cocos2d::CCScene::create();
     
     // add layer as a child to scene
     cocos2d::CCLayer* layer = new SplashScene();
@@ -72,7 +72,7 @@ void SplashScene::SetupBackground()
     cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
     cocos2d::CCSize winSize = director->getWinSize();
     
-    sprite_background_ = cocos2d::CCSprite::spriteWithFile(kFile_BG.c_str());
+    sprite_background_ = cocos2d::CCSprite::create(kFile_BG.c_str());
 	sprite_background_->setPosition(ccp(winSize.width / 2, winSize.height / 2));
 	addChild(sprite_background_, kZOrderBackground, kZOrderBackground);
 }
@@ -82,21 +82,21 @@ void SplashScene::SetupMenu()
     cocos2d::CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
     cocos2d::CCMenuItemImage* menuItem;
-    menuItem = cocos2d::CCMenuItemImage::itemWithNormalImage(
+    menuItem = cocos2d::CCMenuItemImage::create(
         kButtonNewGame.c_str(), 
         kButtonNewGame.c_str(), 
         this, 
         menu_selector(SplashScene::ButtonNewGameCallback));
     menuItem->setPosition(CCPointMake(winSize.width * 0.5, winSize.height * 0.2));
 
-    cocos2d::CCMenu* pMenu = CCMenu::menuWithItems(menuItem, NULL);
+    cocos2d::CCMenu* pMenu = CCMenu::create(menuItem, NULL);
     pMenu->setPosition(CCPointZero);    
     addChild(pMenu, kZOrderMenu, kZOrderMenu);
 }
 
 bool SplashScene::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent)
 {
-    sprite_background_->runAction(GFGame::CCShake::actionWithDuration(0.45f, ccp(5, 5), 12));    
+    sprite_background_->runAction(GFGame::CCShake::create(0.45f, ccp(5, 5), 12));    
     return true;
 }
 

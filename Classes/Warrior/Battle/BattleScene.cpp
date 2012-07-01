@@ -50,19 +50,19 @@ BattleScene::BattleScene()
     ///     |-- Physics Debug Layer
     ///
     ////////////////////////////////////////////////////////////
-    hud_layer_ = Warrior::BattleHUD::node();
+    hud_layer_ = Warrior::BattleHUD::create();
     addChild(hud_layer_, kTagHUD, kTagHUD);
 
-    game_layer_ = cocos2d::CCLayer::node();
+    game_layer_ = cocos2d::CCLayer::create();
     this->addChild(game_layer_, kTagGameLayer, kTagGameLayer);
 
-    battle_layer_ = Warrior::BattleLayer::node();
+    battle_layer_ = Warrior::BattleLayer::create();
     battle_layer_->SetViewer(hud_layer_);
     game_layer_->addChild(battle_layer_, kTagBattleLayer, kTagBattleLayer);
 
-    physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
+    physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::create();
     physics_debug_viewer->SetWorld(battle_layer_->GetBattle()->World(), &battle_layer_->GetBattle()->PhysicsSettings());
-    physics_debug_viewer->setIsVisible(false);
+    physics_debug_viewer->setVisible(false);
     game_layer_->addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);
 }
 
@@ -74,7 +74,7 @@ BattleScene::~BattleScene()
 
 void BattleScene::TogglePhysicsDebugViewer()
 {
-    physics_debug_viewer->setIsVisible(!physics_debug_viewer->getIsVisible());
+    physics_debug_viewer->setVisible(!physics_debug_viewer->isVisible());
 }
 
 

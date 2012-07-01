@@ -49,21 +49,21 @@ ShmupScene::ShmupScene()
     ///     |-- Physics Debug Layer
     ///
     ////////////////////////////////////////////////////////////
-    hud_layer_ = Shmup::ShmupHUD::node();
+    hud_layer_ = Shmup::ShmupHUD::create();
     this->addChild(hud_layer_, kTagHUD, kTagHUD);
 
     game_.Initialize();
     game_.SetNumLives(100);
 
-    game_layer_ = cocos2d::CCLayer::node();
+    game_layer_ = cocos2d::CCLayer::create();
     this->addChild(game_layer_, kTagGameLayer, kTagGameLayer);
 
     shmup_layer_ = new ShmupLayer(&game_);
     game_layer_->addChild(shmup_layer_, kTagBattleLayer, kTagBattleLayer);
     
-    physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::node();
+    physics_debug_viewer = GFGame::Viewer::Box2dDebugViewer::create();
     physics_debug_viewer->SetWorld(game_.World(), &game_.PhysicsSettings());
-    physics_debug_viewer->setIsVisible(true);
+    physics_debug_viewer->setVisible(true);
     game_layer_->addChild(physics_debug_viewer, kTagBox2dDebug, kTagBox2dDebug);   
 
     SetGameCamera();
@@ -80,14 +80,14 @@ ShmupScene::~ShmupScene()
 
 void ShmupScene::SetGameCamera()
 {
-    cocos2d::CCFollow* follow = cocos2d::CCFollow::actionWithTarget(shmup_layer_->ship_node_);
+    cocos2d::CCFollow* follow = cocos2d::CCFollow::create(shmup_layer_->ship_node_);
     game_layer_->runAction(follow);
 }
 
 void ShmupScene::TogglePhysicsDebugViewer()
 {
     CCLOG("[%s][%d] - Toggle Physics debug viewer", __FUNCTION__, __LINE__);
-    physics_debug_viewer->setIsVisible(!physics_debug_viewer->getIsVisible());
+    physics_debug_viewer->setVisible(!physics_debug_viewer->isVisible());
 }
 
 

@@ -63,7 +63,7 @@ bool ShipNode::init()
     //sprite_->init();
     //sprite_->addFrames(kSpriteShipFrame.c_str(), kSprite.c_str());
     //sprite_->startAnimation(kAnimationStart, kAnimationEnd, -1, 0, this, kNumberOfFramePerSecond, false, false);
-    //sprite_->setIsVisible(true);
+    //sprite_->setVisible(true);
     //this->addChild(sprite_);
 
     return true;
@@ -86,7 +86,7 @@ cocos2d::CCRect ShipNode::boundingBox(void)
     }
 } 
 
-void ShipNode::UpdateNode(cocos2d::ccTime dt)
+void ShipNode::UpdateNode(CCFloat dt)
 {    
     //UpdatePositionAndRotation();
 

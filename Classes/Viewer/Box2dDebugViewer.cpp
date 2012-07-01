@@ -57,25 +57,25 @@ void Box2dDebugViewer::SetWorld(b2World* world, GFort::Core::Physics::Box2dSetti
 
 void Box2dDebugViewer::draw(void)
 {
-    if (world_)
-    {
-        debug_draw_->SetFlags(settings_->GetDebugFlag());
+    //if (world_)
+    //{
+    //    debug_draw_->SetFlags(settings_->GetDebugFlag());
 
-        glDisable(GL_TEXTURE_2D);
-	    glDisableClientState(GL_COLOR_ARRAY);
-	    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    //    glDisable(GL_TEXTURE_2D);
+	   // glDisableClientState(GL_COLOR_ARRAY);
+	   // glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    //    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
  
 	    world_->DrawDebugData();
 
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    //    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
  
-	    // restore default GL states
-	    glEnable(GL_TEXTURE_2D);
-	    glEnableClientState(GL_COLOR_ARRAY);
-	    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
+	   // // restore default GL states
+	   // glEnable(GL_TEXTURE_2D);
+	   // glEnableClientState(GL_COLOR_ARRAY);
+	   // glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    //}
 }
 
 } } // namespace

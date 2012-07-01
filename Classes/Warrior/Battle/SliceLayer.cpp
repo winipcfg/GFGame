@@ -84,7 +84,7 @@ bool SliceLayer::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent
     touch_end_position_ = touchLocation;
     
     ClearSlice();
-    blade_ = CCBlade::node();
+    blade_ = CCBlade::create();
     blade_->texture_ = cocos2d::CCTextureCache::sharedTextureCache()->addImage(kBlade.c_str());
     
     addChild(blade_,-1,-1);

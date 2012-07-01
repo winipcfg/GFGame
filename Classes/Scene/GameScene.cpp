@@ -77,7 +77,7 @@ void GameScene::PauseGame()
         CCLOG("[%s][%d] - The game changes to Paused state", __FUNCTION__, __LINE__);
         PauseSchedulerAndActionsRecursive(this);
 
-        pause_game_layer_ = GFGame::Scene::PauseGameLayer::node();
+        pause_game_layer_ = GFGame::Scene::PauseGameLayer::create();
         addChild(pause_game_layer_, kTagPauseGame, kTagPauseGame);
         paused_ = true;        
     }

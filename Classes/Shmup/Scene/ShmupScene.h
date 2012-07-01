@@ -49,7 +49,7 @@ public:
     /// Toggles whether the physics debug viewer is visible or not.
     void TogglePhysicsDebugViewer();
     
-    SCENE_NODE_FUNC(ShmupScene)
+    SCENE_CREATE_FUNC(ShmupScene)
 
 private:
     // Game itself

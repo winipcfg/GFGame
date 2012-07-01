@@ -35,15 +35,15 @@ const int           kLabelPauseFontSize             = 40;
 
 PauseGameLayer::PauseGameLayer()
 {
-    setIsTouchEnabled(true);
-    setIsAccelerometerEnabled(true);
+    setTouchEnabled(true);
+    setAccelerometerEnabled(true);
 
     SetupViewer();
     
     scheduleUpdate();
     
     // Swallow all input below
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(
         this, 
         kLayerPriority, 
         true);
@@ -57,7 +57,7 @@ void PauseGameLayer::onExit()
 {
     this->unscheduleUpdate();
     this->unscheduleAllSelectors();
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->removeDelegate(this);
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
     CCLOG("[%s][%d] - %d", __FUNCTION__, __LINE__, this->retainCount());
 }
 
@@ -83,7 +83,7 @@ void PauseGameLayer::SetupViewer()
     // Get window size and place the label upper. 
     cocos2d::CCSize size = cocos2d::CCDirector::sharedDirector()->getWinSize();
     
-    cocos2d::CCLabelTTF* pause_label = cocos2d::CCLabelTTF::labelWithString(
+    cocos2d::CCLabelTTF* pause_label = cocos2d::CCLabelTTF::create(
         "The Game is Paused", 
         kLabelPauseFont.c_str(), 
         kLabelPauseFontSize);
@@ -95,29 +95,13 @@ void PauseGameLayer::SetupViewer()
 void PauseGameLayer::draw(void)
 {
     cocos2d::CCSize size = cocos2d::CCDirector::sharedDirector()->getWinSize();
-
-    glDisable(GL_TEXTURE_2D);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
-
-    const GLfloat glVertices[] = {
-        -1.0f * size.width,    1.0f * size.height,               // top left
-        -1.0f * size.width,   -1.0f * size.height,               // bottom left
-         1.0f * size.width,   -1.0f * size.height,               // bottom right
-         1.0f * size.width,    1.0f * size.height                // top right
+    const CCPoint glPoint[] = {
+        ccp(-1.0f * size.width,    1.0f * size.height),               // top left
+        ccp(-1.0f * size.width,   -1.0f * size.height),               // bottom left
+        ccp( 1.0f * size.width,   -1.0f * size.height),               // bottom right
+        ccp( 1.0f * size.width,    1.0f * size.height)                // top right
     };
-
-    glVertexPointer(2, GL_FLOAT, 0, glVertices);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-    // restore default GL states
-    glEnable(GL_TEXTURE_2D);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    ccDrawSolidPoly(glPoint, 4, ccc4f(0, 0, 0, 0.3f));
 }
 
 } } // namespace

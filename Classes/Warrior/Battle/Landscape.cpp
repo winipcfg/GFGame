@@ -46,18 +46,18 @@ bool Landscape::init()
     cocos2d::CCSprite* sprite;
     
     // Landscape   
-    landscape_front_ = cocos2d::CCNode::node();
-    sprite = cocos2d::CCSprite::spriteWithFile(kParallexFront.c_str());
+    landscape_front_ = cocos2d::CCNode::create();
+    sprite = cocos2d::CCSprite::create(kParallexFront.c_str());
     sprite->setAnchorPoint(cocos2d::CCPointZero);    
     landscape_front_->addChild(sprite, 0, 0);    
 
-    landscape_back_ = cocos2d::CCNode::node();
-    sprite = cocos2d::CCSprite::spriteWithFile(kParallexBack.c_str());
+    landscape_back_ = cocos2d::CCNode::create();
+    sprite = cocos2d::CCSprite::create(kParallexBack.c_str());
     sprite->setAnchorPoint(cocos2d::CCPointZero);    
     landscape_back_->addChild(sprite, 0, 0);    
 
-    landscape_backdrop_ = cocos2d::CCNode::node();
-    sprite = cocos2d::CCSprite::spriteWithFile(kParallexBackdrop.c_str());
+    landscape_backdrop_ = cocos2d::CCNode::create();
+    sprite = cocos2d::CCSprite::create(kParallexBackdrop.c_str());
     sprite->setAnchorPoint(cocos2d::CCPointZero);
     landscape_backdrop_->addChild(sprite, 0, 0);
     

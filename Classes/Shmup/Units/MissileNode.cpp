@@ -72,7 +72,7 @@ cocos2d::CCRect MissileNode::boundingBox(void)
     }
 } 
 
-void MissileNode::UpdateNode(cocos2d::ccTime dt)
+void MissileNode::UpdateNode(CCFloat dt)
 {    
     if (body_ && sprite_)
     {

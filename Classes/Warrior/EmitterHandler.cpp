@@ -45,12 +45,12 @@ void EmitterHandler::AddEmitter(cocos2d::CCNode* node)
 
 void EmitterHandler::AddEmitter(cocos2d::CCNode* node, cocos2d::CCPoint position)
 {
-    cocos2d::CCParticleSystem* emitter = cocos2d::CCParticleFire::node();
+    cocos2d::CCParticleSystem* emitter = cocos2d::CCParticleFire::create();
     emitter->retain();
     emitter->setPosition(position);    
     emitter->setPositionType(cocos2d::kCCPositionTypeFree);
     emitter->setDuration(0.5);
-    emitter->setIsAutoRemoveOnFinish(true);
+    emitter->setAutoRemoveOnFinish(true);
 
     emitter->setTexture(cocos2d::CCTextureCache::sharedTextureCache()->addImage(kEmitter.c_str()));
     node->addChild(emitter, -1);

@@ -43,7 +43,7 @@ void SceneManager::GoScene(cocos2d::CCLayer* layer)
 
 cocos2d::CCScene* SceneManager::WrapLayer(cocos2d::CCLayer* layer)
 {
-    cocos2d::CCScene* newScene = cocos2d::CCScene::node();
+    cocos2d::CCScene* newScene = cocos2d::CCScene::create();
     newScene->addChild(layer);
     return newScene;
 }

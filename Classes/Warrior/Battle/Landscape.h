@@ -47,7 +47,7 @@ public:
     /// Gets the main layer, which involves game objects such as characters.
     cocos2d::CCNode* GetMainLayer();
 
-    static Landscape * node()
+    static Landscape* create()
 	{
 		Landscape *pRet = new Landscape();
 		if (pRet->init())

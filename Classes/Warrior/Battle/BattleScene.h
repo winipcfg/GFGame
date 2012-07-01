@@ -45,7 +45,7 @@ public:
     /// Toggles whether the physics debug viewer is visible or not.
     void TogglePhysicsDebugViewer();
     
-    SCENE_NODE_FUNC(BattleScene)
+    SCENE_CREATE_FUNC(BattleScene)
 
 protected:
 private:

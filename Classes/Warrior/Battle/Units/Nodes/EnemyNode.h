@@ -55,8 +55,8 @@ protected:
     virtual void Attack(UnitAction& action);
 
 private:
-    void UpdateNode(cocos2d::ccTime dt);
-    void Think(cocos2d::ccTime dt);
+    void UpdateNode(cocos2d::CCFloat dt);
+    void Think(cocos2d::CCFloat dt);
 
     /// Destroy itself.
     void Destroy();

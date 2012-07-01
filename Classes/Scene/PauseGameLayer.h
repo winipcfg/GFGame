@@ -42,7 +42,7 @@ public:
     virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
     virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
 
-    LAYER_NODE_FUNC(PauseGameLayer)
+    LAYER_CREATE_FUNC(PauseGameLayer)
    
 protected:
 private:

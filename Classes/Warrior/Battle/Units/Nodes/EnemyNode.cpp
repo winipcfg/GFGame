@@ -89,15 +89,15 @@ void EnemyNode::Attack(UnitAction& action)
         position.y,
         duration);
 
-    cocos2d::CCDelayTime* delayAction = cocos2d::CCDelayTime::actionWithDuration(duration);
-    cocos2d::CCCallFunc* resolveAction = cocos2d::CCCallFunc::actionWithTarget(
+    cocos2d::CCDelayTime* delayAction = cocos2d::CCDelayTime::create(duration);
+    cocos2d::CCCallFunc* resolveAction = cocos2d::CCCallFunc::create(
         this,
         callfunc_selector(EnemyNode::ResolveAttack));
-    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::actionWithTarget(
+    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::create(
         this,
         callfunc_selector(EnemyNode::FinishAction));
         
-    cocos2d::CCFiniteTimeAction* newAction = cocos2d::CCSequence::actions(
+    cocos2d::CCFiniteTimeAction* newAction = cocos2d::CCSequence::create(
         delayAction,
         resolveAction, 
         endAction, 
@@ -108,7 +108,7 @@ void EnemyNode::Attack(UnitAction& action)
     ChangeFacingDirection((dx > 0) ? kFacingRight : kFacingLeft);
 }
 
-void EnemyNode::UpdateNode(cocos2d::ccTime dt)
+void EnemyNode::UpdateNode(CCFloat dt)
 {            
     if (use_physics_motion_)
     {
@@ -166,7 +166,7 @@ void EnemyNode::UpdateNode(cocos2d::ccTime dt)
     RefreshPosition();
 }
 
-void EnemyNode::Think(cocos2d::ccTime dt)
+void EnemyNode::Think(CCFloat dt)
 {
     BattleLayer* layer = (BattleLayer*) this->getParent();
     if (bot_ && layer && 

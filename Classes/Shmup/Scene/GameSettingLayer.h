@@ -44,7 +44,7 @@ public:
     void GameSettingLayer::ValueChanged(cocos2d::extension::CCControlSlider* sender);
     void GameSettingLayer::ButtonClicked(cocos2d::extension::CCControlButton* sender);
         
-    LAYER_NODE_FUNC(GameSettingLayer)
+    LAYER_CREATE_FUNC(GameSettingLayer)
 
 private:
     /// Load default setting.

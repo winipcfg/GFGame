@@ -71,7 +71,7 @@ protected:
 public:
     /// Update the node.
     /// @param dt
-    void UpdateNode(cocos2d::ccTime dt);
+    void UpdateNode(cocos2d::CCFloat dt);
 
     /// Destroy itself.
     void Destroy();

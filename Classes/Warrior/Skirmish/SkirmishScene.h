@@ -42,7 +42,7 @@ public:
     /// Destructor.
     ~SkirmishScene();
     
-    SCENE_NODE_FUNC(SkirmishScene)
+    SCENE_CREATE_FUNC(SkirmishScene)
 
 protected:
 private:

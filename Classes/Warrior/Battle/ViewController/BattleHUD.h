@@ -52,7 +52,7 @@ public:
     /// @param value
     void SetTotalKills(const int& value);
     
-    LAYER_NODE_FUNC(BattleHUD)
+    LAYER_CREATE_FUNC(BattleHUD)
    
 protected:
 private:

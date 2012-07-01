@@ -48,8 +48,8 @@ ShmupHUD::ShmupHUD()
       button_pause_(NULL),
       button_debug_(NULL)
 {
-    setIsTouchEnabled(true);
-    setIsAccelerometerEnabled(true);
+    setTouchEnabled(true);
+    setAccelerometerEnabled(true);
 
     SetupViewer();
 }
@@ -76,7 +76,7 @@ void ShmupHUD::SetupViewer()
     health_bar_background_->setPosition(ccp(kHealthBarX, size.height - kHealthBarY));
     addChild(health_bar_background_);
 
-    health_bar_ = cocos2d::CCProgressTimer::progressWithSprite(
+    health_bar_ = cocos2d::CCProgressTimer::create(
         GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kHealthBarSpriteOverlay.c_str()));
     health_bar_->setType(kCCProgressTimerTypeBar);    
     health_bar_->setAnchorPoint(ccp(0.0, 1.0));
@@ -88,7 +88,7 @@ void ShmupHUD::SetupViewer()
     // Game Menu
     //---------------------------------------------------------------
     // Pause Button
-    button_pause_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
+    button_pause_ = cocos2d::CCMenuItemImage::create(
         kButtonPause.c_str(), 
         kButtonPause.c_str(), 
         this, 
@@ -97,7 +97,7 @@ void ShmupHUD::SetupViewer()
     button_pause_->setPosition(CCPointMake(size.width - kButtonPausePosition, size.height - kButtonPausePosition));
 
     // Debug Button
-    button_debug_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
+    button_debug_ = cocos2d::CCMenuItemImage::create(
         kButtonDebug.c_str(), 
         kButtonDebug.c_str(), 
         this, 
@@ -105,7 +105,7 @@ void ShmupHUD::SetupViewer()
     button_debug_->setAnchorPoint(ccp(1.0, 1.0));
     button_debug_->setPosition(CCPointMake(size.width - kButtonPausePosition * 3, size.height - kButtonPausePosition));
 
-    cocos2d::CCMenu* pMenu = CCMenu::menuWithItems(button_pause_, button_debug_, NULL);
+    cocos2d::CCMenu* pMenu = CCMenu::create(button_pause_, button_debug_, NULL);
     pMenu->setPosition(CCPointZero);    
     addChild(pMenu, kZOrderMenu, kZOrderMenu);
 }

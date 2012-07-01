@@ -58,7 +58,7 @@ protected:
 private:    
     /// Update the node.
     /// @param dt
-    void UpdateNode(cocos2d::ccTime dt);
+    void UpdateNode(cocos2d::CCFloat dt);
 
     /// Update position and rotation of the node.
     void UpdatePositionAndRotation();
