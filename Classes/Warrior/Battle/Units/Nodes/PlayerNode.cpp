@@ -61,7 +61,7 @@ bool PlayerNode::init()
     return true;
 }
 
-void PlayerNode::UpdateNode(cocos2d::ccTime dt)
+void PlayerNode::UpdateNode(CCFloat dt)
 {
     RefreshPosition();
 }
@@ -100,9 +100,9 @@ void PlayerNode::Walk(const cocos2d::CCPoint& position)
             position.y, 
             duration);
     
-    GFGame::CCB2BodyMoveBy* moveAction = GFGame::CCB2BodyMoveBy::actionWithDuration(duration, state_->Body(), diff, PTM_RATIO);
-    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(PlayerNode::FinishAction));
-    cocos2d::CCFiniteTimeAction* action = cocos2d::CCSequence::actions(moveAction, endAction, NULL);
+    GFGame::CCB2BodyMoveBy* moveAction = GFGame::CCB2BodyMoveBy::create(duration, state_->Body(), diff, PTM_RATIO);
+    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::create(this, callfunc_selector(PlayerNode::FinishAction));
+    cocos2d::CCFiniteTimeAction* action = cocos2d::CCSequence::create(moveAction, endAction, NULL);
 
     this->stopAllActions();
     this->runAction(action);
@@ -121,9 +121,9 @@ void PlayerNode::Run(const cocos2d::CCPoint& position)
             position.y, 
             duration);
 
-    GFGame::CCB2BodyMoveBy* moveAction = GFGame::CCB2BodyMoveBy::actionWithDuration(duration, state_->Body(), diff, PTM_RATIO);
-    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(PlayerNode::FinishAction));
-    cocos2d::CCFiniteTimeAction* action = cocos2d::CCSequence::actions(moveAction, endAction, NULL);
+    GFGame::CCB2BodyMoveBy* moveAction = GFGame::CCB2BodyMoveBy::create(duration, state_->Body(), diff, PTM_RATIO);
+    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::create(this, callfunc_selector(PlayerNode::FinishAction));
+    cocos2d::CCFiniteTimeAction* action = cocos2d::CCSequence::create(moveAction, endAction, NULL);
 
     this->stopAllActions();
     this->runAction(action);
@@ -142,12 +142,12 @@ void PlayerNode::Attack(UnitAction& action)
         position.y,
         moveDuration);
     
-    cocos2d::CCCallFunc* startAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(PlayerNode::StartNodeMotion));
-    cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::actionWithDuration(moveDuration, position);
-    cocos2d::CCCallFunc* refreshAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(PlayerNode::RefreshPosition));
-    cocos2d::CCCallFunc* callAction = cocos2d::CCCallFunc::actionWithTarget(this->getParent(), callfunc_selector(BattleLayer::DoSlice));
-    cocos2d::CCCallFunc* stopAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(PlayerNode::StopNodeMotion));
-    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(PlayerNode::FinishAction));
+    cocos2d::CCCallFunc* startAction = cocos2d::CCCallFunc::create(this, callfunc_selector(PlayerNode::StartNodeMotion));
+    cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::create(moveDuration, position);
+    cocos2d::CCCallFunc* refreshAction = cocos2d::CCCallFunc::create(this, callfunc_selector(PlayerNode::RefreshPosition));
+    cocos2d::CCCallFunc* callAction = cocos2d::CCCallFunc::create(this->getParent(), callfunc_selector(BattleLayer::DoSlice));
+    cocos2d::CCCallFunc* stopAction = cocos2d::CCCallFunc::create(this, callfunc_selector(PlayerNode::StopNodeMotion));
+    cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::create(this, callfunc_selector(PlayerNode::FinishAction));
     
     cocos2d::CCFiniteTimeAction* newAction = cocos2d::CCSequence::actions(
         startAction, moveAction, refreshAction, callAction, 

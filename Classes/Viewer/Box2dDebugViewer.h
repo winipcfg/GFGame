@@ -46,7 +46,7 @@ public:
 
     virtual void draw(void);
     
-    LAYER_NODE_FUNC(Box2dDebugViewer)
+    LAYER_CREATE_FUNC(Box2dDebugViewer)
    
 protected:
     b2World*                                    world_;

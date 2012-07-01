@@ -93,7 +93,7 @@ BattleLayer::~BattleLayer()
 {
     this->unscheduleUpdate();
     this->unscheduleAllSelectors();
-    this->setIsTouchEnabled(false);
+    this->setTouchEnabled(false);
     this->removeAllChildrenWithCleanup(true);
     cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
     cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(hud_layer_);
@@ -178,12 +178,12 @@ void BattleLayer::ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEven
 void BattleLayer::SetupGame()
 {
     // Landscape    
-    landscape_ = Landscape::node();
+    landscape_ = Landscape::create();
     this->addChild(landscape_);
 
     cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
-    slice_layer_ = SliceLayer::node();
+    slice_layer_ = SliceLayer::create();
     addChild(slice_layer_, kTagSliceLayer, kTagSliceLayer);
     
     cocos2d::CCSize mapSize = cocos2d::CCSize(battle_.Map().Width(), battle_.Map().Height());
@@ -455,7 +455,7 @@ void BattleLayer::ResolveAttack(UnitNode& attacker, UnitNode& target)
     }
 }
 
-void BattleLayer::UpdateNode(cocos2d::ccTime dt)
+void BattleLayer::UpdateNode(CCFloat dt)
 {
     if (!battle_.BattleEnded())
     {
@@ -468,7 +468,7 @@ void BattleLayer::UpdateNode(cocos2d::ccTime dt)
     {
         this->unscheduleUpdate();
         this->unscheduleAllSelectors();
-        this->setIsTouchEnabled(false);
+        this->setTouchEnabled(false);
         cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
         cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(hud_layer_);
         cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(slice_layer_);
@@ -505,7 +505,7 @@ void BattleLayer::UpdateCamera(const Point& position)
 
     CCLOG("[%s][%d] - Camera move to %0.2f x %02.f", __FUNCTION__, __LINE__, cameraPosition.x, cameraPosition.y);
 
-    cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::actionWithDuration(kCameraChasingDuration, cameraPosition);
+    cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::create(kCameraChasingDuration, cameraPosition);
     this->getParent()->runAction(moveAction);
 }
 

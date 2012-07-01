@@ -75,12 +75,12 @@ ShmupLayer::ShmupLayer(GFort::Games::Shmup::Game* game)
     //this->addChild(starsEffect, 1);
         
     // Add joystick
-    joystick_ =  HSJoystick::node();
+    joystick_ =  HSJoystick::create();
     joystick_->setAnchorPoint(ccp(0.5, 0.5));
     this->addChild(joystick_, kTagJoystick, kTagJoystick);
     
-    this->setIsTouchEnabled(true);
-    this->setIsAccelerometerEnabled(true);
+    this->setTouchEnabled(true);
+    this->setAccelerometerEnabled(true);
     this->scheduleUpdate();
     this->schedule(schedule_selector(ShmupLayer::UpdateNode)); 
 
@@ -131,7 +131,7 @@ void ShmupLayer::DoFire()
     obj->Move(pos.x, pos.y);
 }
 
-void ShmupLayer::UpdateNode(cocos2d::ccTime dt)
+void ShmupLayer::UpdateNode(CCFloat dt)
 {
     game_->Update(dt);
 

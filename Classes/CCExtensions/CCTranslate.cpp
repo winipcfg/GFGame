@@ -26,7 +26,7 @@ namespace GFGame {
 //
 // MoveTo
 //
-CCTranslate* CCTranslate::actionWithDuration(cocos2d::ccTime duration, cocos2d::CCPoint position)
+CCTranslate* CCTranslate::create(float duration, cocos2d::CCPoint position)
 {
 	CCTranslate *pMoveTo = new CCTranslate();
 	pMoveTo->initWithDuration(duration, position);
@@ -35,7 +35,7 @@ CCTranslate* CCTranslate::actionWithDuration(cocos2d::ccTime duration, cocos2d::
 	return pMoveTo;
 }
 
-bool CCTranslate::initWithDuration(cocos2d::ccTime duration, cocos2d::CCPoint position)
+bool CCTranslate::initWithDuration(float duration, cocos2d::CCPoint position)
 {
 	if (CCActionInterval::initWithDuration(duration))
 	{
@@ -52,9 +52,9 @@ void CCTranslate::startWithTarget(CCNode *pTarget)
 	CCActionInterval::startWithTarget(pTarget);
 }
 
-void CCTranslate::update(cocos2d::ccTime time)
+void CCTranslate::update(float time)
 {
-    cocos2d::ccTime tick = time - m_fLastElapsed;
+    float tick = time - m_fLastElapsed;
 	if (m_pTarget)
 	{        
         cocos2d::CCPoint position = m_pTarget->getPosition();

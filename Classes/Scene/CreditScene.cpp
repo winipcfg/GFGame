@@ -26,15 +26,15 @@
 
 CreditScene::CreditScene()
 {
-    setIsTouchEnabled(true);
-    setIsAccelerometerEnabled(true);
+    setTouchEnabled(true);
+    setAccelerometerEnabled(true);
     
     SetupBackground();
     SetupMenu();
 
     scheduleUpdate();
-
-    cocos2d::CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(
+    
+    cocos2d::CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(
         this, 
         0, 
         false);
@@ -43,7 +43,7 @@ CreditScene::CreditScene()
 cocos2d::CCScene* CreditScene::Scene()
 {
     // 'scene' is an autorelease object
-    cocos2d::CCScene* scene = cocos2d::CCScene::node();
+    cocos2d::CCScene* scene = cocos2d::CCScene::create();
     
     // add layer as a child to scene
     cocos2d::CCLayer* layer = new CreditScene();
@@ -63,13 +63,13 @@ void CreditScene::SetupBackground()
     cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
     cocos2d::CCSize winSize = director->getWinSize();
     
-    sprite_background_ = cocos2d::CCSprite::spriteWithFile(kFile_BG);
+    sprite_background_ = cocos2d::CCSprite::create(kFile_BG);
 	sprite_background_->setPosition(ccp(winSize.width / 2, winSize.height / 2));
 	addChild(sprite_background_, kZOrder_BG);
 }
 
 bool CreditScene::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent)
 {
-    sprite_background_->runAction(GFGame::CCShake::actionWithDuration(.45f, ccp(2,2), 12));
+    sprite_background_->runAction(GFGame::CCShake::create(.45f, ccp(2,2), 12));
     return true;
 }

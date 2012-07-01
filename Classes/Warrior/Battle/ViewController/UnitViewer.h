@@ -40,12 +40,12 @@ public:
     /// Set the unit that it refers to.
     void SetUnit(Unit* unit)            { unit_ = unit; }
         
-    LAYER_NODE_FUNC(UnitViewer)
+    LAYER_CREATE_FUNC(UnitViewer)
 
 protected:
     /// Update the node.
     /// @param dt
-    virtual void UpdateNode(cocos2d::ccTime dt);
+    virtual void UpdateNode(cocos2d::CCFloat dt);
    
 protected:
     Unit*                               unit_;

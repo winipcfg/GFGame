@@ -36,20 +36,20 @@ class CCB2BodyMoveBy : public CCActionInterval
 {
 public:
 	/** initializes the action */
-	bool initWithDuration(ccTime duration, b2Body* body, CCPoint position, const float& PTMRatio);
+	bool initWithDuration(float duration, b2Body* body, CCPoint position, const float& PTMRatio);
     	
     virtual void startWithTarget(CCNode *pTarget);
-	virtual void update(ccTime time);
+	virtual void update(float time);
 
 public:
 	/** creates the action */
-	static CCB2BodyMoveBy* actionWithDuration(ccTime duration, b2Body* body, CCPoint position, const float& PTMRatio);
+	static CCB2BodyMoveBy* create(float duration, b2Body* body, CCPoint position, const float& PTMRatio);
 
 protected:
     b2Body* m_pBody;
     float   m_fPTMRatio;
 	CCPoint m_delta;
-    CGFloat m_fLastElapsed;
+    CCFloat m_fLastElapsed;
 };
 
 

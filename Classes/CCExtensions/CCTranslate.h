@@ -34,18 +34,18 @@ class CCTranslate : public CCActionInterval
 {
 public:
 	/** initializes the action */
-	bool initWithDuration(ccTime duration, CCPoint position);
+	bool initWithDuration(float duration, CCPoint position);
     	
     virtual void startWithTarget(CCNode *pTarget);
-	virtual void update(ccTime time);
+	virtual void update(float time);
 
 public:
 	/** creates the action */
-	static CCTranslate* actionWithDuration(ccTime duration, CCPoint position);
+	static CCTranslate* create(float duration, CCPoint position);
 
 protected:
 	CCPoint m_delta;
-    CGFloat m_fLastElapsed;
+    CCFloat m_fLastElapsed;
 };
 
 

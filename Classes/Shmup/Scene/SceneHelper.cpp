@@ -28,7 +28,7 @@ namespace GFort { namespace Games { namespace Shmup
 
 void SceneHelper::GoDefault()
 {    
-    GoScene(ShmupScene::node());
+    GoScene(ShmupScene::create());
 }
 
 } } } // namespace

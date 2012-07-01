@@ -43,7 +43,7 @@ UnitNode::UnitNode(Unit* unit)
     this->scheduleUpdate();
     this->schedule(schedule_selector(UnitNode::UpdateNode)); 
 
-    UnitViewer* viewer = UnitViewer::node();
+    UnitViewer* viewer = UnitViewer::create();
     viewer->SetUnit(state_);
     this->addChild(viewer, 1);
 }

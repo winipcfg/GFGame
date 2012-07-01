@@ -37,8 +37,8 @@ public:
     {
         CCSpriteFrame* spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(nameOrFile);
         if (spriteFrame)
-            return CCSprite::spriteWithSpriteFrame(spriteFrame);
-        return CCSprite::spriteWithFile(nameOrFile);
+            return CCSprite::create(spriteFrame);
+        return CCSprite::create(nameOrFile);
     }    
 };
 

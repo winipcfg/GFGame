@@ -78,7 +78,7 @@ SkirmishLayer::SkirmishLayer()
 
     SetupViewer();
     
-    this->setIsTouchEnabled(true);
+    this->setTouchEnabled(true);
 
 #if (PLAY_BG_MUSIC)
     audio_handler_.PlayBackgroundMusic();
@@ -163,7 +163,7 @@ void SkirmishLayer::SetupViewer()
         pt.Y = rand() % (int)background_->getContentSize().height;
         control_points_.push_back(pt);
 
-        buttonStage = cocos2d::CCMenuItemImage::itemWithNormalImage(
+        buttonStage = cocos2d::CCMenuItemImage::create(
             kSpriteControlPointNormal.c_str(), 
             kSpriteControlPointSelected.c_str(), 
             kSpriteControlPointDisable.c_str(),
@@ -205,7 +205,7 @@ void SkirmishLayer::SetupViewer()
     this->addChild(player_node_, kTagHero, kTagHero);
     
     //// Particle effect
-    //effect_indicator_ = cocos2d::CCParticleFire::node();
+    //effect_indicator_ = cocos2d::CCParticleFire::create();
     //effect_indicator_->setTexture(cocos2d::CCTextureCache::sharedTextureCache()->addImage(kSpriteEffectIndicator.c_str()));
     //effect_indicator_->setPosition(cocos2d::CCPointZero);
     //player_node_->addChild(effect_indicator_, kTagEffectIndicator, kTagEffectIndicator);
@@ -309,8 +309,8 @@ void SkirmishLayer::SetCurrentPoint(const short& index, const float& duration)
         // Hide Stage Viewer
         // Move 
         // Show Stage Viewer
-        cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::actionWithDuration(duration, ccp(point->X, point->Y));
-        cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::actionWithTarget(this, callfunc_selector(SkirmishLayer::RefreshViewer));
+        cocos2d::CCMoveTo* moveAction = cocos2d::CCMoveTo::create(duration, ccp(point->X, point->Y));
+        cocos2d::CCCallFunc* endAction = cocos2d::CCCallFunc::create(this, callfunc_selector(SkirmishLayer::RefreshViewer));
         cocos2d::CCFiniteTimeAction* newAction = cocos2d::CCSequence::actions(moveAction, endAction, NULL);
         player_node_->runAction(newAction);
     }    

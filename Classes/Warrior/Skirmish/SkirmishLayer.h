@@ -51,7 +51,7 @@ public:
 	virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 	virtual void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 
-    LAYER_NODE_FUNC(SkirmishLayer);
+    LAYER_CREATE_FUNC(SkirmishLayer);
         
 private:
     void SetupViewer();

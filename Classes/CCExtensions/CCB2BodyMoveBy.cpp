@@ -23,7 +23,7 @@
 
 namespace GFGame {
 
-CCB2BodyMoveBy* CCB2BodyMoveBy::actionWithDuration(cocos2d::ccTime duration, b2Body* body, cocos2d::CCPoint position, const float& PTMRatio)
+CCB2BodyMoveBy* CCB2BodyMoveBy::create(float duration, b2Body* body, cocos2d::CCPoint position, const float& PTMRatio)
 {
 	CCB2BodyMoveBy *pMoveTo = new CCB2BodyMoveBy();
 	pMoveTo->initWithDuration(duration, body, position, PTMRatio);
@@ -32,7 +32,7 @@ CCB2BodyMoveBy* CCB2BodyMoveBy::actionWithDuration(cocos2d::ccTime duration, b2B
 	return pMoveTo;
 }
 
-bool CCB2BodyMoveBy::initWithDuration(cocos2d::ccTime duration, b2Body* body, cocos2d::CCPoint position, const float& PTMRatio)
+bool CCB2BodyMoveBy::initWithDuration(float duration, b2Body* body, cocos2d::CCPoint position, const float& PTMRatio)
 {
 	if (CCActionInterval::initWithDuration(duration))
 	{
@@ -51,9 +51,9 @@ void CCB2BodyMoveBy::startWithTarget(CCNode *pTarget)
 	CCActionInterval::startWithTarget(pTarget);
 }
 
-void CCB2BodyMoveBy::update(cocos2d::ccTime time)
+void CCB2BodyMoveBy::update(float time)
 {
-    cocos2d::ccTime tick = time - m_fLastElapsed;
+    float tick = time - m_fLastElapsed;
 	if (m_pBody)
 	{   
         m_pBody->SetTransform(

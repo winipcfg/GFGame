@@ -22,6 +22,7 @@
 #include <string>
 
 using namespace cocos2d;
+using namespace cocos2d::extension;
 
 namespace GFort { namespace Games { namespace Shmup 
 {
@@ -52,12 +53,12 @@ GameSettingLayer::GameSettingLayer()
     // Music Volume
     //---------------------------------------------------------------
     // Add a label in which the slider value will be displayed
-    display_value_label_ = CCLabelTTF::labelWithString("Move the slider thumb!", "Marker Felt", 32);
+    display_value_label_ = CCLabelTTF::create("Move the slider thumb!", "Marker Felt", 32);
     display_value_label_->setAnchorPoint(ccp(0.5f, -1.0f));
     display_value_label_->setPosition(ccp(size.width / 2.0f, size.height / 2.0f));
     addChild(display_value_label_);
 
-    music_volume_control_ = cocos2d::extension::CCControlSlider::sliderWithFiles(
+    music_volume_control_ = cocos2d::extension::CCControlSlider::create(
         kSliderTrackSprite.c_str(), 
         kSliderProgressSprite.c_str(), 
         kSliderThumbSprite.c_str());
@@ -67,14 +68,14 @@ GameSettingLayer::GameSettingLayer()
     music_volume_control_->setPosition(ccp(size.width / 2.0f, size.height / 2.0f + 20));
     music_volume_control_->addTargetWithActionForControlEvents(
         this, 
-        menu_selector(GameSettingLayer::ValueChanged),
+        cccontrol_selector(GameSettingLayer::ValueChanged),
         cocos2d::extension::CCControlEventValueChanged);
     addChild(music_volume_control_);    
     
     //---------------------------------------------------------------
     // Audio Volume
     //---------------------------------------------------------------
-    audio_volume_control_ = cocos2d::extension::CCControlSlider::sliderWithFiles(
+    audio_volume_control_ = cocos2d::extension::CCControlSlider::create(
         kSliderTrackSprite.c_str(), 
         kSliderProgressSprite.c_str(), 
         kSliderThumbSprite.c_str());
@@ -84,7 +85,7 @@ GameSettingLayer::GameSettingLayer()
     audio_volume_control_->setPosition(ccp(size.width / 2.0f, size.height / 2.0f - 20));
     audio_volume_control_->addTargetWithActionForControlEvents(
         this, 
-        menu_selector(GameSettingLayer::ValueChanged),
+        cccontrol_selector(GameSettingLayer::ValueChanged),
         cocos2d::extension::CCControlEventValueChanged);
     addChild(audio_volume_control_); 
 
@@ -92,12 +93,12 @@ GameSettingLayer::GameSettingLayer()
     // Show Hints
     //--------------------------------------------------------------- 
     show_hints_control_ = cocos2d::extension::CCControlSwitch::switchWithMaskSprite(
-        CCSprite::spriteWithFile(kSwitchSpriteMask.c_str()),
-        CCSprite::spriteWithFile(kSwitchSpriteOn.c_str()),
-        CCSprite::spriteWithFile(kSwitchSpriteOff.c_str()),
-        CCSprite::spriteWithFile(kSwitchSpriteThumb.c_str()),
-        CCLabelTTF::labelWithString("ON", "Arial-BoldMT", 16),
-        CCLabelTTF::labelWithString("OFF", "Arial-BoldMT", 16));
+        CCSprite::create(kSwitchSpriteMask.c_str()),
+        CCSprite::create(kSwitchSpriteOn.c_str()),
+        CCSprite::create(kSwitchSpriteOff.c_str()),
+        CCSprite::create(kSwitchSpriteThumb.c_str()),
+        CCLabelTTF::create("ON", "Arial-BoldMT", 16),
+        CCLabelTTF::create("OFF", "Arial-BoldMT", 16));
     show_hints_control_->setPosition(ccp(size.width / 2.0f, size.height / 2.0f - 80));
     show_hints_control_->setAnchorPoint(ccp(1, 0.5));
     addChild(show_hints_control_);
@@ -108,15 +109,15 @@ GameSettingLayer::GameSettingLayer()
     // If parent is Splash, add button
 
     // Back Button
-    cocos2d::extension::CCScale9Sprite *backgroundButton = cocos2d::extension::CCScale9Sprite::spriteWithFile(kButtonBackSprite.c_str(), CCRect(0,0,42,48));
-    CCLabelTTF* test = CCLabelTTF::labelWithString("Back", "Marker Felt", 16);
+    cocos2d::extension::CCScale9Sprite *backgroundButton = cocos2d::extension::CCScale9Sprite::create(kButtonBackSprite.c_str(), CCRect(0,0,42,48));
+    CCLabelTTF* test = CCLabelTTF::create("Back", "Marker Felt", 16);
 
     cocos2d::extension::CCControlButton* button = cocos2d::extension::CCControlButton::buttonWithLabelAndBackgroundSprite(test, backgroundButton);
     button->setPosition(ccp(size.width / 2.0f, 30));
     button->setAnchorPoint(ccp(0.5, 0));
     button->addTargetWithActionForControlEvents(
         this,
-        menu_selector(GameSettingLayer::ButtonClicked),
+        cccontrol_selector(GameSettingLayer::ButtonClicked),
         cocos2d::extension::CCControlEventTouchUpInside);
     addChild(button);
 
@@ -171,7 +172,7 @@ void GameSettingLayer::SaveUserDefault()
     CCLog("[%s][%d] - Saving user setting from ", __FUNCTION__, __LINE__, path);
     profile->setFloatForKey("Music", music_volume_control_->getValue());
     profile->setFloatForKey("Audio", audio_volume_control_->getValue());
-    profile->setBoolForKey("Hints", show_hints_control_->getIsOn());
+    profile->setBoolForKey("Hints", show_hints_control_->isOn());
     profile->flush();
     CCLog("[%s][%d] - Save user setting Completed ", __FUNCTION__, __LINE__);
 }

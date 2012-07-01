@@ -48,17 +48,17 @@ SkirmishScene::SkirmishScene()
     ///     |-- Skirmish Layer
     ///
     ////////////////////////////////////////////////////////////
-    hud_layer_ = Warrior::SkirmishHUD::node();
+    hud_layer_ = Warrior::SkirmishHUD::create();
     addChild(hud_layer_, kTagHUD, kTagHUD);
 
-    game_layer_ = cocos2d::CCLayer::node();
+    game_layer_ = cocos2d::CCLayer::create();
     this->addChild(game_layer_, kTagGameLayer, kTagGameLayer);
 
     layer_ = new Warrior::SkirmishLayer();
-    //layer_ = Warrior::SkirmishLayer::node();
+    //layer_ = Warrior::SkirmishLayer::create();
     game_layer_->addChild(layer_, kTagSkirmishLayer, kTagSkirmishLayer);
 
-    //cocos2d::CCFollow* follow = cocos2d::CCFollow::actionWithTarget(layer_->player_node_);
+    //cocos2d::CCFollow* follow = cocos2d::CCFollow::create(layer_->player_node_);
     //game_layer_->runAction(follow);
 }
 

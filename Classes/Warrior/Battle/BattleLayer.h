@@ -71,7 +71,7 @@ public:
     virtual void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
     virtual void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
         
-    LAYER_NODE_FUNC(BattleLayer)
+    LAYER_CREATE_FUNC(BattleLayer)
     
 protected:
 private:
@@ -81,7 +81,7 @@ private:
     void SpawnEnemy();
     void SpawnEnemy(const Point& position);
     
-    void UpdateNode(cocos2d::ccTime dt);
+    void UpdateNode(cocos2d::CCFloat dt);
 
     void UpdateCamera(const Point& position);
     

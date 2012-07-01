@@ -64,8 +64,8 @@ BattleHUD::BattleHUD()
       button_pause_(NULL),
       button_debug_(NULL)
 {
-    setIsTouchEnabled(true);
-    setIsAccelerometerEnabled(true);
+    setTouchEnabled(true);
+    setAccelerometerEnabled(true);
 
     SetupViewer();
 }
@@ -95,8 +95,8 @@ void BattleHUD::SetCombo(const short& value)
 
     if (label_combo_)
     {
-        cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, kLabelComboScaleSize, kLabelComboScaleSize);
-        cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, 1, 1);
+        cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::create(kLabelComboScaleDuration, kLabelComboScaleSize, kLabelComboScaleSize);
+        cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::create(kLabelComboScaleDuration, 1, 1);
         cocos2d::CCFiniteTimeAction* seqAction = cocos2d::CCSequence::actions(scaleToAction, scaleBackAction, NULL);    
         label_combo_->runAction(seqAction);
     }
@@ -112,8 +112,8 @@ void BattleHUD::SetTotalKills(const int& value)
             std::string s = GFort::Core::StringHelper::ToString(total_kills_);
             label_total_kills_->setString(s.c_str());
 
-            cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, kLabelComboScaleSize, kLabelComboScaleSize);
-            cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::actionWithDuration(kLabelComboScaleDuration, 1, 1);
+            cocos2d::CCScaleTo* scaleToAction = cocos2d::CCScaleTo::create(kLabelComboScaleDuration, kLabelComboScaleSize, kLabelComboScaleSize);
+            cocos2d::CCScaleTo* scaleBackAction = cocos2d::CCScaleTo::create(kLabelComboScaleDuration, 1, 1);
             cocos2d::CCFiniteTimeAction* seqAction = cocos2d::CCSequence::actions(scaleToAction, scaleBackAction, NULL);    
             label_total_kills_->runAction(seqAction);
         }
@@ -131,7 +131,7 @@ void BattleHUD::SetupViewer()
     health_bar_background_->setPosition(ccp(kHealthBarX, size.height - kHealthBarY));
     addChild(health_bar_background_);
 
-    health_bar_ = cocos2d::CCProgressTimer::progressWithSprite(
+    health_bar_ = cocos2d::CCProgressTimer::create(
         GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile(kHealthBarSpriteOverlay.c_str()));
     health_bar_->setType(kCCProgressTimerTypeBar);    
     health_bar_->setAnchorPoint(ccp(0.0, 1.0));
@@ -140,7 +140,7 @@ void BattleHUD::SetupViewer()
     addChild(health_bar_);
 
     // Combo Label
-    label_combo_ = cocos2d::CCLabelTTF::labelWithString(
+    label_combo_ = cocos2d::CCLabelTTF::create(
         "0", 
         kLabelComboFont.c_str(), 
         kLabelComboFontSize);
@@ -153,7 +153,7 @@ void BattleHUD::SetupViewer()
     total_kills_background_->setPosition(ccp(size.width / 2, size.height - total_kills_background_->boundingBox().size.height));
     addChild(total_kills_background_);
 
-    label_total_kills_ = cocos2d::CCLabelTTF::labelWithString(
+    label_total_kills_ = cocos2d::CCLabelTTF::create(
         "0", 
         kLabelTotalKillsFont.c_str(), 
         kLabelTotalKillsFontSize);
@@ -164,7 +164,7 @@ void BattleHUD::SetupViewer()
     //---------------------------------------------------------------
     // Game Menu
     //---------------------------------------------------------------
-    button_pause_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
+    button_pause_ = cocos2d::CCMenuItemImage::create(
         kButtonPause.c_str(), 
         kButtonPause.c_str(), 
         this, 
@@ -172,7 +172,7 @@ void BattleHUD::SetupViewer()
     button_pause_->setAnchorPoint(ccp(1.0, 1.0));
     button_pause_->setPosition(CCPointMake(size.width - kButtonPausePosition, size.height - kButtonPausePosition));
 
-    button_debug_ = cocos2d::CCMenuItemImage::itemWithNormalImage(
+    button_debug_ = cocos2d::CCMenuItemImage::create(
         kButtonDebug.c_str(), 
         kButtonDebug.c_str(), 
         this, 
@@ -180,7 +180,7 @@ void BattleHUD::SetupViewer()
     button_debug_->setAnchorPoint(ccp(1.0, 1.0));
     button_debug_->setPosition(CCPointMake(size.width - kButtonPausePosition * 3, size.height - kButtonPausePosition));
 
-    cocos2d::CCMenu* pMenu = CCMenu::menuWithItems(button_pause_, button_debug_, NULL);
+    cocos2d::CCMenu* pMenu = CCMenu::create(button_pause_, button_debug_, NULL);
     pMenu->setPosition(CCPointZero);    
     addChild(pMenu, kZOrderMenu, kZOrderMenu);
 }
@@ -193,7 +193,7 @@ void BattleHUD::ButtonPauseCallback(CCObject* pSender)
         CCLOG("[%s][%d] - The game changes to Paused state", __FUNCTION__, __LINE__);
         parent->PauseGame();
 
-        //GameSettingLayer* layer = GameSettingLayer::node();
+        //GameSettingLayer* layer = GameSettingLayer::create();
         //this->addChild(layer);
     }
     //else
@@ -208,7 +208,7 @@ void BattleHUD::ButtonToggleDebugCallback(CCObject* pSender)
     BattleScene* parent = static_cast<BattleScene*>(this->getParent());
     parent->TogglePhysicsDebugViewer();
 
-    //BattleEndLayer* layer = BattleEndLayer::node();
+    //BattleEndLayer* layer = BattleEndLayer::create();
     //this->addChild(layer);
 }
 
