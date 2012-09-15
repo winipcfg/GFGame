@@ -33,7 +33,7 @@ public:
 
     virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
     
-    LAYER_CREATE_FUNC(SplashScene)
+    CREATE_FUNC(SplashScene)
     
 protected:
 private:

@@ -59,7 +59,7 @@ protected:
 private:    
     /// Update the node.
     /// @param dt
-    void UpdateNode(cocos2d::CCFloat dt);
+    void UpdateNode(float dt);
 
     /// Destroy itself.
     void Destroy();
@@ -67,7 +67,7 @@ private:
 private:
     // Main node and sprite for actions and animations
     cocos2d::CCSprite*                  sprite_;
-    //cocos2d::AdvanceSprite*             sprite_;
+    //AdvanceSprite*             sprite_;
 
 public:
     // Physics body

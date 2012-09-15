@@ -48,7 +48,7 @@ public:
     cocos2d::CCRect boundingBox(void);
 
     /// Gets the content size.
-    cocos2d::CCSize getContentSize(void) ;
+    const cocos2d::CCSize& getContentSize(void);
 
     /// Assign physics body to the unit.
     /// @param body
@@ -57,7 +57,7 @@ public:
 protected:
     /// Update the node.
     /// @param dt
-    virtual void UpdateNode(cocos2d::CCFloat dt);
+    virtual void UpdateNode(float dt);
 
     /// Destroy itself.
     virtual void Destroy();

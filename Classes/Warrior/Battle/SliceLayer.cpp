@@ -55,6 +55,7 @@ void SliceLayer::ClearSlice()
 {
     if (blade_)
     {
+        CCLOG("[%s][%d] - Clear Slice", __FUNCTION__, __LINE__);
         blade_->Clear();
         slice_.Clear();
         
@@ -79,6 +80,8 @@ const Point& SliceLayer::GetEndPosition() const
 
 bool SliceLayer::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent)
 {    
+    CCLOG("[%s][%d] - Touch Begin", __FUNCTION__, __LINE__);
+
     Point touchLocation = convertTouchToNodeSpace(pTouch);
     //touch_start_position_ = touchLocation;
     touch_end_position_ = touchLocation;

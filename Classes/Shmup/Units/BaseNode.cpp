@@ -64,12 +64,12 @@ cocos2d::CCRect BaseNode::boundingBox(void)
     }
 } 
 
-cocos2d::CCSize BaseNode::getContentSize(void) 
+const cocos2d::CCSize& BaseNode::getContentSize(void) 
 {
     return (sprite_) ? sprite_->getContentSize() : cocos2d::CCSizeZero; 
 }
 
-void BaseNode::UpdateNode(CCFloat dt)
+void BaseNode::UpdateNode(float dt)
 {    
     if (body_ && sprite_)
     {

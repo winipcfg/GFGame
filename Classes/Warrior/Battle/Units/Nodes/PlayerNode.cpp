@@ -61,7 +61,7 @@ bool PlayerNode::init()
     return true;
 }
 
-void PlayerNode::UpdateNode(CCFloat dt)
+void PlayerNode::UpdateNode(float dt)
 {
     RefreshPosition();
 }

@@ -52,7 +52,7 @@ public:
 	virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 	virtual void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
         
-    //LAYER_CREATE_FUNC(ShmupLayer)
+    //CREATE_FUNC(ShmupLayer)
     
 protected:
     void DoFire();
@@ -61,7 +61,7 @@ protected:
 private:
     void SetupGame();
 
-    void UpdateNode(CCFloat dt);
+    void UpdateNode(float dt);
     
     /// Attach render components of an object.
     /// @param objId

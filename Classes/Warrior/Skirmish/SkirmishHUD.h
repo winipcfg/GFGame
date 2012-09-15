@@ -45,7 +45,7 @@ public:
     /// @param value
     void SetTitle(const int& value);
     
-    LAYER_CREATE_FUNC(SkirmishHUD);
+    CREATE_FUNC(SkirmishHUD);
    
 protected:
 private:

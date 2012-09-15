@@ -73,7 +73,7 @@ public:
         
     virtual void draw(void);
 
-    LAYER_CREATE_FUNC(SliceLayer)
+    CREATE_FUNC(SliceLayer)
     
 protected:
 private:

@@ -131,7 +131,7 @@ void ShmupLayer::DoFire()
     obj->Move(pos.x, pos.y);
 }
 
-void ShmupLayer::UpdateNode(CCFloat dt)
+void ShmupLayer::UpdateNode(float dt)
 {
     game_->Update(dt);
 

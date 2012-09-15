@@ -44,7 +44,7 @@ public:
     virtual void ResetState();
             
 protected:
-    void UpdateNode(cocos2d::CCFloat dt);        
+    void UpdateNode(float dt);        
 
     /// Update action based on current command.
     virtual void UpdateAction();

@@ -73,7 +73,7 @@ bool GraphicNode::init()
     return true;
 }
 
-void GraphicNode::UpdateNode(CCFloat dt)
+void GraphicNode::UpdateNode(float dt)
 {    
     if (action_type_ != state_->CurrentAction().ActionType ||
         facing_ != state_->Facing())

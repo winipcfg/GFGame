@@ -57,7 +57,7 @@ UnitViewer::~UnitViewer()
     this->unscheduleUpdate();
 }
 
-void UnitViewer::UpdateNode(CCFloat dt)
+void UnitViewer::UpdateNode(float dt)
 {
     if (unit_)
     {

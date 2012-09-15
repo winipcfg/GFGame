@@ -86,7 +86,7 @@ cocos2d::CCRect ShipNode::boundingBox(void)
     }
 } 
 
-void ShipNode::UpdateNode(CCFloat dt)
+void ShipNode::UpdateNode(float dt)
 {    
     //UpdatePositionAndRotation();
 

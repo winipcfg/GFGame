@@ -47,7 +47,7 @@ public:
     /// Return true if game is paused.
     bool GamePaused()               { return paused_; }
         
-    SCENE_CREATE_FUNC(GameScene)
+    CREATE_FUNC(GameScene)
 
 protected:
 private:

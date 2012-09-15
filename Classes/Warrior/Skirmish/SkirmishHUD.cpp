@@ -25,7 +25,6 @@
 #include "CCExtensions/CCSpriteHelper.h"
 #include "../ViewController/GameSettingLayer.h"
 #include "../Card3d.h"
-#include "../CCFlipYLineal.h"
 
 using namespace cocos2d;
 
@@ -103,16 +102,12 @@ void SkirmishHUD::SetupViewer()
     addChild(label_stage_);
 
     //// TEST///
-    Card3d* card = Card3d::cardWithFile("stripes.png", "stripes.png");
+    Card3d* card = Card3d::cardWithFile("stripes.png", "stripes_p.png");
     card->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));    
     addChild(card, -1);
 
-    CCActionInterval*  orbit1 = CCFlipYLineal::create(3, 0, 360);
-    //CCFiniteTimeAction*  action1 = CCSequence::create(
-    //    orbit1,
-    //    orbit1->copy(),
-    //    NULL);
-    card->runAction(CCRepeatForever::create((CCActionInterval*)orbit1));
+    CCOrbitCamera* action1 = CCOrbitCamera::create(10, 2,2,0,360, 0, 0);
+    card->runAction(CCRepeatForever::create((CCActionInterval*)action1));
     //card->runAction(orbit1);
 
     //---------------------------------------------------------------

@@ -71,7 +71,7 @@ protected:
 public:
     /// Update the node.
     /// @param dt
-    void UpdateNode(cocos2d::CCFloat dt);
+    void UpdateNode(float dt);
 
     /// Destroy itself.
     void Destroy();
@@ -83,7 +83,7 @@ private:
     // Attributes
     Unit*                               state_;
 
-    cocos2d::AdvanceSprite*             sprite_;
+    AdvanceSprite*                      sprite_;
     cocos2d::CCPoint                    offset_;
     FacingDirection                     facing_;
     UnitActionType                      action_type_;

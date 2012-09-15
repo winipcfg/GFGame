@@ -32,7 +32,7 @@ public:
 
     virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
     
-    LAYER_CREATE_FUNC(CreditScene)
+    CREATE_FUNC(CreditScene)
     
 protected:
 private:

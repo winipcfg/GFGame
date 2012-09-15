@@ -51,7 +51,7 @@ public:
 	virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 	virtual void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 
-    LAYER_CREATE_FUNC(SkirmishLayer);
+    CREATE_FUNC(SkirmishLayer);
         
 private:
     void SetupViewer();
@@ -79,7 +79,7 @@ private:
     Point                               touch_end_position_;
 
     cocos2d::CCMenu*                    stage_menu_;
-    cocos2d::AdvanceSprite*             player_node_;
+    AdvanceSprite*             player_node_;
     short                               current_point_;
     std::vector<ControlPoint>           control_points_;
     std::vector<ControlPointLink>       control_point_links_;

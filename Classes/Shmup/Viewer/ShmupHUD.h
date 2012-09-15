@@ -47,7 +47,7 @@ public:
     /// @param value
     void SetHealth(const float& value);
         
-    LAYER_CREATE_FUNC(ShmupHUD)
+    CREATE_FUNC(ShmupHUD)
    
 protected:
 private:

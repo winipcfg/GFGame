@@ -49,7 +49,7 @@ protected:
     b2Body* m_pBody;
     float   m_fPTMRatio;
 	CCPoint m_delta;
-    CCFloat m_fLastElapsed;
+    float m_fLastElapsed;
 };
 
 

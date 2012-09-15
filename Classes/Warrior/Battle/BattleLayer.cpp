@@ -41,7 +41,7 @@ namespace Warrior
 
 const float kFallSpeed                  = 0.5f;
 const int kMinSliceLength               = 20;
-const int kNumEnemies                   = 2;//10;//20;
+const int kNumEnemies                   = 1;//10;//20;
 const float kMinSpawnTime               = 0.5f;
 const float kMaxSpawnTime               = 1.5f;
 
@@ -107,6 +107,8 @@ void BattleLayer::SetViewer(BattleHUD* viewer)
 
 bool BattleLayer::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent)
 {
+    CCLOG("[%s][%d] - Touch Begin", __FUNCTION__, __LINE__);
+
     Point touchLocation = convertTouchToNodeSpace(pTouch);
     touch_start_position_ = touch_end_position_ = touchLocation;
     battle_.MouseDown(b2Vec2(touchLocation.x, touchLocation.y));    
@@ -422,7 +424,7 @@ void BattleLayer::ResolveAttack(UnitNode& attacker, UnitNode& target)
     audio_handler_.PlaySliceEffect();
     if (attacker.GetState()->Alive() && target.GetState()->Alive())
     {
-        cocos2d::CCFloat diffSQ = cocos2d::ccpLengthSQ(cocos2d::ccpSub(target.getPosition(), attacker.getPosition()));
+        float diffSQ = cocos2d::ccpLengthSQ(cocos2d::ccpSub(target.getPosition(), attacker.getPosition()));
         if (diffSQ < 900)
         {
             // The target is inside range
@@ -455,7 +457,7 @@ void BattleLayer::ResolveAttack(UnitNode& attacker, UnitNode& target)
     }
 }
 
-void BattleLayer::UpdateNode(CCFloat dt)
+void BattleLayer::UpdateNode(float dt)
 {
     if (!battle_.BattleEnded())
     {

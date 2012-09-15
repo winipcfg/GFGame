@@ -45,7 +45,7 @@ public:
 
 protected:
 	CCPoint m_delta;
-    CCFloat m_fLastElapsed;
+    float m_fLastElapsed;
 };
 
 

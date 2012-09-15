@@ -23,7 +23,7 @@
 #define GFGAME_SHMUP_GAMESETTINGLAYER_H_
 
 #include "cocos2d.h"
-#include "cocos2dExt.h"
+#include "cocos-ext.h"
 #include <Scene/GameScene.h>
 #include "../Game.h"
 
@@ -44,7 +44,7 @@ public:
     void GameSettingLayer::ValueChanged(cocos2d::extension::CCControlSlider* sender);
     void GameSettingLayer::ButtonClicked(cocos2d::extension::CCControlButton* sender);
         
-    LAYER_CREATE_FUNC(GameSettingLayer)
+    CREATE_FUNC(GameSettingLayer)
 
 private:
     /// Load default setting.

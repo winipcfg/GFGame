@@ -74,7 +74,7 @@ protected:
 protected:
     /// Update the node.
     /// @param dt
-    virtual void UpdateNode(cocos2d::CCFloat dt) {}
+    virtual void UpdateNode(float dt) {}
 
     /// Refresh the position.
     void RefreshPosition();

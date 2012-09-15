@@ -108,7 +108,7 @@ void EnemyNode::Attack(UnitAction& action)
     ChangeFacingDirection((dx > 0) ? kFacingRight : kFacingLeft);
 }
 
-void EnemyNode::UpdateNode(CCFloat dt)
+void EnemyNode::UpdateNode(float dt)
 {            
     if (use_physics_motion_)
     {
@@ -166,7 +166,7 @@ void EnemyNode::UpdateNode(CCFloat dt)
     RefreshPosition();
 }
 
-void EnemyNode::Think(CCFloat dt)
+void EnemyNode::Think(float dt)
 {
     BattleLayer* layer = (BattleLayer*) this->getParent();
     if (bot_ && layer && 
