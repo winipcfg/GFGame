@@ -103,12 +103,16 @@ void SkirmishHUD::SetupViewer()
 
     //// TEST///
     Card3d* card = Card3d::cardWithFile("stripes.png", "stripes_p.png");
-    card->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));    
+    //card->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));    
     addChild(card, -1);
 
-    CCOrbitCamera* action1 = CCOrbitCamera::create(10, 2,2,0,360, 0, 0);
-    card->runAction(CCRepeatForever::create((CCActionInterval*)action1));
-    //card->runAction(orbit1);
+    CCOrbitCamera* action1 = CCOrbitCamera::create(10, 1,1,0,360, 0, 0);
+    cocos2d::CCSprite* sprite = GFGame::CCSpriteHelper::spriteWithSpriteFrameNameOrFile("stripes.png");
+    sprite->setPosition(ccp(size.width / 2, size.height - label_stage_background_->boundingBox().size.height));
+    addChild(sprite);
+    sprite->runAction(CCRepeatForever::create((CCActionInterval*)action1));
+    //card->runAction(CCRepeatForever::create((CCActionInterval*)action1));
+    //card->runAction(action1);
 
     //---------------------------------------------------------------
     // Game Menu
